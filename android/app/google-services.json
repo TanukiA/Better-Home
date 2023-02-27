@@ -1,0 +1,154 @@
+{
+  "project_info": {
+    "project_number": "124125926085",
+    "project_id": "better-home-a2dbf",
+    "storage_bucket": "better-home-a2dbf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124125926085:android:c8a1269348848a026f96ac",
+        "android_client_info": {
+          "package_name": "com.exampl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124125926085-7pt8ifl8rcu8n0gk5kq2h6nacnqql4g8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSn1Cv_zs3ZWtal9VMhnbVaO4q-9LTkB4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124125926085-7pt8ifl8rcu8n0gk5kq2h6nacnqql4g8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "124125926085-m7dhlg3qefore28ps9f2cmv4hvs7f1l8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.betterHome"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124125926085:android:73ab9acc46b447586f96ac",
+        "android_client_info": {
+          "package_name": "com.example.bett"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124125926085-7pt8ifl8rcu8n0gk5kq2h6nacnqql4g8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSn1Cv_zs3ZWtal9VMhnbVaO4q-9LTkB4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124125926085-7pt8ifl8rcu8n0gk5kq2h6nacnqql4g8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "124125926085-m7dhlg3qefore28ps9f2cmv4hvs7f1l8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.betterHome"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124125926085:android:23b407305b7669ad6f96ac",
+        "android_client_info": {
+          "package_name": "com.example.better_home"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124125926085-7pt8ifl8rcu8n0gk5kq2h6nacnqql4g8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSn1Cv_zs3ZWtal9VMhnbVaO4q-9LTkB4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124125926085-7pt8ifl8rcu8n0gk5kq2h6nacnqql4g8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "124125926085-m7dhlg3qefore28ps9f2cmv4hvs7f1l8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.betterHome"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124125926085:android:b607456a3fec584e6f96ac",
+        "android_client_info": {
+          "package_name": "com.fyp.be"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124125926085-7pt8ifl8rcu8n0gk5kq2h6nacnqql4g8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSn1Cv_zs3ZWtal9VMhnbVaO4q-9LTkB4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124125926085-7pt8ifl8rcu8n0gk5kq2h6nacnqql4g8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "124125926085-m7dhlg3qefore28ps9f2cmv4hvs7f1l8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.betterHome"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
