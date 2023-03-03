@@ -37,10 +37,12 @@ class FirstScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()),
-                  );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(
+                          userType: 'customer',
+                        ),
+                      ));
                 },
                 style: btnStyle,
                 child: const Text(
@@ -51,10 +53,12 @@ class FirstScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()),
-                  );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(
+                          userType: 'technician',
+                        ),
+                      ));
                 },
                 style: btnStyle,
                 child: const Text(
