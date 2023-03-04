@@ -1,4 +1,4 @@
-import 'package:authentication/view/login_screen.dart';
+import 'package:authentication/views/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -18,8 +18,7 @@ class FirstScreen extends StatelessWidget {
 
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: const Color.fromRGBO(
-            152, 161, 127, 1), // set the background color here
+        backgroundColor: const Color.fromRGBO(152, 161, 127, 1),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

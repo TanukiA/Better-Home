@@ -1,4 +1,4 @@
-import 'package:authentication/view/first_screen.dart';
+import 'package:authentication/views/first_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
