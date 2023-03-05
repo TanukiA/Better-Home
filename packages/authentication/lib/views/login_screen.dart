@@ -24,53 +24,60 @@ class _LoginScreenState extends State<LoginScreen> {
         return Container();
     }
     */
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/betterhome_logo.png',
-                height: 100,
-                width: 100,
+    return Scaffold(
+      backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
+      body: Center(
+        child: Stack(
+          children: [
+            Image.asset(
+              'assets/betterhome_logo.png',
+              height: 100,
+              width: 100,
+            ),
+            const Text(
+              'LOGIN',
+              style: TextStyle(
+                fontSize: 28,
+                fontFamily: 'Roboto',
+                color: Colors.white,
               ),
-              const Text(
-                'LOGIN',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontFamily: 'Roboto',
-                  color: Colors.white,
-                ),
+            ),
+            Container(
+              width: double.infinity,
+              color: Colors.white.withOpacity(0.8),
+              margin: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(40),
+              child: Stack(
+                children: [
+                  TextFormField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Phone Number',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone number';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
-              TextFormField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  labelText: 'Phone Number',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
