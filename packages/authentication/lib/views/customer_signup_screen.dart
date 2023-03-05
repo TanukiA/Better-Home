@@ -51,20 +51,19 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(height: 40),
             const Text(
-              'LOGIN',
+              'SIGN UP',
               style: TextStyle(
                 fontSize: 28,
                 fontFamily: 'Roboto',
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 5),
             Container(
               width: double.infinity,
               margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.all(40),
+              padding: const EdgeInsets.all(30),
               child: Column(
                 children: [
                   TextFieldContainer(
@@ -154,13 +153,13 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                     style: signupBtnStyle,
                     child: const Text('Sign up'),
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 30),
                   const Text(
                     "Already have account?",
                     style: TextStyle(
                       fontSize: 18,
                       fontFamily: 'Roboto',
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 13),

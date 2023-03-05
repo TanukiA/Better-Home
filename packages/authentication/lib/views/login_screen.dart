@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               width: double.infinity,
               margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.all(40),
+              padding: const EdgeInsets.all(35),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.8),
                 borderRadius: BorderRadius.circular(30),
@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: loginBtnStyle,
                     child: const Text('Login'),
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 30),
                   const Text(
                     "Don't have an account?",
                     style: TextStyle(
