@@ -1,4 +1,5 @@
 import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,13 +28,15 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
       body: Center(
-        child: Stack(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
               'assets/betterhome_logo.png',
-              height: 100,
-              width: 100,
+              height: 110,
+              width: 110,
             ),
+            const SizedBox(height: 20),
             const Text(
               'LOGIN',
               style: TextStyle(
@@ -42,37 +45,48 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.white,
               ),
             ),
+            const SizedBox(height: 20),
             Container(
               width: double.infinity,
-              color: Colors.white.withOpacity(0.8),
               margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.all(40),
-              child: Stack(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
                 children: [
-                  TextFormField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      labelText: 'Phone Number',
+                  TextFieldContainer(
+                    child: TextFormField(
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        labelText: 'Phone number',
+                        border: InputBorder.none,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your phone number';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your phone number';
-                      }
-                      return null;
-                    },
                   ),
-                  TextFormField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
+                  const SizedBox(height: 10),
+                  TextFieldContainer(
+                    child: TextFormField(
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                        border: InputBorder.none,
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
                     ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
                   ),
                 ],
               ),

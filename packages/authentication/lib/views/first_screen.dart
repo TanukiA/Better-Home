@@ -7,6 +7,8 @@ class FirstScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     final ButtonStyle btnStyle = ElevatedButton.styleFrom(
         textStyle: const TextStyle(
           fontSize: 20,
@@ -69,8 +71,8 @@ class FirstScreen extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: SvgPicture.asset(
                   'assets/people_img.svg',
-                  width: 160,
-                  height: 160,
+                  width: size.width * 0.2,
+                  height: size.height * 0.2,
                 ),
               ),
             ],
