@@ -1,35 +1,21 @@
-import 'package:authentication/controllers/login_controller.dart';
-import 'package:authentication/views/customer_signup_screen.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key, required this.userType}) : super(key: key);
-  final String userType;
+class CustomerSignupScreen extends StatefulWidget {
+  const CustomerSignupScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<CustomerSignupScreen> createState() => _CustomerSignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
   final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    /*
-    switch (widget.userType) {
-      case 'customer':
-        return const Scaffold();
-      case 'technician':
-        return const Scaffold();
-      default:
-        return Container();
-    }
-    */
-
     Size size = MediaQuery.of(context).size;
 
-    final ButtonStyle loginBtnStyle = ElevatedButton.styleFrom(
+    final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(
         fontSize: 20,
         fontFamily: 'Roboto',
@@ -44,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
       shadowColor: Colors.grey[400],
     );
 
-    final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
+    final ButtonStyle loginBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(
         fontSize: 20,
         fontFamily: 'Roboto',
@@ -65,12 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/betterhome_logo.png',
-              height: 110,
-              width: 110,
-            ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 50),
             const Text(
               'LOGIN',
               style: TextStyle(
@@ -84,12 +65,40 @@ class _LoginScreenState extends State<LoginScreen> {
               width: double.infinity,
               margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.all(40),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(30),
-              ),
               child: Column(
                 children: [
+                  TextFieldContainer(
+                    child: TextFormField(
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        hintText: 'Full name',
+                        border: InputBorder.none,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your full name';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextFieldContainer(
+                    child: TextFormField(
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        hintText: 'Email',
+                        border: InputBorder.none,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email address';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   TextFieldContainer(
                     child: TextFormField(
                       controller: _controller,
@@ -123,29 +132,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        textStyle: const TextStyle(
-                          fontSize: 18,
-                          decoration: TextDecoration.underline,
-                        ),
+                  TextFieldContainer(
+                    child: TextFormField(
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        hintText: 'Confirm password',
+                        border: InputBorder.none,
                       ),
-                      onPressed: () {},
-                      child: const Text('Forgot Password?',
-                          style: TextStyle(color: Colors.deepPurple)),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   const SizedBox(height: 15),
                   ElevatedButton(
                     onPressed: () {},
-                    style: loginBtnStyle,
-                    child: const Text('Login'),
+                    style: signupBtnStyle,
+                    child: const Text('Sign up'),
                   ),
                   const SizedBox(height: 25),
                   const Text(
-                    "Don't have an account?",
+                    "Already have account?",
                     style: TextStyle(
                       fontSize: 18,
                       fontFamily: 'Roboto',
@@ -154,18 +165,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 13),
                   ElevatedButton(
-                    onPressed: () {
-                      if (widget.userType == "customer") {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CustomerSignupScreen(),
-                            ));
-                      } else {}
-                    },
-                    style: signupBtnStyle,
-                    child: const Text('Sign up'),
+                    onPressed: () {},
+                    style: loginBtnStyle,
+                    child: const Text('Login'),
                   ),
                 ],
               ),
