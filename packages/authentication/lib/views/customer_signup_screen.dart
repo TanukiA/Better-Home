@@ -1,3 +1,4 @@
+import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,12 @@ class CustomerSignupScreen extends StatefulWidget {
 }
 
 class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +74,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                 children: [
                   TextFieldContainer(
                     child: TextFormField(
-                      controller: _controller,
+                      controller: _nameController,
                       decoration: const InputDecoration(
                         hintText: 'Full name',
                         border: InputBorder.none,
@@ -84,7 +90,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                   const SizedBox(height: 10),
                   TextFieldContainer(
                     child: TextFormField(
-                      controller: _controller,
+                      controller: _emailController,
                       decoration: const InputDecoration(
                         hintText: 'Email',
                         border: InputBorder.none,
@@ -100,7 +106,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                   const SizedBox(height: 10),
                   TextFieldContainer(
                     child: TextFormField(
-                      controller: _controller,
+                      controller: _phoneController,
                       decoration: const InputDecoration(
                         hintText: 'Phone number',
                         border: InputBorder.none,
@@ -116,7 +122,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                   const SizedBox(height: 10),
                   TextFieldContainer(
                     child: TextFormField(
-                      controller: _controller,
+                      controller: _passwordController,
                       decoration: const InputDecoration(
                         hintText: 'Password',
                         border: InputBorder.none,
@@ -133,7 +139,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                   const SizedBox(height: 15),
                   TextFieldContainer(
                     child: TextFormField(
-                      controller: _controller,
+                      controller: _confirmPasswordController,
                       decoration: const InputDecoration(
                         hintText: 'Confirm password',
                         border: InputBorder.none,
@@ -164,7 +170,15 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                   ),
                   const SizedBox(height: 13),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(
+                              userType: 'customer',
+                            ),
+                          ));
+                    },
                     style: loginBtnStyle,
                     child: const Text('Login'),
                   ),
