@@ -13,9 +13,6 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -119,47 +116,13 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  TextFieldContainer(
-                    child: TextFormField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(
-                        hintText: 'Password',
-                        border: InputBorder.none,
-                      ),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  TextFieldContainer(
-                    child: TextFormField(
-                      controller: _confirmPasswordController,
-                      decoration: const InputDecoration(
-                        hintText: 'Confirm password',
-                        border: InputBorder.none,
-                      ),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please confirm your password';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {},
                     style: signupBtnStyle,
                     child: const Text('Sign up'),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 40),
                   const Text(
                     "Already have account?",
                     style: TextStyle(

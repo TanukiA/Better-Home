@@ -14,9 +14,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -71,126 +69,95 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
               width: double.infinity,
               margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.all(30),
-              child: Column(
-                children: [
-                  TextFieldContainer(
-                    child: TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                        hintText: 'Full name',
-                        border: InputBorder.none,
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    TextFieldContainer(
+                      child: TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          hintText: 'Full name',
+                          border: InputBorder.none,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your full name';
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your full name';
-                        }
-                        return null;
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextFieldContainer(
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        hintText: 'Email',
-                        border: InputBorder.none,
+                    const SizedBox(height: 10),
+                    TextFieldContainer(
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          hintText: 'Email',
+                          border: InputBorder.none,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email address';
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email address';
-                        }
-                        return null;
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextFieldContainer(
-                    child: TextFormField(
-                      controller: _phoneController,
-                      decoration: const InputDecoration(
-                        hintText: 'Phone number',
-                        border: InputBorder.none,
+                    const SizedBox(height: 10),
+                    TextFieldContainer(
+                      child: TextFormField(
+                        controller: _phoneController,
+                        decoration: const InputDecoration(
+                          hintText: 'Phone number',
+                          border: InputBorder.none,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your phone number';
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your phone number';
-                        }
-                        return null;
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextFieldContainer(
-                    child: TextFormField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(
-                        hintText: 'Password',
-                        border: InputBorder.none,
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const TechnicianSignupScreen2(),
+                            ));
+                      },
+                      style: nextBtnStyle,
+                      child: const Text('Next'),
+                    ),
+                    const SizedBox(height: 40),
+                    const Text(
+                      "Already have account?",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontFamily: 'Roboto',
+                        color: Colors.white,
                       ),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
+                    ),
+                    const SizedBox(height: 13),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(
+                                userType: 'technician',
+                              ),
+                            ));
                       },
+                      style: loginBtnStyle,
+                      child: const Text('Login'),
                     ),
-                  ),
-                  const SizedBox(height: 15),
-                  TextFieldContainer(
-                    child: TextFormField(
-                      controller: _confirmPasswordController,
-                      decoration: const InputDecoration(
-                        hintText: 'Confirm password',
-                        border: InputBorder.none,
-                      ),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please confirm your password';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const TechnicianSignupScreen2(),
-                          ));
-                    },
-                    style: nextBtnStyle,
-                    child: const Text('Next'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    "Already have account?",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: 'Roboto',
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginScreen(
-                              userType: 'technician',
-                            ),
-                          ));
-                    },
-                    style: loginBtnStyle,
-                    child: const Text('Login'),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

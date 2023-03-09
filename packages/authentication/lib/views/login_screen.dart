@@ -14,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 110,
               width: 110,
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 50),
             const Text(
               'LOGIN',
               style: TextStyle(
@@ -96,45 +95,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  TextFieldContainer(
-                    child: TextFormField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(
-                        hintText: 'Password',
-                        border: InputBorder.none,
-                      ),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        textStyle: const TextStyle(
-                          fontSize: 18,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      onPressed: () {},
-                      child: const Text('Forgot Password?',
-                          style: TextStyle(color: Colors.deepPurple)),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {},
                     style: loginBtnStyle,
                     child: const Text('Login'),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 40),
                   const Text(
                     "Don't have an account?",
                     style: TextStyle(

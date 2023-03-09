@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:authentication/views/text_field_container.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 
 class TechnicianSignupScreen2 extends StatefulWidget {
   const TechnicianSignupScreen2({Key? key}) : super(key: key);
@@ -12,7 +15,38 @@ class TechnicianSignupScreen2 extends StatefulWidget {
 class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   final TextEditingController _expController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
-  bool isChecked = false;
+
+  List<bool> checkboxValues = [false, false, false, false, false, false];
+
+  PlatformFile? pickedFile;
+  UploadTask? uploadTask;
+  String fileName = "";
+
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc'],
+    );
+    if (result == null) return;
+
+    setState(() {
+      pickedFile = result.files.first;
+      fileName = pickedFile!.name;
+    });
+  }
+
+  Future uploadFile() async {
+    final path = 'files/${pickedFile!.name}';
+    final file = File(pickedFile!.path!);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    uploadTask = ref.putFile(file);
+
+    final snapshot = await uploadTask!.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
+    // ignore: avoid_print
+    print('Download Link: $urlDownload');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +67,15 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
       shadowColor: Colors.grey[400],
     );
 
+    final ButtonStyle filePickBtnStyle = ElevatedButton.styleFrom(
+      textStyle: const TextStyle(
+        fontSize: 16,
+        fontFamily: 'Roboto',
+      ),
+      backgroundColor: Colors.blueGrey,
+      foregroundColor: Colors.white,
+    );
+
     Color getColor(Set<MaterialState> states) {
       const Set<MaterialState> interactiveStates = <MaterialState>{
         MaterialState.pressed,
@@ -41,11 +84,11 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
       if (states.any(interactiveStates.contains)) {
         return Colors.green;
       }
-      return Colors.black;
+      return Colors.white;
     }
 
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
+      backgroundColor: const Color.fromARGB(255, 127, 116, 62),
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
@@ -56,7 +99,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color.fromRGBO(136, 124, 63, 1),
+        backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
         leading: const BackButton(
           color: Colors.black,
         ),
@@ -76,7 +119,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                 child: Column(
                   children: [
                     const Text(
-                      'What is your specialized service area?',
+                      'What is your specialized service area(s)?',
                       style: TextStyle(
                         fontSize: 16,
                         fontFamily: 'Roboto',
@@ -87,13 +130,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                     Row(
                       children: [
                         Checkbox(
-                          checkColor: Colors.white,
+                          checkColor: Colors.black,
                           fillColor:
                               MaterialStateProperty.resolveWith(getColor),
-                          value: isChecked,
+                          value: checkboxValues[0],
                           onChanged: (bool? value) {
                             setState(() {
-                              isChecked = value!;
+                              checkboxValues[0] = value!;
                             });
                           },
                         ),
@@ -106,13 +149,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                           ),
                         ),
                         Checkbox(
-                          checkColor: Colors.white,
+                          checkColor: Colors.black,
                           fillColor:
                               MaterialStateProperty.resolveWith(getColor),
-                          value: isChecked,
+                          value: checkboxValues[1],
                           onChanged: (bool? value) {
                             setState(() {
-                              isChecked = value!;
+                              checkboxValues[1] = value!;
                             });
                           },
                         ),
@@ -129,13 +172,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                     Row(
                       children: [
                         Checkbox(
-                          checkColor: Colors.white,
+                          checkColor: Colors.black,
                           fillColor:
                               MaterialStateProperty.resolveWith(getColor),
-                          value: isChecked,
+                          value: checkboxValues[2],
                           onChanged: (bool? value) {
                             setState(() {
-                              isChecked = value!;
+                              checkboxValues[2] = value!;
                             });
                           },
                         ),
@@ -148,13 +191,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                           ),
                         ),
                         Checkbox(
-                          checkColor: Colors.white,
+                          checkColor: Colors.black,
                           fillColor:
                               MaterialStateProperty.resolveWith(getColor),
-                          value: isChecked,
+                          value: checkboxValues[3],
                           onChanged: (bool? value) {
                             setState(() {
-                              isChecked = value!;
+                              checkboxValues[3] = value!;
                             });
                           },
                         ),
@@ -171,13 +214,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                     Row(
                       children: [
                         Checkbox(
-                          checkColor: Colors.white,
+                          checkColor: Colors.black,
                           fillColor:
                               MaterialStateProperty.resolveWith(getColor),
-                          value: isChecked,
+                          value: checkboxValues[4],
                           onChanged: (bool? value) {
                             setState(() {
-                              isChecked = value!;
+                              checkboxValues[4] = value!;
                             });
                           },
                         ),
@@ -190,13 +233,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                           ),
                         ),
                         Checkbox(
-                          checkColor: Colors.white,
+                          checkColor: Colors.black,
                           fillColor:
                               MaterialStateProperty.resolveWith(getColor),
-                          value: isChecked,
+                          value: checkboxValues[5],
                           onChanged: (bool? value) {
                             setState(() {
-                              isChecked = value!;
+                              checkboxValues[5] = value!;
                             });
                           },
                         ),
@@ -242,9 +285,37 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                         },
                       ),
                     ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Upload verification document (PDF or Doc)',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Roboto',
+                        color: Colors.white,
+                      ),
+                    ),
                     const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const SizedBox(width: 30),
+                        ElevatedButton(
+                          onPressed: selectFile,
+                          style: filePickBtnStyle,
+                          child: const Text('Select file'),
+                        ),
+                        Text(
+                          fileName,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'Roboto',
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: uploadFile,
                       style: signupBtnStyle,
                       child: const Text('Sign up'),
                     ),
