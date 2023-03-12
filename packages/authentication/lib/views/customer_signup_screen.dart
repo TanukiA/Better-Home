@@ -1,3 +1,4 @@
+import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
@@ -137,8 +138,9 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LoginScreen(
+                            builder: (context) => LoginScreen(
                               userType: 'customer',
+                              controller: LoginController(),
                             ),
                           ));
                     },

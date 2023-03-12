@@ -1,19 +1,42 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/customer_signup_screen.dart';
+import 'package:authentication/models/phone_number_formatter.dart';
 import 'package:authentication/views/technician_signup_screen.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:authentication/models/user.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key, required this.userType}) : super(key: key);
+  const LoginScreen(
+      {Key? key, required this.userType, required this.controller})
+      : super(key: key);
   final String userType;
+  final LoginController controller;
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  StateMVC<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends StateMVC<LoginScreen> {
+  late User _user;
   final TextEditingController _phoneController = TextEditingController();
+  // late String phoneValidation;
+/*
+  @override
+  void initState() {
+    super.initState();
+    _phoneController.addListener(() {
+      phoneValidation =
+          widget.controller.validPhoneNumber(_phoneController.text);
+    });
+  }*/
+
+  @override
+  void initState() {
+    _user = widget.controller.user;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +106,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFieldContainer(
                     child: TextFormField(
                       controller: _phoneController,
-                      decoration: const InputDecoration(
+                      inputFormatters: [MalaysiaPhoneNumberFormatter(context)],
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
                         hintText: 'Phone number',
+                        errorText: widget.controller
+                            .validPhoneNumber(_phoneController.text),
                         border: InputBorder.none,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your phone number';
+                          return 'Phone number is required';
                         }
                         return null;
                       },

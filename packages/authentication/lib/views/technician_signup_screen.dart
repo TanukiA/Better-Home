@@ -1,3 +1,4 @@
+import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/technician_signup_screen2.dart';
 import 'package:authentication/views/text_field_container.dart';
@@ -131,7 +132,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                             ));
                       },
                       style: nextBtnStyle,
-                      child: const Text('Next'),
+                      child: const Text('Continue'),
                     ),
                     const SizedBox(height: 40),
                     const Text(
@@ -148,8 +149,9 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const LoginScreen(
+                              builder: (context) => LoginScreen(
                                 userType: 'technician',
+                                controller: LoginController(),
                               ),
                             ));
                       },

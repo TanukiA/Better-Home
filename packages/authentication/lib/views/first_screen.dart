@@ -1,3 +1,4 @@
+import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,8 +41,9 @@ class FirstScreen extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginScreen(
+                        builder: (context) => LoginScreen(
                           userType: 'customer',
+                          controller: LoginController(),
                         ),
                       ));
                 },
@@ -56,8 +58,9 @@ class FirstScreen extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginScreen(
+                        builder: (context) => LoginScreen(
                           userType: 'technician',
+                          controller: LoginController(),
                         ),
                       ));
                 },
