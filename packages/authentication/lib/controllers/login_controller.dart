@@ -19,4 +19,8 @@ class LoginController extends ControllerMVC {
   String validPhoneNumber(String phone) {
     return _user.validPhoneNumber(phone);
   }
+/*
+  bool isNotEmptyPhone(String phoneSubmitted) {
+    return _user.isNotEmptyPhone(phoneSubmitted);
+  }*/
 }

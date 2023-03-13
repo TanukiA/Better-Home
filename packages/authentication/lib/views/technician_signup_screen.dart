@@ -53,116 +53,118 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 40),
-            const Text(
-              'SIGN UP',
-              style: TextStyle(
-                fontSize: 28,
-                fontFamily: 'Roboto',
-                color: Colors.white,
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.all(30),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    TextFieldContainer(
-                      child: TextFormField(
-                        controller: _nameController,
-                        decoration: const InputDecoration(
-                          hintText: 'Full name',
-                          border: InputBorder.none,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your full name';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFieldContainer(
-                      child: TextFormField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
-                          hintText: 'Email',
-                          border: InputBorder.none,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email address';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFieldContainer(
-                      child: TextFormField(
-                        controller: _phoneController,
-                        decoration: const InputDecoration(
-                          hintText: 'Phone number',
-                          border: InputBorder.none,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your phone number';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const TechnicianSignupScreen2(),
-                            ));
-                      },
-                      style: nextBtnStyle,
-                      child: const Text('Continue'),
-                    ),
-                    const SizedBox(height: 40),
-                    const Text(
-                      "Already have account?",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontFamily: 'Roboto',
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 13),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginScreen(
-                                userType: 'technician',
-                                controller: LoginController(),
-                              ),
-                            ));
-                      },
-                      style: loginBtnStyle,
-                      child: const Text('Login'),
-                    ),
-                  ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 70),
+              const Text(
+                'SIGN UP',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontFamily: 'Roboto',
+                  color: Colors.white,
                 ),
               ),
-            ),
-          ],
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(30),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      TextFieldContainer(
+                        child: TextFormField(
+                          controller: _nameController,
+                          decoration: const InputDecoration(
+                            hintText: 'Full name',
+                            border: InputBorder.none,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your full name';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFieldContainer(
+                        child: TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(
+                            hintText: 'Email',
+                            border: InputBorder.none,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email address';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFieldContainer(
+                        child: TextFormField(
+                          controller: _phoneController,
+                          decoration: const InputDecoration(
+                            hintText: 'Phone number',
+                            border: InputBorder.none,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your phone number';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const TechnicianSignupScreen2(),
+                              ));
+                        },
+                        style: nextBtnStyle,
+                        child: const Text('Continue'),
+                      ),
+                      const SizedBox(height: 40),
+                      const Text(
+                        "Already have account?",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'Roboto',
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 13),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(
+                                  userType: 'technician',
+                                  controller: LoginController(),
+                                ),
+                              ));
+                        },
+                        style: loginBtnStyle,
+                        child: const Text('Login'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

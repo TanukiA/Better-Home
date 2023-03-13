@@ -21,22 +21,32 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends StateMVC<LoginScreen> {
   late User _user;
   final TextEditingController _phoneController = TextEditingController();
-  // late String phoneValidation;
-/*
-  @override
-  void initState() {
-    super.initState();
-    _phoneController.addListener(() {
-      phoneValidation =
-          widget.controller.validPhoneNumber(_phoneController.text);
-    });
-  }*/
+  bool _isValid = false;
 
   @override
   void initState() {
     _user = widget.controller.user;
     super.initState();
+
+    _phoneController.addListener(() {
+      setState(() {
+        if (widget.controller.validPhoneNumber(_phoneController.text) == "" &&
+            _phoneController.text.isNotEmpty) {
+          _isValid = true;
+        } else {
+          _isValid = false;
+        }
+      });
+    });
   }
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  void loginBtnClicked() {}
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +57,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
         fontSize: 20,
         fontFamily: 'Roboto',
       ),
-      backgroundColor: Colors.black,
+      disabledForegroundColor: Colors.white,
       foregroundColor: Colors.white,
       fixedSize: Size(size.width * 0.8, 55),
       shape: RoundedRectangleBorder(
@@ -72,97 +82,122 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
       shadowColor: Colors.grey[400],
     );
 
+    MaterialStateProperty<Color?> backgroundColor =
+        MaterialStateProperty.resolveWith<Color?>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return Colors.grey;
+        }
+        return Colors.black;
+      },
+    );
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/betterhome_logo.png',
-              height: 110,
-              width: 110,
-            ),
-            const SizedBox(height: 50),
-            const Text(
-              'LOGIN',
-              style: TextStyle(
-                fontSize: 28,
-                fontFamily: 'Roboto',
-                color: Colors.white,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 45),
+              Image.asset(
+                'assets/betterhome_logo.png',
+                height: 110,
+                width: 110,
               ),
-            ),
-            const SizedBox(height: 5),
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.all(35),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(30),
+              const SizedBox(height: 50),
+              const Text(
+                'LOGIN',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontFamily: 'Roboto',
+                  color: Colors.white,
+                ),
               ),
-              child: Column(
-                children: [
-                  TextFieldContainer(
-                    child: TextFormField(
-                      controller: _phoneController,
-                      inputFormatters: [MalaysiaPhoneNumberFormatter(context)],
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        hintText: 'Phone number',
-                        errorText: widget.controller
-                            .validPhoneNumber(_phoneController.text),
-                        border: InputBorder.none,
+              const SizedBox(height: 5),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(35),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  children: [
+                    TextFieldContainer(
+                      child: TextFormField(
+                        controller: _phoneController,
+                        inputFormatters: [
+                          MalaysiaPhoneNumberFormatter(context)
+                        ],
+                        keyboardType: TextInputType.phone,
+                        decoration: const InputDecoration(
+                          hintText: 'Phone number',
+                          border: InputBorder.none,
+                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Phone number is required';
+                    ),
+                    if (widget.controller
+                            .validPhoneNumber(_phoneController.text) !=
+                        "")
+                      SizedBox(
+                        width: size.width * 0.65,
+                        height: 15,
+                        child: Text(
+                          widget.controller
+                              .validPhoneNumber(_phoneController.text),
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _isValid ? loginBtnClicked : null,
+                      style: loginBtnStyle.copyWith(
+                        backgroundColor: backgroundColor,
+                      ),
+                      child: const Text('Login'),
+                    ),
+                    const SizedBox(height: 40),
+                    const Text(
+                      "Don't have an account?",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontFamily: 'Roboto',
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 13),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (widget.userType == "customer") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CustomerSignupScreen(),
+                              ));
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const TechnicianSignupScreen(),
+                              ));
                         }
-                        return null;
                       },
+                      style: signupBtnStyle,
+                      child: const Text('Sign up'),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: loginBtnStyle,
-                    child: const Text('Login'),
-                  ),
-                  const SizedBox(height: 40),
-                  const Text(
-                    "Don't have an account?",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: 'Roboto',
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 13),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (widget.userType == "customer") {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CustomerSignupScreen(),
-                            ));
-                      } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const TechnicianSignupScreen(),
-                            ));
-                      }
-                    },
-                    style: signupBtnStyle,
-                    child: const Text('Sign up'),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
