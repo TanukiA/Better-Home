@@ -16,11 +16,7 @@ class LoginController extends ControllerMVC {
 
   User get user => _user;
 
-  String validPhoneNumber(String phone) {
-    return _user.validPhoneNumber(phone);
+  String validPhoneFormat(String phone) {
+    return _user.validPhoneFormat(phone);
   }
-/*
-  bool isNotEmptyPhone(String phoneSubmitted) {
-    return _user.isNotEmptyPhone(phoneSubmitted);
-  }*/
 }

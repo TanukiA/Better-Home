@@ -30,7 +30,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
 
     _phoneController.addListener(() {
       setState(() {
-        if (widget.controller.validPhoneNumber(_phoneController.text) == "" &&
+        if (widget.controller.validPhoneFormat(_phoneController.text) == "" &&
             _phoneController.text.isNotEmpty) {
           _isValid = true;
         } else {
@@ -139,14 +139,14 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                       ),
                     ),
                     if (widget.controller
-                            .validPhoneNumber(_phoneController.text) !=
+                            .validPhoneFormat(_phoneController.text) !=
                         "")
                       SizedBox(
                         width: size.width * 0.65,
                         height: 15,
                         child: Text(
                           widget.controller
-                              .validPhoneNumber(_phoneController.text),
+                              .validPhoneFormat(_phoneController.text),
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                             color: Colors.red,

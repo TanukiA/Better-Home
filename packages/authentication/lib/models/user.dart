@@ -15,7 +15,7 @@ class User extends ModelMVC {
 
   String get errorText => _errorText;
 
-  String validPhoneNumber(String phone) {
+  String validPhoneFormat(String phone) {
     if ((phone.startsWith('+60') &&
             (phone.length == 12 || phone.length == 13)) ||
         phone.isEmpty) {
@@ -28,12 +28,4 @@ class User extends ModelMVC {
       return _errorText;
     }
   }
-/*
-  bool isNotEmptyPhone(String phoneSubmitted) {
-    if (phoneSubmitted.isEmpty) {
-      return false;
-    } else {
-      return true;
-    }
-  }*/
 }
