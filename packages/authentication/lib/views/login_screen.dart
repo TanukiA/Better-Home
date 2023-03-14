@@ -1,4 +1,5 @@
 import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/views/customer_signup_screen.dart';
 import 'package:authentication/models/phone_number_formatter.dart';
 import 'package:authentication/views/technician_signup_screen.dart';
@@ -178,8 +179,9 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const CustomerSignupScreen(),
+                                builder: (context) => CustomerSignupScreen(
+                                  controller: RegistrationController(),
+                                ),
                               ));
                         } else {
                           Navigator.push(

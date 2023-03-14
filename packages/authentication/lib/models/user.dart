@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:authentication/models/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class User extends ModelMVC {
   final String id;
@@ -12,6 +15,10 @@ class User extends ModelMVC {
       required this.phone,
       required this.name,
       required this.email});
+
+  User.withIdAndPhone(this.id, this.phone)
+      : name = '',
+        email = '';
 
   String get errorText => _errorText;
 
@@ -27,5 +34,11 @@ class User extends ModelMVC {
       notifyListeners();
       return _errorText;
     }
+  }
+
+  void sendPhoneNumber(BuildContext context, String phoneInput) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String phoneNumber = phoneInput.trim();
+    ap.signInWithPhone(context, phoneNumber);
   }
 }

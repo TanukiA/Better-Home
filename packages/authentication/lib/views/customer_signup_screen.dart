@@ -1,19 +1,67 @@
 import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/controllers/registration_controller.dart';
+import 'package:authentication/models/phone_number_formatter.dart';
+import 'package:authentication/models/user.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
 
 class CustomerSignupScreen extends StatefulWidget {
-  const CustomerSignupScreen({Key? key}) : super(key: key);
+  const CustomerSignupScreen({Key? key, required this.controller})
+      : super(key: key);
+  final RegistrationController controller;
 
   @override
   State<CustomerSignupScreen> createState() => _CustomerSignupScreenState();
 }
 
 class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
+  late User _user;
+  bool _isValidName = false;
+  bool _isValidEmail = false;
+  bool _isValidPhone = false;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    _user = widget.controller.user;
+    super.initState();
+
+    _nameController.addListener(() {
+      setState(() {
+        if (_nameController.text.isNotEmpty) {
+          _isValidName = true;
+        } else {
+          _isValidName = false;
+        }
+      });
+    });
+
+    _emailController.addListener(() {
+      setState(() {});
+    });
+
+    _phoneController.addListener(() {
+      setState(() {
+        if (widget.controller.validPhoneFormat(_phoneController.text) == "" &&
+            _phoneController.text.isNotEmpty) {
+          _isValidPhone = true;
+        } else {
+          _isValidPhone = false;
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +72,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
         fontSize: 20,
         fontFamily: 'Roboto',
       ),
-      backgroundColor: Colors.black,
+      disabledForegroundColor: Colors.white,
       foregroundColor: Colors.white,
       fixedSize: Size(size.width * 0.8, 55),
       shape: RoundedRectangleBorder(
@@ -47,6 +95,16 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
       ),
       elevation: 3,
       shadowColor: Colors.grey[400],
+    );
+
+    MaterialStateProperty<Color?> backgroundColor =
+        MaterialStateProperty.resolveWith<Color?>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return Colors.grey;
+        }
+        return Colors.black;
+      },
     );
 
     return Scaffold(
@@ -106,22 +164,39 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                     TextFieldContainer(
                       child: TextFormField(
                         controller: _phoneController,
+                        inputFormatters: [
+                          MalaysiaPhoneNumberFormatter(context)
+                        ],
+                        keyboardType: TextInputType.phone,
                         decoration: const InputDecoration(
                           hintText: 'Phone number',
                           border: InputBorder.none,
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your phone number';
-                          }
-                          return null;
-                        },
                       ),
                     ),
+                    if (widget.controller
+                            .validPhoneFormat(_phoneController.text) !=
+                        "")
+                      SizedBox(
+                        width: size.width * 0.65,
+                        height: 15,
+                        child: Text(
+                          widget.controller
+                              .validPhoneFormat(_phoneController.text),
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {},
-                      style: signupBtnStyle,
+                      onPressed: () => widget.controller
+                          .sendPhoneNumber(context, _phoneController.text),
+                      style: signupBtnStyle.copyWith(
+                        backgroundColor: backgroundColor,
+                      ),
                       child: const Text('Sign up'),
                     ),
                     const SizedBox(height: 40),
@@ -157,4 +232,10 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
       ),
     );
   }
+/*
+  void sendPhoneNumber() {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String phoneNumber = _phoneController.text.trim();
+    ap.signInWithPhone(context, phoneNumber);
+  }*/
 }

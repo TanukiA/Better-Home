@@ -12,18 +12,20 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
-  firebase_core: ^2.7.0
-  mvc_pattern: ^8.12.0
-  firebase_auth: ^4.2.9
-  provider: ^6.0.5
-  file_picker: ^5.2.5
-  firebase_storage: ^11.0.14
-  cloud_firestore: ^4.4.4
-
   # personal packages
   authentication:
     path: ./packages/authentication
+
+  cupertino_icons: ^1.0.2
+  firebase_core: ^2.7.0
+  #mvc_pattern: ^8.12.0
+  firebase_auth: ^4.2.9
+  provider: ^6.0.5
+  #file_picker: ^5.2.5
+  firebase_storage: ^11.0.14
+  cloud_firestore: ^4.4.4
+  #pinput: ^2.2.31
+  #shared_preferences: ^2.0.18
 
 dev_dependencies:
   flutter_test:

@@ -1,15 +1,17 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
 
 class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({Key? key}) : super(key: key);
+  final String verificationId;
+  const VerificationScreen({Key? key, required this.verificationId})
+      : super(key: key);
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
 }
 
 class _VerificationScreenState extends State<VerificationScreen> {
-  //final TextEditingController _expController = TextEditingController();
+  String? otpCode;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               width: double.infinity,
@@ -84,16 +86,40 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
+                  Pinput(
+                    length: 6,
+                    showCursor: true,
+                    defaultPinTheme: PinTheme(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: const Color(0xFF98A17F),
+                        ),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    onCompleted: (value) {
+                      setState(() {
+                        //otpCode = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 25),
                   ElevatedButton(
                     onPressed: () {},
                     style: confirmBtnStyle,
-                    child: const Text('Sign up'),
+                    child: const Text('Confirm'),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {},
                     style: resendBtnStyle,
-                    child: const Text('Sign up'),
+                    child: const Text('Resend'),
                   ),
                 ],
               ),

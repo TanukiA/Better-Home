@@ -1,13 +1,17 @@
 import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/models/auth_provider.dart';
+import 'package:authentication/views/customer_home_screen.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class FirstScreen extends StatelessWidget {
   const FirstScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle btnStyle = ElevatedButton.styleFrom(
@@ -38,14 +42,19 @@ class FirstScreen extends StatelessWidget {
               const SizedBox(height: 100),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(
-                          userType: 'customer',
-                          controller: LoginController(),
-                        ),
-                      ));
+                  ap.isSignedIn == true
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CustomerHomeScreen()))
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(
+                              userType: 'customer',
+                              controller: LoginController(),
+                            ),
+                          ));
                 },
                 style: btnStyle,
                 child: const Text(
