@@ -11,11 +11,23 @@ class RegistrationController extends ControllerMVC {
 
   User get user => _user;
 
-  String validPhoneFormat(String phone) {
+  bool validPhoneFormat(String phone) {
     return _user.validPhoneFormat(phone);
   }
 
   void sendPhoneNumber(BuildContext context, String phoneInput) {
     return _user.sendPhoneNumber(context, phoneInput);
+  }
+
+  bool validEmailFormat(String email) {
+    return _user.validEmailFormat(email);
+  }
+
+  bool checkValid(bool isValidName, bool isValidEmail, bool isValidPhone) {
+    if (isValidName && isValidEmail && isValidPhone) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

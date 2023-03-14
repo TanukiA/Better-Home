@@ -8,7 +8,6 @@ class User extends ModelMVC {
   final String phone;
   final String name;
   final String email;
-  String _errorText = "";
 
   User(
       {required this.id,
@@ -20,19 +19,15 @@ class User extends ModelMVC {
       : name = '',
         email = '';
 
-  String get errorText => _errorText;
-
-  String validPhoneFormat(String phone) {
+  bool validPhoneFormat(String phone) {
     if ((phone.startsWith('+60') &&
             (phone.length == 12 || phone.length == 13)) ||
         phone.isEmpty) {
-      _errorText = "";
       notifyListeners();
-      return _errorText;
+      return true;
     } else {
-      _errorText = 'Invalid phone number';
       notifyListeners();
-      return _errorText;
+      return false;
     }
   }
 
@@ -40,5 +35,14 @@ class User extends ModelMVC {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String phoneNumber = phoneInput.trim();
     ap.signInWithPhone(context, phoneNumber);
+  }
+
+  bool validEmailFormat(String email) {
+    if (email.isEmpty) return true;
+
+    const pattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+    final regex = RegExp(pattern);
+
+    return regex.hasMatch(email);
   }
 }

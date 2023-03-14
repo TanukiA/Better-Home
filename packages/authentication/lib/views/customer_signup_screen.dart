@@ -20,6 +20,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
   bool _isValidName = false;
   bool _isValidEmail = false;
   bool _isValidPhone = false;
+  bool _isAllValid = false;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -33,23 +34,45 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
       setState(() {
         if (_nameController.text.isNotEmpty) {
           _isValidName = true;
+          if (widget.controller
+              .checkValid(_isValidName, _isValidEmail, _isValidPhone)) {
+            _isAllValid = true;
+          }
         } else {
           _isValidName = false;
+          _isAllValid = false;
         }
       });
     });
 
     _emailController.addListener(() {
-      setState(() {});
+      setState(() {
+        if (widget.controller.validEmailFormat(_emailController.text) == true &&
+            _emailController.text.isNotEmpty) {
+          _isValidEmail = true;
+          if (widget.controller
+              .checkValid(_isValidName, _isValidEmail, _isValidPhone)) {
+            _isAllValid = true;
+          }
+        } else {
+          _isValidEmail = false;
+          _isAllValid = false;
+        }
+      });
     });
 
     _phoneController.addListener(() {
       setState(() {
-        if (widget.controller.validPhoneFormat(_phoneController.text) == "" &&
+        if (widget.controller.validPhoneFormat(_phoneController.text) == true &&
             _phoneController.text.isNotEmpty) {
           _isValidPhone = true;
+          if (widget.controller
+              .checkValid(_isValidName, _isValidEmail, _isValidPhone)) {
+            _isAllValid = true;
+          }
         } else {
           _isValidPhone = false;
+          _isAllValid = false;
         }
       });
     });
@@ -152,14 +175,23 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                           hintText: 'Email',
                           border: InputBorder.none,
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email address';
-                          }
-                          return null;
-                        },
                       ),
                     ),
+                    if (widget.controller
+                            .validEmailFormat(_emailController.text) ==
+                        false)
+                      SizedBox(
+                        width: size.width * 0.65,
+                        height: 15,
+                        child: const Text(
+                          'Invalid email address',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 10),
                     TextFieldContainer(
                       child: TextFormField(
@@ -175,16 +207,15 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                       ),
                     ),
                     if (widget.controller
-                            .validPhoneFormat(_phoneController.text) !=
-                        "")
+                            .validPhoneFormat(_phoneController.text) ==
+                        false)
                       SizedBox(
                         width: size.width * 0.65,
                         height: 15,
-                        child: Text(
-                          widget.controller
-                              .validPhoneFormat(_phoneController.text),
+                        child: const Text(
+                          'Invalid phone number',
                           textAlign: TextAlign.left,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.red,
                             fontSize: 14,
                           ),
@@ -192,8 +223,10 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                       ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () => widget.controller
-                          .sendPhoneNumber(context, _phoneController.text),
+                      onPressed: _isAllValid
+                          ? () => widget.controller
+                              .sendPhoneNumber(context, _phoneController.text)
+                          : null,
                       style: signupBtnStyle.copyWith(
                         backgroundColor: backgroundColor,
                       ),
@@ -232,10 +265,4 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
       ),
     );
   }
-/*
-  void sendPhoneNumber() {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
-    String phoneNumber = _phoneController.text.trim();
-    ap.signInWithPhone(context, phoneNumber);
-  }*/
 }
