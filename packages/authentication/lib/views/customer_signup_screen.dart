@@ -159,12 +159,6 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                           hintText: 'Full name',
                           border: InputBorder.none,
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your full name';
-                          }
-                          return null;
-                        },
                       ),
                     ),
                     const SizedBox(height: 10),

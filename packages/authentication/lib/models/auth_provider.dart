@@ -1,3 +1,4 @@
+import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/verification_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +6,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:better_home/utils.dart';
 
 class AuthProvider extends ChangeNotifier {
+  String? _uid;
   bool _isSignedIn = false;
+  bool _isLoading = false;
   bool get isSignedIn => _isSignedIn;
+  bool get isLoading => _isLoading;
+  String get uid => _uid!;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   AuthProvider() {
@@ -34,12 +39,42 @@ class AuthProvider extends ChangeNotifier {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    VerificationScreen(verificationId: verificationId),
+                builder: (context) => VerificationScreen(
+                  verificationId: verificationId,
+                  controller: LoginController(),
+                ),
               ),
             );
           },
           codeAutoRetrievalTimeout: (verificationId) {});
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(context, e.message.toString());
+    }
+  }
+
+  void verifyOTP({
+    required BuildContext context,
+    required String verificationId,
+    required String userOTP,
+    required Function onSuccess,
+  }) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      PhoneAuthCredential creds = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: userOTP);
+      await _firebaseAuth.signInWithCredential(creds);
+
+      User? user = (await _firebaseAuth.signInWithCredential(creds)).user!;
+
+      if (user != null) {
+        _uid = user.uid;
+        onSuccess();
+      }
+
+      _isLoading = false;
+      notifyListeners();
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message.toString());
     }

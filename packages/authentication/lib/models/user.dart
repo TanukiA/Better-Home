@@ -45,4 +45,6 @@ class User extends ModelMVC {
 
     return regex.hasMatch(email);
   }
+
+  void verifyOTP(BuildContext context, String userOTP) {}
 }

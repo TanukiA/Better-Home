@@ -1,17 +1,29 @@
+import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/models/user.dart';
+import 'package:better_home/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 
 class VerificationScreen extends StatefulWidget {
-  final String verificationId;
-  const VerificationScreen({Key? key, required this.verificationId})
+  const VerificationScreen(
+      {Key? key, required this.verificationId, required this.controller})
       : super(key: key);
+  final String verificationId;
+  final LoginController controller;
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
 }
 
 class _VerificationScreenState extends State<VerificationScreen> {
+  late User _user;
   String? otpCode;
+
+  @override
+  void initState() {
+    _user = widget.controller.user;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,17 +54,21 @@ class _VerificationScreenState extends State<VerificationScreen> {
       fixedSize: Size(size.width * 0.8, 55),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
+        side: const BorderSide(
+          color: Colors.black,
+          width: 3.0,
+        ),
       ),
       elevation: 3,
       shadowColor: Colors.grey[400],
     );
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(232, 229, 212, 1),
+      backgroundColor: const Color(0xFFE8E5D4),
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'VERIFICATION CODE',
+          'Verification Code',
           style: TextStyle(
             fontSize: 25,
             fontFamily: 'Roboto',
@@ -78,14 +94,14 @@ class _VerificationScreenState extends State<VerificationScreen> {
               child: Column(
                 children: [
                   const Text(
-                    'OTP has been sent to your number',
+                    'OTP has been sent to your phone SMS',
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: 'Roboto',
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 70),
                   Pinput(
                     length: 6,
                     showCursor: true,
@@ -93,6 +109,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
                           color: const Color(0xFF98A17F),
@@ -105,13 +122,19 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     ),
                     onCompleted: (value) {
                       setState(() {
-                        //otpCode = value;
+                        otpCode = value;
                       });
                     },
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 80),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (otpCode != null && otpCode!.length == 6) {
+                        widget.controller.verifyOTP(context, otpCode!);
+                      } else {
+                        showSnackBar(context, "Please enter 6-digit code");
+                      }
+                    },
                     style: confirmBtnStyle,
                     child: const Text('Confirm'),
                   ),
