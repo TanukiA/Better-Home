@@ -55,7 +55,7 @@ abstract class User extends ModelMVC {
         onSuccess: () {});
   }
 
-  void checkAccountExistence();
+  Future<void> isAccountExists(String phone);
 
   void login();
 

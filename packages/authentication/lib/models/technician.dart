@@ -1,4 +1,5 @@
 import 'package:authentication/models/user.dart';
+import 'package:firebase_db/models/database.dart';
 
 class Technician extends User {
   final String id;
@@ -14,7 +15,10 @@ class Technician extends User {
       : super(id: id, phone: phone, name: name, email: email);
 
   @override
-  void checkAccountExistence() {}
+  Future<void> isAccountExists(String phone) async {
+    Firestore db = Firestore();
+    final exist = await db.checkAccountExistence(phone, 'technicians');
+  }
 
   @override
   void login() {}
