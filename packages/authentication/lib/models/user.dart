@@ -3,7 +3,7 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-class User extends ModelMVC {
+abstract class User extends ModelMVC {
   final String id;
   final String phone;
   final String name;
@@ -46,5 +46,18 @@ class User extends ModelMVC {
     return regex.hasMatch(email);
   }
 
-  void verifyOTP(BuildContext context, String userOTP) {}
+  void verifyOTP(BuildContext context, String userOTP, String verificationId) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    ap.verifyOTP(
+        context: context,
+        verificationId: verificationId,
+        userOTP: userOTP,
+        onSuccess: () {});
+  }
+
+  void checkAccountExistence();
+
+  void login();
+
+  void logout();
 }
