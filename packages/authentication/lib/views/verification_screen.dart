@@ -8,10 +8,14 @@ import 'package:provider/provider.dart';
 
 class VerificationScreen extends StatefulWidget {
   const VerificationScreen(
-      {Key? key, required this.verificationId, required this.controller})
+      {Key? key,
+      required this.verificationId,
+      required this.controller,
+      required this.onResendPressed})
       : super(key: key);
   final String verificationId;
   final LoginController controller;
+  final Function onResendPressed;
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
@@ -25,6 +29,15 @@ class _VerificationScreenState extends State<VerificationScreen> {
   void initState() {
     _user = widget.controller.user;
     super.initState();
+  }
+
+  void showSuccessResent() {
+    showDialogBox(context, "OTP resent", "Please check your phone again.");
+  }
+
+  void showFailedResent() {
+    showDialogBox(context, "Something went wrong",
+        "OTP is failed to be sent. Try again later.");
   }
 
   @override
@@ -152,7 +165,14 @@ class _VerificationScreenState extends State<VerificationScreen> {
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              bool isResent = await widget.onResendPressed();
+                              if (isResent) {
+                                showSuccessResent();
+                              } else {
+                                showFailedResent();
+                              }
+                            },
                             style: resendBtnStyle,
                             child: const Text('Resend'),
                           ),

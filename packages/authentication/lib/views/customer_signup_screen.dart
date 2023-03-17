@@ -5,6 +5,7 @@ import 'package:authentication/models/user.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
+import 'package:better_home/utils.dart';
 
 class CustomerSignupScreen extends StatefulWidget {
   const CustomerSignupScreen({Key? key, required this.controller})
@@ -78,6 +79,26 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
     });
   }
 
+  Future<void> signupBtnClicked() async {
+    // ignore: avoid_print
+    print("Button clicked");
+    if (await widget.controller
+        .isAccountExists(_phoneController.text, "customer")) {
+      showError();
+    } else {
+      validatePhone();
+    }
+  }
+
+  void showError() {
+    showDialogBox(context, "Phone number already exists",
+        "This phone number is already registered. Please login instead.");
+  }
+
+  void validatePhone() {
+    widget.controller.sendPhoneNumber(context, _phoneController.text);
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -130,130 +151,135 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
       },
     );
 
-    return Scaffold(
-      backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 70),
-              const Text(
-                'SIGN UP',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontFamily: 'Roboto',
-                  color: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        // Dismiss the keyboard when user taps anywhere outside the TextFormField
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Scaffold(
+        backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 70),
+                const Text(
+                  'SIGN UP',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontFamily: 'Roboto',
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  children: [
-                    TextFieldContainer(
-                      child: TextFormField(
-                        controller: _nameController,
-                        decoration: const InputDecoration(
-                          hintText: 'Full name',
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFieldContainer(
-                      child: TextFormField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
-                          hintText: 'Email',
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    if (widget.controller
-                            .validEmailFormat(_emailController.text) ==
-                        false)
-                      SizedBox(
-                        width: size.width * 0.65,
-                        height: 15,
-                        child: const Text(
-                          'Invalid email address',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 14,
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(30),
+                  child: Column(
+                    children: [
+                      TextFieldContainer(
+                        child: TextFormField(
+                          controller: _nameController,
+                          keyboardType: TextInputType.text,
+                          decoration: const InputDecoration(
+                            hintText: 'Full name',
+                            border: InputBorder.none,
                           ),
                         ),
                       ),
-                    const SizedBox(height: 10),
-                    TextFieldContainer(
-                      child: TextFormField(
-                        controller: _phoneController,
-                        inputFormatters: [
-                          MalaysiaPhoneNumberFormatter(context)
-                        ],
-                        keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(
-                          hintText: 'Phone number',
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    if (widget.controller
-                            .validPhoneFormat(_phoneController.text) ==
-                        false)
-                      SizedBox(
-                        width: size.width * 0.65,
-                        height: 15,
-                        child: const Text(
-                          'Invalid phone number',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 14,
+                      const SizedBox(height: 10),
+                      TextFieldContainer(
+                        child: TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.text,
+                          decoration: const InputDecoration(
+                            hintText: 'Email',
+                            border: InputBorder.none,
                           ),
                         ),
                       ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _isAllValid
-                          ? () => widget.controller
-                              .sendPhoneNumber(context, _phoneController.text)
-                          : null,
-                      style: signupBtnStyle.copyWith(
-                        backgroundColor: backgroundColor,
+                      if (widget.controller
+                              .validEmailFormat(_emailController.text) ==
+                          false)
+                        SizedBox(
+                          width: size.width * 0.65,
+                          height: 15,
+                          child: const Text(
+                            'Invalid email address',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 10),
+                      TextFieldContainer(
+                        child: TextFormField(
+                          controller: _phoneController,
+                          inputFormatters: [
+                            MalaysiaPhoneNumberFormatter(context)
+                          ],
+                          keyboardType: TextInputType.phone,
+                          decoration: const InputDecoration(
+                            hintText: 'Phone number',
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
-                      child: const Text('Sign up'),
-                    ),
-                    const SizedBox(height: 40),
-                    const Text(
-                      "Already have account?",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontFamily: 'Roboto',
-                        color: Colors.white,
+                      if (widget.controller
+                              .validPhoneFormat(_phoneController.text) ==
+                          false)
+                        SizedBox(
+                          width: size.width * 0.65,
+                          height: 15,
+                          child: const Text(
+                            'Invalid phone number',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _isAllValid ? signupBtnClicked : null,
+                        style: signupBtnStyle.copyWith(
+                          backgroundColor: backgroundColor,
+                        ),
+                        child: const Text('Sign up'),
                       ),
-                    ),
-                    const SizedBox(height: 13),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginScreen(
-                                userType: 'customer',
-                                controller: LoginController(),
-                              ),
-                            ));
-                      },
-                      style: loginBtnStyle,
-                      child: const Text('Login'),
-                    ),
-                  ],
+                      const SizedBox(height: 40),
+                      const Text(
+                        "Already have account?",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'Roboto',
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 13),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(
+                                  userType: 'customer',
+                                  controller: LoginController(),
+                                ),
+                              ));
+                        },
+                        style: loginBtnStyle,
+                        child: const Text('Login'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

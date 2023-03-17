@@ -10,10 +10,10 @@ class Firestore extends ChangeNotifier {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   Future<bool> checkAccountExistence(
-      String phoneNumber, String userType) async {
+      String phoneNumber, String collectionName) async {
     final querySnapshot = await _firebaseFirestore
-        .collection(userType)
-        .where('phone_number', isEqualTo: phoneNumber)
+        .collection(collectionName)
+        .where('phoneNumber', isEqualTo: phoneNumber)
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
@@ -21,6 +21,14 @@ class Firestore extends ChangeNotifier {
     } else {
       return false;
     }
+  }
+
+  Future<void> addCustomerData(Map<String, dynamic> customerData) async {
+    await _firebaseFirestore
+        .collection('customers')
+        .add(customerData)
+        .then((value) => print('Customer added'))
+        .catchError((error) => print('Failed to add customer: $error'));
   }
 /*
   void saveUserDataToFirebase({

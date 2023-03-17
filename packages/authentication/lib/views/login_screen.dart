@@ -7,6 +7,7 @@ import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:authentication/models/user.dart';
+import 'package:better_home/utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen(
@@ -47,7 +48,18 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
     super.dispose();
   }
 
-  void loginBtnClicked() {}
+  Future<void> loginBtnClicked() async {
+    if (await widget.controller
+        .isAccountExists(_phoneController.text, widget.userType)) {
+    } else {
+      showError();
+    }
+  }
+
+  void showError() {
+    showDialogBox(context, "Unregistered phone number",
+        "Please login with a registered number.");
+  }
 
   @override
   Widget build(BuildContext context) {
