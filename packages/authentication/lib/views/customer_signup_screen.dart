@@ -80,8 +80,6 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
   }
 
   Future<void> signupBtnClicked() async {
-    // ignore: avoid_print
-    print("Button clicked");
     if (await widget.controller
         .isAccountExists(_phoneController.text, "customer")) {
       showError();
@@ -96,7 +94,8 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
   }
 
   void validatePhone() {
-    widget.controller.sendPhoneNumber(context, _phoneController.text);
+    widget.controller.sendPhoneNumber(
+        context, _phoneController.text, "customer", "register");
   }
 
   @override

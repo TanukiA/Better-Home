@@ -14,12 +14,18 @@ class RegistrationController extends ControllerMVC {
     return User.validPhoneFormat(phone);
   }
 
-  void sendPhoneNumber(BuildContext context, String phoneInput) {
-    return User.sendPhoneNumber(context, phoneInput);
-  }
-
   bool validEmailFormat(String email) {
     return User.validEmailFormat(email);
+  }
+
+  void sendPhoneNumber(BuildContext context, String phoneInput, String userType,
+      String purpose) {
+    return User.sendPhoneNumber(context, phoneInput, userType, purpose);
+  }
+
+  void verifyOTP(BuildContext context, String userOTP, String verificationId,
+      String userType, String purpose) {
+    return User.verifyOTP(context, userOTP, verificationId, userType, purpose);
   }
 
   bool checkValid(bool isValidName, bool isValidEmail, bool isValidPhone) {

@@ -1,8 +1,7 @@
-name: better_home
-description: A new Flutter project.
+name: service
+description: Service package used to handle functionalities related to customer and technician's services.
 
 publish_to: 'none' 
-
 version: 1.0.0+1
 
 environment:
@@ -12,20 +11,16 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # personal packages
-  authentication:
-    path: ./packages/authentication
-  firebase_db:
-    path: ./packages/firebase_db
-  service:
-    path: ./packages/service
-
+  better_home: 
+    path: ../../
+    
   cupertino_icons: ^1.0.2
   firebase_core: ^2.7.0
-  firebase_auth: ^4.2.9
+  mvc_pattern: ^8.12.0
   provider: ^6.0.5
   firebase_storage: ^11.0.14
   cloud_firestore: ^4.4.4
+  shared_preferences: ^2.0.18
 
 dev_dependencies:
   flutter_test:
@@ -34,10 +29,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
-
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-    - assets/people_img.svg
-    - assets/betterhome_logo.png
+  # assets:

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/views/verification_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,8 @@ class AuthProvider extends ChangeNotifier {
   }
   */
 
-  void signInWithPhone(BuildContext context, String phoneNumber) async {
+  void signInWithPhone(BuildContext context, String phoneNumber,
+      String userType, String purpose) async {
     try {
       await _firebaseAuth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
@@ -100,7 +102,10 @@ class AuthProvider extends ChangeNotifier {
               MaterialPageRoute(
                 builder: (context) => VerificationScreen(
                   verificationId: verificationId,
-                  controller: LoginController(),
+                  loginCon: LoginController(),
+                  registerCon: RegistrationController(),
+                  userType: userType,
+                  purpose: purpose,
                   onResendPressed: () => resendOTP(),
                 ),
               ),

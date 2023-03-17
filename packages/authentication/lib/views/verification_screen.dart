@@ -1,4 +1,5 @@
 import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:authentication/models/user.dart';
 import 'package:better_home/utils.dart';
@@ -10,11 +11,17 @@ class VerificationScreen extends StatefulWidget {
   const VerificationScreen(
       {Key? key,
       required this.verificationId,
-      required this.controller,
+      required this.loginCon,
+      required this.registerCon,
+      required this.userType,
+      required this.purpose,
       required this.onResendPressed})
       : super(key: key);
   final String verificationId;
-  final LoginController controller;
+  final LoginController loginCon;
+  final RegistrationController registerCon;
+  final String userType;
+  final String purpose;
   final Function onResendPressed;
 
   @override
@@ -27,7 +34,11 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   @override
   void initState() {
-    _user = widget.controller.user;
+    if (widget.purpose == "login") {
+      _user = widget.loginCon.user;
+    } else {
+      _user = widget.registerCon.user;
+    }
     super.initState();
   }
 
@@ -153,8 +164,21 @@ class _VerificationScreenState extends State<VerificationScreen> {
                           ElevatedButton(
                             onPressed: () {
                               if (otpCode != null && otpCode!.length == 6) {
-                                widget.controller.verifyOTP(
-                                    context, otpCode!, widget.verificationId);
+                                if (widget.purpose == "login") {
+                                  widget.loginCon.verifyOTP(
+                                      context,
+                                      otpCode!,
+                                      widget.verificationId,
+                                      widget.userType,
+                                      widget.purpose);
+                                } else {
+                                  widget.registerCon.verifyOTP(
+                                      context,
+                                      otpCode!,
+                                      widget.verificationId,
+                                      widget.userType,
+                                      widget.purpose);
+                                }
                               } else {
                                 showSnackBar(
                                     context, "Please enter 6-digit code");

@@ -14,8 +14,9 @@ class LoginController extends ControllerMVC {
     return User.validPhoneFormat(phone);
   }
 
-  void verifyOTP(BuildContext context, String userOTP, String verificationId) {
-    return User.verifyOTP(context, userOTP, verificationId);
+  void verifyOTP(BuildContext context, String userOTP, String verificationId,
+      String userType, String purpose) {
+    return User.verifyOTP(context, userOTP, verificationId, userType, purpose);
   }
 
   Future<bool> isAccountExists(String phoneNumber, String userType) async {

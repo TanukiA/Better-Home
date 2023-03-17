@@ -24,10 +24,11 @@ abstract class User extends ModelMVC {
     }
   }
 
-  static void sendPhoneNumber(BuildContext context, String phoneInput) {
+  static void sendPhoneNumber(BuildContext context, String phoneInput,
+      String userType, String purpose) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String phoneNumber = phoneInput.trim();
-    ap.signInWithPhone(context, phoneNumber);
+    ap.signInWithPhone(context, phoneNumber, userType, purpose);
   }
 
   static bool validEmailFormat(String email) {
@@ -39,8 +40,8 @@ abstract class User extends ModelMVC {
     return regex.hasMatch(email);
   }
 
-  static void verifyOTP(
-      BuildContext context, String userOTP, String verificationId) {
+  static void verifyOTP(BuildContext context, String userOTP,
+      String verificationId, String userType, String purpose) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     ap.verifyOTP(
         context: context,
