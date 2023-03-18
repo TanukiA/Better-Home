@@ -1,14 +1,20 @@
+import 'package:authentication/models/auth_provider.dart';
 import 'package:authentication/models/customer.dart';
 import 'package:authentication/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:firebase_db/models/database.dart';
+import 'package:provider/provider.dart';
 
 class RegistrationController extends ControllerMVC {
   late User _user;
   late Firestore _db;
 
   User get user => _user;
+
+  RegistrationController() {
+    _user = Customer(phone: '', name: '', email: '');
+  }
 
   bool validPhoneFormat(String phone) {
     return User.validPhoneFormat(phone);
@@ -24,8 +30,9 @@ class RegistrationController extends ControllerMVC {
   }
 
   void verifyOTP(BuildContext context, String userOTP, String verificationId,
-      String userType, String purpose) {
-    return User.verifyOTP(context, userOTP, verificationId, userType, purpose);
+      String userType, String purpose, String phoneNumber) {
+    return User.verifyOTP(
+        context, userOTP, verificationId, userType, purpose, phoneNumber);
   }
 
   bool checkValid(bool isValidName, bool isValidEmail, bool isValidPhone) {
@@ -43,14 +50,16 @@ class RegistrationController extends ControllerMVC {
     return exist;
   }
 
-  void storeCustomerData(String phoneNumber, String name, String email) {
-    _user = Customer(
+  void saveCustomerDataToSP(
+      BuildContext context, String phoneNumber, String name, String email) {
+    User customer = Customer(
         phone: phoneNumber.trim(), name: name.trim(), email: email.trim());
     Map<String, dynamic> customerData = {
-      'phoneNumber': _user.phone,
-      'name': _user.name,
-      'email': _user.email,
+      'phoneNumber': customer.phone,
+      'name': customer.name,
+      'email': customer.email,
     };
-    _db.addCustomerData(customerData);
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    ap.storeUserDataToSP(customerData, "register_data");
   }
 }

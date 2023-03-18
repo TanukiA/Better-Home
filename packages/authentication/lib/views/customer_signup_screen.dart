@@ -84,7 +84,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
         .isAccountExists(_phoneController.text, "customer")) {
       showError();
     } else {
-      validatePhone();
+      signupProcess();
     }
   }
 
@@ -93,7 +93,9 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
         "This phone number is already registered. Please login instead.");
   }
 
-  void validatePhone() {
+  void signupProcess() {
+    widget.controller.saveCustomerDataToSP(context, _phoneController.text,
+        _nameController.text, _emailController.text);
     widget.controller.sendPhoneNumber(
         context, _phoneController.text, "customer", "register");
   }

@@ -10,13 +10,23 @@ class LoginController extends ControllerMVC {
 
   User get user => _user;
 
+  LoginController() {
+    _user = Customer(phone: '', name: '', email: '');
+  }
+
   bool validPhoneFormat(String phone) {
     return User.validPhoneFormat(phone);
   }
 
+  void sendPhoneNumber(BuildContext context, String phoneInput, String userType,
+      String purpose) {
+    return User.sendPhoneNumber(context, phoneInput, userType, purpose);
+  }
+
   void verifyOTP(BuildContext context, String userOTP, String verificationId,
-      String userType, String purpose) {
-    return User.verifyOTP(context, userOTP, verificationId, userType, purpose);
+      String userType, String purpose, String phoneNumber) {
+    return User.verifyOTP(
+        context, userOTP, verificationId, userType, purpose, phoneNumber);
   }
 
   Future<bool> isAccountExists(String phoneNumber, String userType) async {

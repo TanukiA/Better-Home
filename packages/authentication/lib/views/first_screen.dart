@@ -2,6 +2,7 @@ import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:authentication/views/customer_home_screen.dart';
 import 'package:authentication/views/login_screen.dart';
+import 'package:authentication/views/technician_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +42,7 @@ class FirstScreen extends StatelessWidget {
               ),
               const SizedBox(height: 100),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   ap.isSignedIn == true
                       ? Navigator.push(
                           context,
@@ -63,15 +64,21 @@ class FirstScreen extends StatelessWidget {
               ),
               const SizedBox(height: 60),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(
-                          userType: 'technician',
-                          controller: LoginController(),
-                        ),
-                      ));
+                onPressed: () async {
+                  ap.isSignedIn == true
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const TechnicianHomeScreen()))
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(
+                              userType: 'technician',
+                              controller: LoginController(),
+                            ),
+                          ));
                 },
                 style: btnStyle,
                 child: const Text(

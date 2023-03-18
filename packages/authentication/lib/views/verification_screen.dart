@@ -15,6 +15,7 @@ class VerificationScreen extends StatefulWidget {
       required this.registerCon,
       required this.userType,
       required this.purpose,
+      required this.phoneNumber,
       required this.onResendPressed})
       : super(key: key);
   final String verificationId;
@@ -22,6 +23,7 @@ class VerificationScreen extends StatefulWidget {
   final RegistrationController registerCon;
   final String userType;
   final String purpose;
+  final String phoneNumber;
   final Function onResendPressed;
 
   @override
@@ -170,14 +172,16 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                       otpCode!,
                                       widget.verificationId,
                                       widget.userType,
-                                      widget.purpose);
+                                      widget.purpose,
+                                      widget.phoneNumber);
                                 } else {
                                   widget.registerCon.verifyOTP(
                                       context,
                                       otpCode!,
                                       widget.verificationId,
                                       widget.userType,
-                                      widget.purpose);
+                                      widget.purpose,
+                                      widget.phoneNumber);
                                 }
                               } else {
                                 showSnackBar(

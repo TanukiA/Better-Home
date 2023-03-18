@@ -1,4 +1,5 @@
 import 'package:authentication/models/user.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_db/models/database.dart';
 
 class Technician extends User {
@@ -10,7 +11,7 @@ class Technician extends User {
       : super(phone: phone, name: name, email: email);
 
   @override
-  void login() {}
+  void login(BuildContext context, String phoneNumber) {}
 
   @override
   void logout() {}

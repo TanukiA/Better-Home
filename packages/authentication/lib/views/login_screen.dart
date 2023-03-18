@@ -51,9 +51,15 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
   Future<void> loginBtnClicked() async {
     if (await widget.controller
         .isAccountExists(_phoneController.text, widget.userType)) {
+      loginProcess();
     } else {
       showError();
     }
+  }
+
+  void loginProcess() {
+    widget.controller.sendPhoneNumber(
+        context, _phoneController.text, widget.userType, "login");
   }
 
   void showError() {

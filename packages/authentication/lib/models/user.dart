@@ -1,9 +1,10 @@
+import 'package:authentication/models/customer.dart';
 import 'package:authentication/views/customer_home_screen.dart';
+import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_db/models/database.dart';
 
 abstract class User extends ModelMVC {
   final String phone;
@@ -40,22 +41,34 @@ abstract class User extends ModelMVC {
     return regex.hasMatch(email);
   }
 
-  static void verifyOTP(BuildContext context, String userOTP,
-      String verificationId, String userType, String purpose) {
+  static void verifyOTP(
+      BuildContext context,
+      String userOTP,
+      String verificationId,
+      String userType,
+      String purpose,
+      String phoneNumber) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     ap.verifyOTP(
         context: context,
         verificationId: verificationId,
         userOTP: userOTP,
         onSuccess: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const CustomerHomeScreen()),
-          );
+          if (userType == "customer" && purpose == "login") {
+            Customer customer = Customer(phone: "", name: "", email: "");
+            customer.login(context, phoneNumber);
+          } else if (userType == "customer" && purpose == "register") {
+            Customer customer = Customer(phone: "", name: "", email: "");
+            ap.getUserDataFromSP("register_data");
+            Firestore firestore = Firestore();
+            firestore.addCustomerData(ap.userData);
+            customer.login(context, phoneNumber);
+          } else if (userType == "technician" && purpose == "login") {
+          } else if (userType == "technician" && purpose == "register") {}
         });
   }
 
-  void login();
+  void login(BuildContext context, String phoneNumber);
 
   void logout();
 }
