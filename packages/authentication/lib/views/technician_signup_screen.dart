@@ -1,11 +1,14 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/controllers/registration_controller.dart';
+import 'package:authentication/models/form_input_provider.dart';
 import 'package:authentication/models/phone_number_formatter.dart';
+import 'package:authentication/models/technician.dart';
 import 'package:authentication/models/user.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/technician_signup_screen2.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:better_home/utils.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class TechnicianSignupScreen extends StatefulWidget {
@@ -114,6 +117,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FormInputProvider>(context);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
@@ -187,6 +191,18 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                         child: TextFormField(
                           controller: _nameController,
                           keyboardType: TextInputType.text,
+                          onChanged: (value) {
+                            provider.formInput = Technician(
+                              name: value,
+                              email: provider.formInput.email,
+                              phone: provider.formInput.phone,
+                              specs: provider.formInput.specs,
+                              exp: provider.formInput.exp,
+                              address: provider.formInput.address,
+                              latLong: provider.formInput.latLong,
+                              pickedFile: provider.formInput.pickedFile,
+                            );
+                          },
                           decoration: const InputDecoration(
                             hintText: 'Full name',
                             border: InputBorder.none,
@@ -198,6 +214,18 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                         child: TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.text,
+                          onChanged: (value) {
+                            provider.formInput = Technician(
+                              name: provider.formInput.name,
+                              email: value,
+                              phone: provider.formInput.phone,
+                              specs: provider.formInput.specs,
+                              exp: provider.formInput.exp,
+                              address: provider.formInput.address,
+                              latLong: provider.formInput.latLong,
+                              pickedFile: provider.formInput.pickedFile,
+                            );
+                          },
                           decoration: const InputDecoration(
                             hintText: 'Email',
                             border: InputBorder.none,
@@ -227,6 +255,18 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                             MalaysiaPhoneNumberFormatter(context)
                           ],
                           keyboardType: TextInputType.phone,
+                          onChanged: (value) {
+                            provider.formInput = Technician(
+                              name: provider.formInput.name,
+                              email: provider.formInput.email,
+                              phone: value,
+                              specs: provider.formInput.specs,
+                              exp: provider.formInput.exp,
+                              address: provider.formInput.address,
+                              latLong: provider.formInput.latLong,
+                              pickedFile: provider.formInput.pickedFile,
+                            );
+                          },
                           decoration: const InputDecoration(
                             hintText: 'Phone number',
                             border: InputBorder.none,

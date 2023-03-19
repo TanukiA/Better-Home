@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:authentication/controllers/registration_controller.dart';
+import 'package:authentication/models/form_input_provider.dart';
 import 'package:authentication/models/user.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 
 class TechnicianSignupScreen2 extends StatefulWidget {
@@ -22,8 +24,10 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   bool _isValidExp = false;
   bool _isValidAddress = false;
   bool _isAllValid = false;
+  String? _selectedValue;
   final TextEditingController _expController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
 
   List<bool> checkboxValues = [false, false, false, false, false, false];
 
@@ -63,6 +67,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
           _isValidAddress = false;
           _isAllValid = false;
         }
+      });
+    });
+
+    _cityController.addListener(() {
+      setState(() {
+        if (_cityController.text.isNotEmpty) {
+        } else {}
       });
     });
   }
@@ -121,11 +132,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   void dispose() {
     _expController.dispose();
     _addressController.dispose();
+    _cityController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FormInputProvider>(context);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
@@ -361,6 +374,34 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                             border: InputBorder.none,
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 10),
+                      DropdownButton<String>(
+                        value: _selectedValue,
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'Option 1',
+                            child: Text('Option 1'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Option 2',
+                            child: Text('Option 2'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Option 3',
+                            child: Text('Option 3'),
+                          ),
+                        ],
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                        dropdownColor: Colors.white,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedValue = value;
+                          });
+                        },
                       ),
                       const SizedBox(height: 10),
                       TextFieldContainer(

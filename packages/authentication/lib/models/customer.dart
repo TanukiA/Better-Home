@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Customer extends User {
-  String id = "";
+  String? id;
 
   Customer({String phone = "", String name = "", String email = ""})
       : super(phone: phone, name: name, email: email);

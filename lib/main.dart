@@ -1,3 +1,4 @@
+import 'package:authentication/models/form_input_provider.dart';
 import 'package:authentication/views/first_screen.dart';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,6 +23,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider<FormInputProvider>(
+            create: (_) => FormInputProvider()),
       ],
       child: const MaterialApp(
         home: FirstScreen(),

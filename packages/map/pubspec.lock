@@ -28,7 +28,14 @@ packages:
   authentication:
     dependency: "direct main"
     description:
-      path: "packages/authentication"
+      path: "../authentication"
+      relative: true
+    source: path
+    version: "1.0.0+1"
+  better_home:
+    dependency: transitive
+    description:
+      path: "../.."
       relative: true
     source: path
     version: "1.0.0+1"
@@ -60,26 +67,26 @@ packages:
     dependency: "direct main"
     description:
       name: cloud_firestore
-      sha256: cb49dd8aab9700766fb8a33a4328306f1b9b555ea6efb5fd3b1a55d14af2d2ca
+      sha256: "0ad93f01816ab7e59560bffeece2d19cec872fedfea04a7ad5be418cad25d574"
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.4"
+    version: "4.4.5"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
       name: cloud_firestore_platform_interface
-      sha256: "21f8c6ebe74cab9bb28ecfcf1688813114d52b87b9b98e0bc8b23dd95a1d8e7b"
+      sha256: "6255cf3ad845d44c6c69a7db51139c8d90691e435dd175578f6365f10c023fcc"
       url: "https://pub.dev"
     source: hosted
-    version: "5.11.4"
+    version: "5.11.5"
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
-      sha256: "57389e42341c5162861b505bfe2419112030f55d5efae607fad2625e5384715e"
+      sha256: "3bc08abdeb21a59e80491aee827895aaa3c6da602bad9ab68d83e1ab13c951b1"
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.4"
+    version: "3.3.5"
   collection:
     dependency: transitive
     description:
@@ -124,12 +131,12 @@ packages:
     dependency: transitive
     description:
       name: file_picker
-      sha256: d090ae03df98b0247b82e5928f44d1b959867049d18d73635e2e0bc3f49542b9
+      sha256: d8e9ca7e5d1983365c277f12c21b4362df6cf659c99af146ad4d04eb33033013
       url: "https://pub.dev"
     source: hosted
-    version: "5.2.5"
+    version: "5.2.6"
   firebase_auth:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_auth
       sha256: "94c229e296a5b9ee5c8cda918e0b320e3a0cc4f6a349cd410c427da347f2a244"
@@ -179,34 +186,34 @@ packages:
   firebase_db:
     dependency: "direct main"
     description:
-      path: "packages/firebase_db"
+      path: "../firebase_db"
       relative: true
     source: path
     version: "1.0.0+1"
   firebase_storage:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_storage
-      sha256: fac4ebf20da0ff7c7f23596d741130a85e8bd5fac4cabf8f568f38ba55fba19d
+      sha256: "0a49413725587aa3ceaaa6233fdb2e32687e4972f13cd7277526219cd5acb398"
       url: "https://pub.dev"
     source: hosted
-    version: "11.0.14"
+    version: "11.0.16"
   firebase_storage_platform_interface:
     dependency: transitive
     description:
       name: firebase_storage_platform_interface
-      sha256: c58dedec6d12416306e08dde463f3c65443aa2d5ccc100856ae7da75bab63e29
+      sha256: "951871b91ffdc49ead69daa03e58606f29b9b541056258ef805bbb7128f54afc"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.30"
+    version: "4.1.32"
   firebase_storage_web:
     dependency: transitive
     description:
       name: firebase_storage_web
-      sha256: "28e2c6317214f63af56b1b3f2907d168534a7629ec24269b036556f399063d5a"
+      sha256: d77573712c9fa5e05c7f1e23c77db0757b0b0718136a550d4d9823c92eeca8c8
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.23"
+    version: "3.3.25"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -232,10 +239,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_svg
-      sha256: "97c5b291b4fd34ae4f55d6a4c05841d4d0ed94952e033c5a6529e1b47b4d2a29"
+      sha256: "12006889e2987c549c4c1ec1a5ba4ec4b24d34d2469ee5f9476c926dcecff266"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -286,13 +293,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  map:
-    dependency: "direct main"
-    description:
-      path: "packages/map"
-      relative: true
-    source: path
-    version: "1.0.0+1"
   matcher:
     dependency: transitive
     description:
@@ -318,7 +318,7 @@ packages:
     source: hosted
     version: "1.8.0"
   mvc_pattern:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mvc_pattern
       sha256: "4a4eb65f0d364fa84cd596593260ff58416f95d32eba5c008b8bb83bdab53fa9"
@@ -422,14 +422,14 @@ packages:
     source: hosted
     version: "6.0.5"
   service:
-    dependency: "direct main"
+    dependency: transitive
     description:
-      path: "packages/service"
+      path: "../service"
       relative: true
     source: path
     version: "1.0.0+1"
   shared_preferences:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shared_preferences
       sha256: ee6257848f822b8481691f20c3e6d2bfee2e9eccb2a3d249907fcfb198c55b41
@@ -565,26 +565,26 @@ packages:
     dependency: transitive
     description:
       name: vector_graphics
-      sha256: "254348b40251c995cf8301ac715486c8cfa0a93b7fdc4dbd495a30f04db1fb44"
+      sha256: "4cf8e60dbe4d3a693d37dff11255a172594c0793da542183cbfe7fe978ae4aaa"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.4"
   vector_graphics_codec:
     dependency: transitive
     description:
       name: vector_graphics_codec
-      sha256: "143c290b762646c696c63be5d976bde7379ea892cb6868ddc5a17cbc56e71411"
+      sha256: "278ad5f816f58b1967396d1f78ced470e3e58c9fe4b27010102c0a595c764468"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.4"
   vector_graphics_compiler:
     dependency: transitive
     description:
       name: vector_graphics_compiler
-      sha256: "3190cc26d9ebda686bafb9721bb6a74c6d358700f4fc978a0f2cba6912daff86"
+      sha256: "0bf61ad56e6fd6688a2865d3ceaea396bc6a0a90ea0d7ad5049b1b76c09d6163"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.4"
   vector_math:
     dependency: transitive
     description:
