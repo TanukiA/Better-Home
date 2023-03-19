@@ -11,7 +11,7 @@ class LoginController extends ControllerMVC {
   User get user => _user;
 
   LoginController() {
-    _user = Customer(phone: '', name: '', email: '');
+    _user = Customer();
   }
 
   bool validPhoneFormat(String phone) {
@@ -34,5 +34,11 @@ class LoginController extends ControllerMVC {
     String collectionName = '$userType' 's';
     final exist = await _db.checkAccountExistence(phoneNumber, collectionName);
     return exist;
+  }
+
+  Future<bool> isApprovedAccount(String phoneNumber) async {
+    _db = Firestore();
+    final approved = await _db.checkApprovalStatus(phoneNumber);
+    return approved;
   }
 }

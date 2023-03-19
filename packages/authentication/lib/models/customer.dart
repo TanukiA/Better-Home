@@ -6,12 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Customer extends User {
-  String phone;
-  String name;
-  String email;
   String id = "";
 
-  Customer({required this.phone, required this.name, required this.email})
+  Customer({String phone = "", String name = "", String email = ""})
       : super(phone: phone, name: name, email: email);
 
   retrieveLoginData(String phoneNumber) async {

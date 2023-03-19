@@ -13,7 +13,7 @@ class RegistrationController extends ControllerMVC {
   User get user => _user;
 
   RegistrationController() {
-    _user = Customer(phone: '', name: '', email: '');
+    _user = Customer();
   }
 
   bool validPhoneFormat(String phone) {
@@ -35,8 +35,8 @@ class RegistrationController extends ControllerMVC {
         context, userOTP, verificationId, userType, purpose, phoneNumber);
   }
 
-  bool checkValid(bool isValidName, bool isValidEmail, bool isValidPhone) {
-    if (isValidName && isValidEmail && isValidPhone) {
+  bool checkValid(bool isValid1, bool isValid2, bool isValid3) {
+    if (isValid1 && isValid2 && isValid3) {
       return true;
     } else {
       return false;

@@ -49,11 +49,24 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
   }
 
   Future<void> loginBtnClicked() async {
-    if (await widget.controller
-        .isAccountExists(_phoneController.text, widget.userType)) {
-      loginProcess();
+    if (widget.userType == "customer") {
+      if (await widget.controller
+          .isAccountExists(_phoneController.text, widget.userType)) {
+        loginProcess();
+      } else {
+        showError1();
+      }
     } else {
-      showError();
+      if (await widget.controller
+          .isAccountExists(_phoneController.text, widget.userType)) {
+        if (await widget.controller.isApprovedAccount(_phoneController.text)) {
+          loginProcess();
+        } else {
+          showError2();
+        }
+      } else {
+        showError1();
+      }
     }
   }
 
@@ -62,9 +75,14 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
         context, _phoneController.text, widget.userType, "login");
   }
 
-  void showError() {
+  void showError1() {
     showDialogBox(context, "Unregistered phone number",
         "Please login with a registered number.");
+  }
+
+  void showError2() {
+    showDialogBox(context, "Unapproved account",
+        "Please wait for admin's approval via email.");
   }
 
   @override
@@ -204,8 +222,9 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const TechnicianSignupScreen(),
+                                builder: (context) => TechnicianSignupScreen(
+                                  controller: RegistrationController(),
+                                ),
                               ));
                         }
                       },

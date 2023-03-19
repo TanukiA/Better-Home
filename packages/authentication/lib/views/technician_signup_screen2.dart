@@ -1,11 +1,15 @@
 import 'dart:io';
+import 'package:authentication/controllers/registration_controller.dart';
+import 'package:authentication/models/user.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
 class TechnicianSignupScreen2 extends StatefulWidget {
-  const TechnicianSignupScreen2({Key? key}) : super(key: key);
+  const TechnicianSignupScreen2({Key? key, required this.controller})
+      : super(key: key);
+  final RegistrationController controller;
 
   @override
   State<TechnicianSignupScreen2> createState() =>
@@ -13,6 +17,11 @@ class TechnicianSignupScreen2 extends StatefulWidget {
 }
 
 class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
+  late User _user;
+  bool _isValidSpec = false;
+  bool _isValidExp = false;
+  bool _isValidAddress = false;
+  bool _isAllValid = false;
   final TextEditingController _expController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
@@ -21,6 +30,66 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
   String fileName = "";
+
+  @override
+  void initState() {
+    _user = widget.controller.user;
+    super.initState();
+
+    _expController.addListener(() {
+      setState(() {
+        if (_expController.text.isNotEmpty) {
+          _isValidExp = true;
+          if (widget.controller
+              .checkValid(_isValidSpec, _isValidExp, _isValidAddress)) {
+            _isAllValid = true;
+          }
+        } else {
+          _isValidExp = false;
+          _isAllValid = false;
+        }
+      });
+    });
+
+    _addressController.addListener(() {
+      setState(() {
+        if (_addressController.text.isNotEmpty) {
+          _isValidAddress = true;
+          if (widget.controller
+              .checkValid(_isValidSpec, _isValidExp, _isValidAddress)) {
+            _isAllValid = true;
+          }
+        } else {
+          _isValidAddress = false;
+          _isAllValid = false;
+        }
+      });
+    });
+  }
+
+  void validateCheckbox() {
+    bool isAnyChecked = false;
+    for (bool value in checkboxValues) {
+      if (value) {
+        isAnyChecked = true;
+        break;
+      }
+    }
+    setState(() {
+      _isValidSpec = isAnyChecked;
+      if (!_isValidSpec) {
+        _isAllValid = false;
+      }
+      if (widget.controller
+          .checkValid(_isValidSpec, _isValidExp, _isValidAddress)) {
+        _isAllValid = true;
+      }
+    });
+  }
+
+  Future<void> signupBtnClicked() async {
+    uploadFile();
+  }
 
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles(
@@ -49,6 +118,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   }
 
   @override
+  void dispose() {
+    _expController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
@@ -57,7 +133,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
         fontSize: 20,
         fontFamily: 'Roboto',
       ),
-      backgroundColor: Colors.black,
+      disabledForegroundColor: Colors.white,
       foregroundColor: Colors.white,
       fixedSize: Size(size.width * 0.8, 55),
       shape: RoundedRectangleBorder(
@@ -87,242 +163,256 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
       return Colors.white;
     }
 
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 127, 116, 62),
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'SIGN UP',
-          style: TextStyle(
-            fontSize: 25,
-            fontFamily: 'Roboto',
-            color: Colors.white,
+    MaterialStateProperty<Color?> backgroundColor =
+        MaterialStateProperty.resolveWith<Color?>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return Colors.grey;
+        }
+        return Colors.black;
+      },
+    );
+
+    return GestureDetector(
+      onTap: () {
+        // Dismiss the keyboard when user taps anywhere outside the TextFormField
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Scaffold(
+        backgroundColor: const Color.fromARGB(255, 127, 116, 62),
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'SIGN UP',
+            style: TextStyle(
+              fontSize: 25,
+              fontFamily: 'Roboto',
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
+          leading: const BackButton(
+            color: Colors.black,
+          ),
+          iconTheme: const IconThemeData(
+            size: 40,
           ),
         ),
-        backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
-        leading: const BackButton(
-          color: Colors.black,
-        ),
-        iconTheme: const IconThemeData(
-          size: 40,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  children: [
-                    const Text(
-                      'What is your specialized service area(s)?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'Roboto',
-                        color: Colors.white,
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'What is your specialized service area(s)?',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: 'Roboto',
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Checkbox(
-                          checkColor: Colors.black,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: checkboxValues[0],
-                          onChanged: (bool? value) {
-                            setState(() {
-                              checkboxValues[0] = value!;
-                            });
-                          },
-                        ),
-                        const Text(
-                          'Plumbing',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            color: Colors.white,
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Checkbox(
+                            checkColor: Colors.black,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: checkboxValues[0],
+                            onChanged: (bool? value) {
+                              setState(() {
+                                checkboxValues[0] = value!;
+                                validateCheckbox();
+                              });
+                            },
                           ),
-                        ),
-                        Checkbox(
-                          checkColor: Colors.black,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: checkboxValues[1],
-                          onChanged: (bool? value) {
-                            setState(() {
-                              checkboxValues[1] = value!;
-                            });
-                          },
-                        ),
-                        const Text(
-                          'Aircon Servicing',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            color: Colors.white,
+                          const Text(
+                            'Plumbing',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          checkColor: Colors.black,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: checkboxValues[2],
-                          onChanged: (bool? value) {
-                            setState(() {
-                              checkboxValues[2] = value!;
-                            });
-                          },
-                        ),
-                        const Text(
-                          'Rood Servicing',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            color: Colors.white,
+                          Checkbox(
+                            checkColor: Colors.black,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: checkboxValues[1],
+                            onChanged: (bool? value) {
+                              setState(() {
+                                checkboxValues[1] = value!;
+                                validateCheckbox();
+                              });
+                            },
                           ),
-                        ),
-                        Checkbox(
-                          checkColor: Colors.black,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: checkboxValues[3],
-                          onChanged: (bool? value) {
-                            setState(() {
-                              checkboxValues[3] = value!;
-                            });
-                          },
-                        ),
-                        const Text(
-                          'Electrical & Wiring',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            color: Colors.white,
+                          const Text(
+                            'Aircon Servicing',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          checkColor: Colors.black,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: checkboxValues[4],
-                          onChanged: (bool? value) {
-                            setState(() {
-                              checkboxValues[4] = value!;
-                            });
-                          },
-                        ),
-                        const Text(
-                          'Window & Door',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            color: Colors.white,
-                          ),
-                        ),
-                        Checkbox(
-                          checkColor: Colors.black,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: checkboxValues[5],
-                          onChanged: (bool? value) {
-                            setState(() {
-                              checkboxValues[5] = value!;
-                            });
-                          },
-                        ),
-                        const Text(
-                          'Painting',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    TextFieldContainer(
-                      child: TextFormField(
-                        controller: _expController,
-                        decoration: const InputDecoration(
-                          hintText: 'Experience',
-                          border: InputBorder.none,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please state your experience briefly';
-                          }
-                          return null;
-                        },
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFieldContainer(
-                      child: TextFormField(
-                        controller: _addressController,
-                        decoration: const InputDecoration(
-                          hintText: 'Address',
-                          border: InputBorder.none,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your address';
-                          }
-                          return null;
-                        },
+                      Row(
+                        children: [
+                          Checkbox(
+                            checkColor: Colors.black,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: checkboxValues[2],
+                            onChanged: (bool? value) {
+                              setState(() {
+                                checkboxValues[2] = value!;
+                                validateCheckbox();
+                              });
+                            },
+                          ),
+                          const Text(
+                            'Roof Servicing',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              color: Colors.white,
+                            ),
+                          ),
+                          Checkbox(
+                            checkColor: Colors.black,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: checkboxValues[3],
+                            onChanged: (bool? value) {
+                              setState(() {
+                                checkboxValues[3] = value!;
+                                validateCheckbox();
+                              });
+                            },
+                          ),
+                          const Text(
+                            'Electrical & Wiring',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Upload verification document (PDF or Doc)',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Roboto',
-                        color: Colors.white,
+                      Row(
+                        children: [
+                          Checkbox(
+                            checkColor: Colors.black,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: checkboxValues[4],
+                            onChanged: (bool? value) {
+                              setState(() {
+                                checkboxValues[4] = value!;
+                                validateCheckbox();
+                              });
+                            },
+                          ),
+                          const Text(
+                            'Window & Door',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              color: Colors.white,
+                            ),
+                          ),
+                          Checkbox(
+                            checkColor: Colors.black,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: checkboxValues[5],
+                            onChanged: (bool? value) {
+                              setState(() {
+                                checkboxValues[5] = value!;
+                                validateCheckbox();
+                              });
+                            },
+                          ),
+                          const Text(
+                            'Painting',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        const SizedBox(width: 30),
-                        ElevatedButton(
-                          onPressed: selectFile,
-                          style: filePickBtnStyle,
-                          child: const Text('Select file'),
-                        ),
-                        Text(
-                          fileName,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            color: Colors.white,
+                      const SizedBox(height: 10),
+                      TextFieldContainer(
+                        child: TextFormField(
+                          controller: _expController,
+                          maxLines: 5,
+                          decoration: const InputDecoration(
+                            hintText:
+                                'Briefly state your experience of the area(s)',
+                            border: InputBorder.none,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: uploadFile,
-                      style: signupBtnStyle,
-                      child: const Text('Sign up'),
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: 10),
+                      TextFieldContainer(
+                        child: TextFormField(
+                          controller: _addressController,
+                          decoration: const InputDecoration(
+                            hintText: 'Address',
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Upload verification document (PDF or Doc)',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Roboto',
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          const SizedBox(width: 30),
+                          ElevatedButton(
+                            onPressed: selectFile,
+                            style: filePickBtnStyle,
+                            child: const Text('Select file'),
+                          ),
+                          Text(
+                            fileName,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: _isAllValid ? signupBtnClicked : null,
+                        style: signupBtnStyle.copyWith(
+                          backgroundColor: backgroundColor,
+                        ),
+                        child: const Text('Sign up'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

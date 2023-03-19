@@ -13,11 +13,17 @@ class Firestore extends ChangeNotifier {
         .where('phoneNumber', isEqualTo: phoneNumber)
         .get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      return true;
-    } else {
-      return false;
-    }
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  Future<bool> checkApprovalStatus(String phoneNumber) async {
+    final querySnapshot = await _firebaseFirestore
+        .collection("technicians")
+        .where('phoneNumber', isEqualTo: phoneNumber)
+        .where('approvalStatus', isEqualTo: true)
+        .get();
+
+    return querySnapshot.docs.isNotEmpty;
   }
 
   Future<void> addCustomerData(Map<String, dynamic> customerData) async {

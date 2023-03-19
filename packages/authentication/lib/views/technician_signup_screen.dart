@@ -93,7 +93,9 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const TechnicianSignupScreen2(),
+          builder: (context) => TechnicianSignupScreen2(
+            controller: RegistrationController(),
+          ),
         ));
   }
 

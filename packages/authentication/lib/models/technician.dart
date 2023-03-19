@@ -7,7 +7,7 @@ class Technician extends User {
   final String name;
   final String email;
 
-  Technician({required this.phone, required this.name, required this.email})
+  Technician({this.phone = "", this.name = "", this.email = ""})
       : super(phone: phone, name: name, email: email);
 
   @override

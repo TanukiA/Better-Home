@@ -1,5 +1,4 @@
 import 'package:authentication/models/customer.dart';
-import 'package:authentication/views/customer_home_screen.dart';
 import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -7,9 +6,9 @@ import 'package:authentication/models/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 abstract class User extends ModelMVC {
-  final String phone;
-  final String name;
-  final String email;
+  String phone;
+  String name;
+  String email;
   // Notification notification;
   // Location address;
 
@@ -55,10 +54,10 @@ abstract class User extends ModelMVC {
         userOTP: userOTP,
         onSuccess: () {
           if (userType == "customer" && purpose == "login") {
-            Customer customer = Customer(phone: "", name: "", email: "");
+            Customer customer = Customer();
             customer.login(context, phoneNumber);
           } else if (userType == "customer" && purpose == "register") {
-            Customer customer = Customer(phone: "", name: "", email: "");
+            Customer customer = Customer();
             ap.getUserDataFromSP("register_data");
             Firestore firestore = Firestore();
             firestore.addCustomerData(ap.userData);
