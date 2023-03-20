@@ -10,6 +10,7 @@ class Technician extends User {
   String? id;
   List<String>? specs;
   String? exp;
+  String? city;
   String? address;
   String? latLong;
   PlatformFile? pickedFile;
@@ -20,6 +21,7 @@ class Technician extends User {
       String email = "",
       List<String>? specs = const [],
       String? exp = "",
+      String? city = "",
       String? address = "",
       String? latLong = "",
       PlatformFile? pickedFile})

@@ -1,15 +1,15 @@
 import 'package:authentication/models/customer.dart';
-import 'package:authentication/models/user.dart';
+import 'package:map/models/location.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:firebase_db/models/database.dart';
 
 class LocationController extends ControllerMVC {
-  late User _user;
+  late Location _location;
   late Firestore _db;
 
-  User get user => _user;
+  Location get location => _location;
 
   LocationController() {
-    _user = Customer();
+    _location = Location();
   }
 }

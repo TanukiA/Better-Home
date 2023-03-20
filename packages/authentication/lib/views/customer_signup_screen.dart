@@ -36,7 +36,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
         if (_nameController.text.isNotEmpty) {
           _isValidName = true;
           if (widget.controller
-              .checkValid(_isValidName, _isValidEmail, _isValidPhone)) {
+              .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
             _isAllValid = true;
           }
         } else {
@@ -52,7 +52,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
             _emailController.text.isNotEmpty) {
           _isValidEmail = true;
           if (widget.controller
-              .checkValid(_isValidName, _isValidEmail, _isValidPhone)) {
+              .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
             _isAllValid = true;
           }
         } else {
@@ -68,7 +68,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
             _phoneController.text.isNotEmpty) {
           _isValidPhone = true;
           if (widget.controller
-              .checkValid(_isValidName, _isValidEmail, _isValidPhone)) {
+              .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
             _isAllValid = true;
           }
         } else {

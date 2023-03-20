@@ -40,7 +40,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
         if (_nameController.text.isNotEmpty) {
           _isValidName = true;
           if (widget.controller
-              .checkValid(_isValidName, _isValidEmail, _isValidPhone)) {
+              .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
             _isAllValid = true;
           }
         } else {
@@ -56,7 +56,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
             _emailController.text.isNotEmpty) {
           _isValidEmail = true;
           if (widget.controller
-              .checkValid(_isValidName, _isValidEmail, _isValidPhone)) {
+              .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
             _isAllValid = true;
           }
         } else {
@@ -72,7 +72,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
             _phoneController.text.isNotEmpty) {
           _isValidPhone = true;
           if (widget.controller
-              .checkValid(_isValidName, _isValidEmail, _isValidPhone)) {
+              .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
             _isAllValid = true;
           }
         } else {
@@ -198,6 +198,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                               phone: provider.formInput.phone,
                               specs: provider.formInput.specs,
                               exp: provider.formInput.exp,
+                              city: provider.formInput.city,
                               address: provider.formInput.address,
                               latLong: provider.formInput.latLong,
                               pickedFile: provider.formInput.pickedFile,
@@ -221,6 +222,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                               phone: provider.formInput.phone,
                               specs: provider.formInput.specs,
                               exp: provider.formInput.exp,
+                              city: provider.formInput.city,
                               address: provider.formInput.address,
                               latLong: provider.formInput.latLong,
                               pickedFile: provider.formInput.pickedFile,
@@ -262,6 +264,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                               phone: value,
                               specs: provider.formInput.specs,
                               exp: provider.formInput.exp,
+                              city: provider.formInput.city,
                               address: provider.formInput.address,
                               latLong: provider.formInput.latLong,
                               pickedFile: provider.formInput.pickedFile,

@@ -5,6 +5,8 @@ import 'package:authentication/models/user.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:map/controllers/location_controller.dart';
+import 'package:map/views/search_place_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -22,18 +24,19 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   late User _user;
   bool _isValidSpec = false;
   bool _isValidExp = false;
+  bool _isValidCity = false;
   bool _isValidAddress = false;
   bool _isAllValid = false;
   String? _selectedValue;
   final TextEditingController _expController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _cityController = TextEditingController();
 
   List<bool> checkboxValues = [false, false, false, false, false, false];
 
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
   String fileName = "";
+  String _addressPicked = "Pick your address here";
 
   @override
   void initState() {
@@ -44,8 +47,8 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
       setState(() {
         if (_expController.text.isNotEmpty) {
           _isValidExp = true;
-          if (widget.controller
-              .checkValid(_isValidSpec, _isValidExp, _isValidAddress)) {
+          if (widget.controller.checkValidTechnicianForm(
+              _isValidSpec, _isValidExp, _isValidCity, _isValidAddress)) {
             _isAllValid = true;
           }
         } else {
@@ -59,21 +62,14 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
       setState(() {
         if (_addressController.text.isNotEmpty) {
           _isValidAddress = true;
-          if (widget.controller
-              .checkValid(_isValidSpec, _isValidExp, _isValidAddress)) {
+          if (widget.controller.checkValidTechnicianForm(
+              _isValidSpec, _isValidExp, _isValidCity, _isValidAddress)) {
             _isAllValid = true;
           }
         } else {
           _isValidAddress = false;
           _isAllValid = false;
         }
-      });
-    });
-
-    _cityController.addListener(() {
-      setState(() {
-        if (_cityController.text.isNotEmpty) {
-        } else {}
       });
     });
   }
@@ -91,8 +87,8 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
       if (!_isValidSpec) {
         _isAllValid = false;
       }
-      if (widget.controller
-          .checkValid(_isValidSpec, _isValidExp, _isValidAddress)) {
+      if (widget.controller.checkValidTechnicianForm(
+          _isValidSpec, _isValidExp, _isValidCity, _isValidAddress)) {
         _isAllValid = true;
       }
     });
@@ -132,7 +128,6 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   void dispose() {
     _expController.dispose();
     _addressController.dispose();
-    _cityController.dispose();
     super.dispose();
   }
 
@@ -363,61 +358,114 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 25),
+                      const Text(
+                        'Briefly state your experience with the service area(s):',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: 'Roboto',
+                          color: Colors.white,
+                        ),
+                      ),
                       const SizedBox(height: 10),
                       TextFieldContainer(
                         child: TextFormField(
                           controller: _expController,
                           maxLines: 5,
                           decoration: const InputDecoration(
-                            hintText:
-                                'Briefly state your experience of the area(s)',
                             border: InputBorder.none,
                           ),
                         ),
                       ),
                       const SizedBox(height: 10),
-                      DropdownButton<String>(
-                        value: _selectedValue,
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'Option 1',
-                            child: Text('Option 1'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Option 2',
-                            child: Text('Option 2'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Option 3',
-                            child: Text('Option 3'),
-                          ),
-                        ],
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
+                      Container(
+                        margin: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.only(left: 8, right: 8),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
                         ),
-                        dropdownColor: Colors.white,
-                        onChanged: (value) {
+                        child: DropdownButton<String>(
+                          value: _selectedValue,
+                          isExpanded: true,
+                          items: <String>[
+                            'Select your state',
+                            'Kuala Lumpur / Selangor',
+                            'Putrajaya',
+                            'Johor',
+                            'Kedah',
+                            'Kelantan',
+                            'Melaka',
+                            'Negeri Sembilan',
+                            'Pahang',
+                            'Perak',
+                            'Perlis',
+                            'Pulau Pinang',
+                            'Terengganu',
+                            'Sabah',
+                            'Sarawak'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedValue = newValue;
+                              _isValidCity = _selectedValue != null &&
+                                  _selectedValue != 'Select your state';
+                              if (_isValidCity) {
+                                if (widget.controller.checkValidTechnicianForm(
+                                    _isValidSpec,
+                                    _isValidExp,
+                                    _isValidCity,
+                                    _isValidAddress)) {
+                                  _isAllValid = true;
+                                }
+                              } else {
+                                _isAllValid = false;
+                              }
+                            });
+                          },
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          dropdownColor: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: () async {
+                          final passedAddress = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SearchPlaceScreen(
+                                      controller: LocationController(),
+                                    )),
+                          );
                           setState(() {
-                            _selectedValue = value;
+                            _addressPicked = passedAddress;
                           });
                         },
-                      ),
-                      const SizedBox(height: 10),
-                      TextFieldContainer(
-                        child: TextFormField(
-                          controller: _addressController,
-                          decoration: const InputDecoration(
-                            hintText: 'Address',
-                            border: InputBorder.none,
+                        child: TextFieldContainer(
+                          child: TextFormField(
+                            enabled: false,
+                            initialValue: _addressPicked,
+                            decoration: const InputDecoration(
+                              hintText: 'Address',
+                              border: InputBorder.none,
+                            ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 25),
                       const Text(
-                        'Upload verification document (PDF or Doc)',
+                        'Upload verification document (PDF or Doc) is any',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           fontFamily: 'Roboto',
                           color: Colors.white,
                         ),

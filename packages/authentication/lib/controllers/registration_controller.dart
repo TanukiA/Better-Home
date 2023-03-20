@@ -35,8 +35,17 @@ class RegistrationController extends ControllerMVC {
         context, userOTP, verificationId, userType, purpose, phoneNumber);
   }
 
-  bool checkValid(bool isValid1, bool isValid2, bool isValid3) {
+  bool checkValidForm(bool isValid1, bool isValid2, bool isValid3) {
     if (isValid1 && isValid2 && isValid3) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool checkValidTechnicianForm(
+      bool isValid1, bool isValid2, bool isValid3, bool isValid4) {
+    if (isValid1 && isValid2 && isValid3 && isValid4) {
       return true;
     } else {
       return false;

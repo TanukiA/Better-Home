@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:map/controllers/location_controller.dart';
+import 'package:map/models/location.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:authentication/models/user.dart';
 
 class SearchPlaceScreen extends StatefulWidget {
-  const SearchPlaceScreen(
-      {Key? key, required this.userType, required this.controller})
+  const SearchPlaceScreen({Key? key, required this.controller})
       : super(key: key);
-  final String userType;
   final LocationController controller;
 
   @override
@@ -15,12 +13,12 @@ class SearchPlaceScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
-  late User _user;
+  late Location _location;
   final TextEditingController _addressController = TextEditingController();
 
   @override
   void initState() {
-    _user = widget.controller.user;
+    _location = widget.controller.location;
     super.initState();
 
     _addressController.addListener(() {
