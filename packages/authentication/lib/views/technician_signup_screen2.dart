@@ -1,19 +1,19 @@
-import 'dart:io';
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/form_input_provider.dart';
+import 'package:authentication/models/technician.dart';
 import 'package:authentication/models/user.dart';
 import 'package:authentication/views/text_field_container.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:map/controllers/location_controller.dart';
 import 'package:map/views/search_place_screen.dart';
-import 'package:provider/provider.dart';
-import 'package:file_picker/file_picker.dart';
 
 class TechnicianSignupScreen2 extends StatefulWidget {
-  const TechnicianSignupScreen2({Key? key, required this.controller})
+  const TechnicianSignupScreen2(
+      {Key? key, required this.controller, required this.provider})
       : super(key: key);
   final RegistrationController controller;
+  final FormInputProvider provider;
 
   @override
   State<TechnicianSignupScreen2> createState() =>
@@ -27,16 +27,16 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   bool _isValidCity = false;
   bool _isValidAddress = false;
   bool _isAllValid = false;
-  String? _selectedValue;
   final TextEditingController _expController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
   List<bool> checkboxValues = [false, false, false, false, false, false];
 
-  PlatformFile? pickedFile;
-  UploadTask? uploadTask;
+  String? _selectedValue = 'Select your state';
   String fileName = "";
+  PlatformFile? pickedFile;
   String _addressPicked = "Pick your address here";
+  List<String> specs = [];
 
   @override
   void initState() {
@@ -76,13 +76,15 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
 
   void validateCheckbox() {
     bool isAnyChecked = false;
-    for (bool value in checkboxValues) {
-      if (value) {
-        isAnyChecked = true;
-        break;
-      }
-    }
+
     setState(() {
+      for (bool value in checkboxValues) {
+        if (value) {
+          isAnyChecked = true;
+          break;
+        }
+      }
+
       _isValidSpec = isAnyChecked;
       if (!_isValidSpec) {
         _isAllValid = false;
@@ -95,7 +97,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   }
 
   Future<void> signupBtnClicked() async {
-    uploadFile();
+    widget.controller.uploadFile(pickedFile);
   }
 
   Future selectFile() async {
@@ -109,19 +111,17 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
       pickedFile = result.files.first;
       fileName = pickedFile!.name;
     });
-  }
-
-  Future uploadFile() async {
-    final path = 'files/${pickedFile!.name}';
-    final file = File(pickedFile!.path!);
-
-    final ref = FirebaseStorage.instance.ref().child(path);
-    uploadTask = ref.putFile(file);
-
-    final snapshot = await uploadTask!.whenComplete(() {});
-    final urlDownload = await snapshot.ref.getDownloadURL();
-    // ignore: avoid_print
-    print('Download Link: $urlDownload');
+    widget.provider.formInput = Technician(
+      name: widget.provider.formInput.name,
+      email: widget.provider.formInput.email,
+      phone: widget.provider.formInput.phone,
+      specs: widget.provider.formInput.specs,
+      exp: widget.provider.formInput.exp,
+      city: widget.provider.formInput.city,
+      address: widget.provider.formInput.address,
+      latLong: widget.provider.formInput.latLong,
+      pickedFile: pickedFile,
+    );
   }
 
   @override
@@ -133,7 +133,6 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<FormInputProvider>(context);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
@@ -238,6 +237,12 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                 checkboxValues[0] = value!;
                                 validateCheckbox();
                               });
+                              specs = widget.controller.checkboxStateChange(
+                                  checkboxValues,
+                                  0,
+                                  "Plumbing",
+                                  specs,
+                                  widget.provider);
                             },
                           ),
                           const Text(
@@ -258,6 +263,12 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                 checkboxValues[1] = value!;
                                 validateCheckbox();
                               });
+                              specs = widget.controller.checkboxStateChange(
+                                  checkboxValues,
+                                  1,
+                                  "Aircon Servicing",
+                                  specs,
+                                  widget.provider);
                             },
                           ),
                           const Text(
@@ -282,6 +293,12 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                 checkboxValues[2] = value!;
                                 validateCheckbox();
                               });
+                              specs = widget.controller.checkboxStateChange(
+                                  checkboxValues,
+                                  2,
+                                  "Roof Servicing",
+                                  specs,
+                                  widget.provider);
                             },
                           ),
                           const Text(
@@ -302,6 +319,12 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                 checkboxValues[3] = value!;
                                 validateCheckbox();
                               });
+                              specs = widget.controller.checkboxStateChange(
+                                  checkboxValues,
+                                  3,
+                                  "Electrical & Wiring",
+                                  specs,
+                                  widget.provider);
                             },
                           ),
                           const Text(
@@ -326,6 +349,12 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                 checkboxValues[4] = value!;
                                 validateCheckbox();
                               });
+                              specs = widget.controller.checkboxStateChange(
+                                  checkboxValues,
+                                  4,
+                                  "Window & Door",
+                                  specs,
+                                  widget.provider);
                             },
                           ),
                           const Text(
@@ -346,6 +375,12 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                 checkboxValues[5] = value!;
                                 validateCheckbox();
                               });
+                              specs = widget.controller.checkboxStateChange(
+                                  checkboxValues,
+                                  5,
+                                  "Painting",
+                                  specs,
+                                  widget.provider);
                             },
                           ),
                           const Text(
@@ -372,6 +407,20 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                         child: TextFormField(
                           controller: _expController,
                           maxLines: 5,
+                          keyboardType: TextInputType.text,
+                          onChanged: (value) {
+                            widget.provider.formInput = Technician(
+                              name: widget.provider.formInput.name,
+                              email: widget.provider.formInput.email,
+                              phone: widget.provider.formInput.phone,
+                              specs: widget.provider.formInput.specs,
+                              exp: value,
+                              city: widget.provider.formInput.city,
+                              address: widget.provider.formInput.address,
+                              latLong: widget.provider.formInput.latLong,
+                              pickedFile: widget.provider.formInput.pickedFile,
+                            );
+                          },
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                           ),
@@ -388,7 +437,6 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                           value: _selectedValue,
                           isExpanded: true,
                           items: <String>[
-                            'Select your state',
                             'Kuala Lumpur / Selangor',
                             'Putrajaya',
                             'Johor',
@@ -428,6 +476,17 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                 _isAllValid = false;
                               }
                             });
+                            widget.provider.formInput = Technician(
+                              name: widget.provider.formInput.name,
+                              email: widget.provider.formInput.email,
+                              phone: widget.provider.formInput.phone,
+                              specs: widget.provider.formInput.specs,
+                              exp: widget.provider.formInput.exp,
+                              city: newValue,
+                              address: widget.provider.formInput.address,
+                              latLong: widget.provider.formInput.latLong,
+                              pickedFile: widget.provider.formInput.pickedFile,
+                            );
                           },
                           style: const TextStyle(
                             color: Colors.black,
@@ -454,6 +513,21 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                           child: TextFormField(
                             enabled: false,
                             initialValue: _addressPicked,
+                            keyboardType: TextInputType.text,
+                            onChanged: (value) {
+                              widget.provider.formInput = Technician(
+                                name: widget.provider.formInput.name,
+                                email: widget.provider.formInput.email,
+                                phone: widget.provider.formInput.phone,
+                                specs: widget.provider.formInput.specs,
+                                exp: widget.provider.formInput.exp,
+                                city: widget.provider.formInput.city,
+                                address: value,
+                                latLong: widget.provider.formInput.latLong,
+                                pickedFile:
+                                    widget.provider.formInput.pickedFile,
+                              );
+                            },
                             decoration: const InputDecoration(
                               hintText: 'Address',
                               border: InputBorder.none,
@@ -463,7 +537,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                       ),
                       const SizedBox(height: 25),
                       const Text(
-                        'Upload verification document (PDF or Doc) is any',
+                        'Upload verification document (PDF or Doc) if any',
                         style: TextStyle(
                           fontSize: 16,
                           fontFamily: 'Roboto',

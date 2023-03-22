@@ -1,6 +1,11 @@
+import 'dart:io';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:authentication/models/customer.dart';
+import 'package:authentication/models/form_input_provider.dart';
+import 'package:authentication/models/technician.dart';
 import 'package:authentication/models/user.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:firebase_db/models/database.dart';
@@ -9,6 +14,7 @@ import 'package:provider/provider.dart';
 class RegistrationController extends ControllerMVC {
   late User _user;
   late Firestore _db;
+  UploadTask? uploadTask;
 
   User get user => _user;
 
@@ -70,5 +76,37 @@ class RegistrationController extends ControllerMVC {
     };
     final ap = Provider.of<AuthProvider>(context, listen: false);
     ap.storeUserDataToSP(customerData, "register_data");
+  }
+
+  List<String> checkboxStateChange(List<bool> checkboxValues, int i,
+      String specName, List<String> specs, FormInputProvider provider) {
+    if (checkboxValues[i] && !specs.contains(specName)) {
+      specs.add(specName);
+    } else if (!checkboxValues[i] && specs.contains(specName)) {
+      specs.remove(specName);
+    }
+    provider.formInput = Technician(
+      name: provider.formInput.name,
+      email: provider.formInput.email,
+      phone: provider.formInput.phone,
+      specs: specs,
+      exp: provider.formInput.exp,
+      city: provider.formInput.city,
+      address: provider.formInput.address,
+      latLong: provider.formInput.latLong,
+      pickedFile: provider.formInput.pickedFile,
+    );
+    return specs;
+  }
+
+  Future uploadFile(PlatformFile? pickedFile) async {
+    final path = 'files/${pickedFile!.name}';
+    final file = File(pickedFile!.path!);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    uploadTask = ref.putFile(file);
+
+    final snapshot = await uploadTask!.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
   }
 }

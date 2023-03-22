@@ -83,21 +83,22 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
     });
   }
 
-  Future<void> continueBtnClicked() async {
+  Future<void> continueBtnClicked(FormInputProvider provider) async {
     if (await widget.controller
         .isAccountExists(_phoneController.text, "technician")) {
       showError();
     } else {
-      pushToNextScreen();
+      pushToNextScreen(provider);
     }
   }
 
-  void pushToNextScreen() {
+  void pushToNextScreen(FormInputProvider provider) {
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TechnicianSignupScreen2(
             controller: RegistrationController(),
+            provider: provider,
           ),
         ));
   }
@@ -293,7 +294,9 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                         ),
                       const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: _isAllValid ? continueBtnClicked : null,
+                        onPressed: _isAllValid
+                            ? () => continueBtnClicked(provider)
+                            : null,
                         style: signupBtnStyle.copyWith(
                           backgroundColor: backgroundColor,
                         ),
