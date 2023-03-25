@@ -1,4 +1,5 @@
 import 'package:authentication/models/auth_provider.dart';
+import 'package:authentication/models/form_input_provider.dart';
 import 'package:authentication/models/user.dart';
 import 'package:authentication/views/customer_home_screen.dart';
 import 'package:firebase_db/models/database.dart';
@@ -20,6 +21,22 @@ class Customer extends User {
       email = customerDoc['email'];
       phone = customerDoc['phoneNumber'];
     }
+  }
+
+  Map<String, dynamic> getRegisterDataFromProvider(BuildContext context) {
+    final provider = Provider.of<FormInputProvider>(context, listen: false);
+    phone = provider.phone;
+    name = provider.name;
+    email = provider.email;
+
+    User customer = Customer(
+        phone: phone!.trim(), name: name!.trim(), email: email!.trim());
+    Map<String, dynamic> customerData = {
+      'phoneNumber': customer.phone,
+      'name': customer.name,
+      'email': customer.email,
+    };
+    return customerData;
   }
 
   @override

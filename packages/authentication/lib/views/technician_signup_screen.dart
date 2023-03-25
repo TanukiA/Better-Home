@@ -2,7 +2,6 @@ import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/form_input_provider.dart';
 import 'package:authentication/models/phone_number_formatter.dart';
-import 'package:authentication/models/technician.dart';
 import 'package:authentication/models/user.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/technician_signup_screen2.dart';
@@ -83,22 +82,21 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
     });
   }
 
-  Future<void> continueBtnClicked(FormInputProvider provider) async {
+  Future<void> continueBtnClicked() async {
     if (await widget.controller
         .isAccountExists(_phoneController.text, "technician")) {
       showError();
     } else {
-      pushToNextScreen(provider);
+      pushToNextScreen();
     }
   }
 
-  void pushToNextScreen(FormInputProvider provider) {
+  void pushToNextScreen() {
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TechnicianSignupScreen2(
             controller: RegistrationController(),
-            provider: provider,
           ),
         ));
   }
@@ -118,7 +116,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<FormInputProvider>(context);
+    final provider = Provider.of<FormInputProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
@@ -161,178 +159,153 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
       },
     );
 
-    return GestureDetector(
-      onTap: () {
-        // Dismiss the keyboard when user taps anywhere outside the TextFormField
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-      child: Scaffold(
-        backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 70),
-                const Text(
-                  'SIGN UP',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontFamily: 'Roboto',
-                    color: Colors.white,
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.all(20),
-                  padding: const EdgeInsets.all(30),
+    return ChangeNotifierProvider<FormInputProvider>.value(
+      value: provider,
+      child: Consumer<FormInputProvider>(
+        builder: (context, provider, _) {
+          return GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Scaffold(
+              backgroundColor: const Color.fromRGBO(182, 162, 110, 1),
+              body: SingleChildScrollView(
+                child: Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextFieldContainer(
-                        child: TextFormField(
-                          controller: _nameController,
-                          keyboardType: TextInputType.text,
-                          onChanged: (value) {
-                            provider.formInput = Technician(
-                              name: value,
-                              email: provider.formInput.email,
-                              phone: provider.formInput.phone,
-                              specs: provider.formInput.specs,
-                              exp: provider.formInput.exp,
-                              city: provider.formInput.city,
-                              address: provider.formInput.address,
-                              latLong: provider.formInput.latLong,
-                              pickedFile: provider.formInput.pickedFile,
-                            );
-                          },
-                          decoration: const InputDecoration(
-                            hintText: 'Full name',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextFieldContainer(
-                        child: TextFormField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.text,
-                          onChanged: (value) {
-                            provider.formInput = Technician(
-                              name: provider.formInput.name,
-                              email: value,
-                              phone: provider.formInput.phone,
-                              specs: provider.formInput.specs,
-                              exp: provider.formInput.exp,
-                              city: provider.formInput.city,
-                              address: provider.formInput.address,
-                              latLong: provider.formInput.latLong,
-                              pickedFile: provider.formInput.pickedFile,
-                            );
-                          },
-                          decoration: const InputDecoration(
-                            hintText: 'Email',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      if (widget.controller
-                              .validEmailFormat(_emailController.text) ==
-                          false)
-                        SizedBox(
-                          width: size.width * 0.65,
-                          height: 15,
-                          child: const Text(
-                            'Invalid email address',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 10),
-                      TextFieldContainer(
-                        child: TextFormField(
-                          controller: _phoneController,
-                          inputFormatters: [
-                            MalaysiaPhoneNumberFormatter(context)
-                          ],
-                          keyboardType: TextInputType.phone,
-                          onChanged: (value) {
-                            provider.formInput = Technician(
-                              name: provider.formInput.name,
-                              email: provider.formInput.email,
-                              phone: value,
-                              specs: provider.formInput.specs,
-                              exp: provider.formInput.exp,
-                              city: provider.formInput.city,
-                              address: provider.formInput.address,
-                              latLong: provider.formInput.latLong,
-                              pickedFile: provider.formInput.pickedFile,
-                            );
-                          },
-                          decoration: const InputDecoration(
-                            hintText: 'Phone number',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      if (widget.controller
-                              .validPhoneFormat(_phoneController.text) ==
-                          false)
-                        SizedBox(
-                          width: size.width * 0.65,
-                          height: 15,
-                          child: const Text(
-                            'Invalid phone number',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _isAllValid
-                            ? () => continueBtnClicked(provider)
-                            : null,
-                        style: signupBtnStyle.copyWith(
-                          backgroundColor: backgroundColor,
-                        ),
-                        child: const Text('Continue'),
-                      ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 70),
                       const Text(
-                        "Already have account?",
+                        'SIGN UP',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 28,
                           fontFamily: 'Roboto',
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 13),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(
-                                  userType: 'technician',
-                                  controller: LoginController(),
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(30),
+                        child: Column(
+                          children: [
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _nameController,
+                                keyboardType: TextInputType.text,
+                                onChanged: (value) {
+                                  provider.saveName = value;
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: 'Full name',
+                                  border: InputBorder.none,
                                 ),
-                              ));
-                        },
-                        style: loginBtnStyle,
-                        child: const Text('Login'),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _emailController,
+                                keyboardType: TextInputType.text,
+                                onChanged: (value) {
+                                  provider.saveEmail = value;
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: 'Email',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            if (widget.controller
+                                    .validEmailFormat(_emailController.text) ==
+                                false)
+                              SizedBox(
+                                width: size.width * 0.65,
+                                height: 15,
+                                child: const Text(
+                                  'Invalid email address',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 10),
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _phoneController,
+                                inputFormatters: [
+                                  MalaysiaPhoneNumberFormatter(context)
+                                ],
+                                keyboardType: TextInputType.phone,
+                                onChanged: (value) {
+                                  provider.savePhone = value;
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: 'Phone number',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            if (widget.controller
+                                    .validPhoneFormat(_phoneController.text) ==
+                                false)
+                              SizedBox(
+                                width: size.width * 0.65,
+                                height: 15,
+                                child: const Text(
+                                  'Invalid phone number',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed:
+                                  _isAllValid ? continueBtnClicked : null,
+                              style: signupBtnStyle.copyWith(
+                                backgroundColor: backgroundColor,
+                              ),
+                              child: const Text('Continue'),
+                            ),
+                            const SizedBox(height: 40),
+                            const Text(
+                              "Already have account?",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Roboto',
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 13),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginScreen(
+                                        userType: 'technician',
+                                        controller: LoginController(),
+                                      ),
+                                    ));
+                              },
+                              style: loginBtnStyle,
+                              child: const Text('Login'),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

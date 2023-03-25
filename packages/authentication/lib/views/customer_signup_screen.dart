@@ -94,7 +94,10 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
   }
 
   void signupProcess() {
+    /*
     widget.controller.saveCustomerDataToSP(context, _phoneController.text,
+        _nameController.text, _emailController.text); */
+    widget.controller.saveCustomerDataToProvider(context, _phoneController.text,
         _nameController.text, _emailController.text);
     widget.controller.sendPhoneNumber(
         context, _phoneController.text, "customer", "register");

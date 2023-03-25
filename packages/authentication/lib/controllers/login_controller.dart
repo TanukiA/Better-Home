@@ -1,4 +1,4 @@
-import 'package:authentication/models/customer.dart';
+import 'package:authentication/models/technician.dart';
 import 'package:authentication/models/user.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ class LoginController extends ControllerMVC {
   User get user => _user;
 
   LoginController() {
-    _user = Customer();
+    _user = Technician();
   }
 
   bool validPhoneFormat(String phone) {
@@ -25,7 +25,7 @@ class LoginController extends ControllerMVC {
 
   void verifyOTP(BuildContext context, String userOTP, String verificationId,
       String userType, String purpose, String phoneNumber) {
-    return User.verifyOTP(
+    return verifyOTP(
         context, userOTP, verificationId, userType, purpose, phoneNumber);
   }
 

@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'package:authentication/models/auth_provider.dart';
-import 'package:authentication/models/customer.dart';
 import 'package:authentication/models/form_input_provider.dart';
 import 'package:authentication/models/technician.dart';
 import 'package:authentication/models/user.dart';
@@ -19,7 +17,7 @@ class RegistrationController extends ControllerMVC {
   User get user => _user;
 
   RegistrationController() {
-    _user = Customer();
+    _user = Technician();
   }
 
   bool validPhoneFormat(String phone) {
@@ -65,17 +63,12 @@ class RegistrationController extends ControllerMVC {
     return exist;
   }
 
-  void saveCustomerDataToSP(
+  void saveCustomerDataToProvider(
       BuildContext context, String phoneNumber, String name, String email) {
-    User customer = Customer(
-        phone: phoneNumber.trim(), name: name.trim(), email: email.trim());
-    Map<String, dynamic> customerData = {
-      'phoneNumber': customer.phone,
-      'name': customer.name,
-      'email': customer.email,
-    };
-    final ap = Provider.of<AuthProvider>(context, listen: false);
-    ap.storeUserDataToSP(customerData, "register_data");
+    final provider = Provider.of<FormInputProvider>(context, listen: false);
+    provider.savePhone = phoneNumber;
+    provider.saveName = name;
+    provider.saveEmail = email;
   }
 
   List<String> checkboxStateChange(List<bool> checkboxValues, int i,
@@ -85,17 +78,7 @@ class RegistrationController extends ControllerMVC {
     } else if (!checkboxValues[i] && specs.contains(specName)) {
       specs.remove(specName);
     }
-    provider.formInput = Technician(
-      name: provider.formInput.name,
-      email: provider.formInput.email,
-      phone: provider.formInput.phone,
-      specs: specs,
-      exp: provider.formInput.exp,
-      city: provider.formInput.city,
-      address: provider.formInput.address,
-      latLong: provider.formInput.latLong,
-      pickedFile: provider.formInput.pickedFile,
-    );
+    provider.saveSpecs = specs;
     return specs;
   }
 
