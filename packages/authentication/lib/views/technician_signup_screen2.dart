@@ -1,7 +1,7 @@
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/form_input_provider.dart';
-import 'package:authentication/models/technician.dart';
-import 'package:authentication/models/user.dart';
+import 'package:better_home/technician.dart';
+import 'package:better_home/user.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';

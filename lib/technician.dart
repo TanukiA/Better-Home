@@ -1,4 +1,4 @@
-import 'package:authentication/models/user.dart';
+import 'package:better_home/user.dart';
 import 'package:authentication/views/technician_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_db/models/database.dart';

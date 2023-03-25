@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:authentication/models/form_input_provider.dart';
-import 'package:authentication/models/technician.dart';
-import 'package:authentication/models/user.dart';
+import 'package:better_home/technician.dart';
+import 'package:better_home/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';

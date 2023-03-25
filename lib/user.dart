@@ -1,5 +1,5 @@
-import 'package:authentication/models/customer.dart';
-import 'package:authentication/models/form_input_provider.dart';
+import 'package:better_home/customer.dart';
+import 'package:better_home/technician.dart';
 import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -65,6 +65,8 @@ abstract class User extends ModelMVC {
             firestore.addCustomerData(customerData);
             customer.login(context, phoneNumber);
           } else if (userType == "technician" && purpose == "login") {
+            Technician technician = Technician();
+            technician.login(context, phoneNumber);
           } else if (userType == "technician" && purpose == "register") {}
         });
   }

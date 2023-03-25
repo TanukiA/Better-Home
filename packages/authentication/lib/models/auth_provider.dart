@@ -14,6 +14,7 @@ class AuthProvider extends ChangeNotifier {
   bool _isSignedIn = false;
   bool _isLoading = false;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   bool get isSignedIn => _isSignedIn;
   bool get isLoading => _isLoading;
   Map<String, dynamic> get userData => _userData!;
@@ -42,7 +43,6 @@ class AuthProvider extends ChangeNotifier {
           },
           codeSent: (verificationId, forceResendingToken) async {
             _forceResendingToken = forceResendingToken;
-            print("verificationId before: $verificationId");
 
             Navigator.push(
               context,
@@ -75,8 +75,6 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      print("verificationId after: $verificationId");
-      print("userOTP: $userOTP");
       PhoneAuthCredential creds = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: userOTP);
 
@@ -98,7 +96,7 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      showSnackBar(context, "Error: ${e.toString()}");
+      showSnackBar(context, "Something wrong. Please try again.");
     }
   }
 

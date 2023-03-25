@@ -1,5 +1,5 @@
-import 'package:authentication/models/technician.dart';
-import 'package:authentication/models/user.dart';
+import 'package:better_home/technician.dart';
+import 'package:better_home/user.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_db/models/database.dart';

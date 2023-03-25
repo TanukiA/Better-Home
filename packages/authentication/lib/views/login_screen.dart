@@ -6,7 +6,7 @@ import 'package:authentication/views/technician_signup_screen.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:authentication/models/user.dart';
+import 'package:better_home/user.dart';
 import 'package:better_home/utils.dart';
 
 class LoginScreen extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:authentication/models/auth_provider.dart';
 import 'package:authentication/models/form_input_provider.dart';
-import 'package:authentication/models/user.dart';
+import 'package:better_home/user.dart';
 import 'package:authentication/views/customer_home_screen.dart';
 import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';

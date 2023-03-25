@@ -2,7 +2,7 @@ import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/form_input_provider.dart';
 import 'package:authentication/models/phone_number_formatter.dart';
-import 'package:authentication/models/user.dart';
+import 'package:better_home/user.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/technician_signup_screen2.dart';
 import 'package:authentication/views/text_field_container.dart';

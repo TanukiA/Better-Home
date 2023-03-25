@@ -1,7 +1,7 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/auth_provider.dart';
-import 'package:authentication/models/user.dart';
+import 'package:better_home/user.dart';
 import 'package:better_home/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
