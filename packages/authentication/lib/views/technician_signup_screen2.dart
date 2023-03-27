@@ -1,6 +1,5 @@
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/form_input_provider.dart';
-import 'package:better_home/technician.dart';
 import 'package:better_home/user.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:file_picker/file_picker.dart';
@@ -35,7 +34,8 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   String fileName = "";
   PlatformFile? pickedFile;
   String _addressPicked = "Pick your address here";
-  List<String> specs = [];
+  double? _latitude;
+  double? _longitude;
 
   @override
   void initState() {
@@ -111,6 +111,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
       fileName = pickedFile!.name;
     });
     provider.savePickedFile = pickedFile!;
+    provider.saveFileName = fileName;
   }
 
   @override
@@ -122,7 +123,8 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<FormInputProvider>(context, listen: false);
+    FormInputProvider provider =
+        Provider.of<FormInputProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
@@ -173,7 +175,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
     return ChangeNotifierProvider<FormInputProvider>.value(
       value: provider,
       child: Consumer<FormInputProvider>(
-        builder: (context, provider, _) {
+        builder: (context, obtainedData, _) {
           return GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
@@ -233,9 +235,11 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                       checkboxValues[0] = value!;
                                       validateCheckbox();
                                     });
-                                    specs = widget.controller
-                                        .checkboxStateChange(checkboxValues, 0,
-                                            "Plumbing", specs, provider);
+                                    widget.controller.checkboxStateChange(
+                                        checkboxValues,
+                                        0,
+                                        "Plumbing",
+                                        provider);
                                   },
                                 ),
                                 const Text(
@@ -256,13 +260,11 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                       checkboxValues[1] = value!;
                                       validateCheckbox();
                                     });
-                                    specs = widget.controller
-                                        .checkboxStateChange(
-                                            checkboxValues,
-                                            1,
-                                            "Aircon Servicing",
-                                            specs,
-                                            provider);
+                                    widget.controller.checkboxStateChange(
+                                        checkboxValues,
+                                        1,
+                                        "Aircon Servicing",
+                                        provider);
                                   },
                                 ),
                                 const Text(
@@ -287,9 +289,11 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                       checkboxValues[2] = value!;
                                       validateCheckbox();
                                     });
-                                    specs = widget.controller
-                                        .checkboxStateChange(checkboxValues, 2,
-                                            "Roof Servicing", specs, provider);
+                                    widget.controller.checkboxStateChange(
+                                        checkboxValues,
+                                        2,
+                                        "Roof Servicing",
+                                        provider);
                                   },
                                 ),
                                 const Text(
@@ -310,13 +314,11 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                       checkboxValues[3] = value!;
                                       validateCheckbox();
                                     });
-                                    specs = widget.controller
-                                        .checkboxStateChange(
-                                            checkboxValues,
-                                            3,
-                                            "Electrical & Wiring",
-                                            specs,
-                                            provider);
+                                    widget.controller.checkboxStateChange(
+                                        checkboxValues,
+                                        3,
+                                        "Electrical & Wiring",
+                                        provider);
                                   },
                                 ),
                                 const Text(
@@ -341,9 +343,11 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                       checkboxValues[4] = value!;
                                       validateCheckbox();
                                     });
-                                    specs = widget.controller
-                                        .checkboxStateChange(checkboxValues, 4,
-                                            "Window & Door", specs, provider);
+                                    widget.controller.checkboxStateChange(
+                                        checkboxValues,
+                                        4,
+                                        "Window & Door",
+                                        provider);
                                   },
                                 ),
                                 const Text(
@@ -364,9 +368,11 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                       checkboxValues[5] = value!;
                                       validateCheckbox();
                                     });
-                                    specs = widget.controller
-                                        .checkboxStateChange(checkboxValues, 5,
-                                            "Painting", specs, provider);
+                                    widget.controller.checkboxStateChange(
+                                        checkboxValues,
+                                        5,
+                                        "Painting",
+                                        provider);
                                   },
                                 ),
                                 const Text(
@@ -472,7 +478,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                             const SizedBox(height: 10),
                             GestureDetector(
                               onTap: () async {
-                                final passedAddress = await Navigator.push(
+                                final selectedPlace = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => SearchPlaceScreen(
@@ -480,7 +486,14 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                           )),
                                 );
                                 setState(() {
-                                  _addressPicked = passedAddress;
+                                  if (selectedPlace != null) {
+                                    _latitude = selectedPlace.latitude;
+                                    _longitude = selectedPlace.longitude;
+                                    _addressPicked = selectedPlace.address;
+                                  }
+                                  provider.saveLat = _latitude!;
+                                  provider.saveLng = _longitude!;
+                                  provider.saveAddress = _addressPicked;
                                 });
                               },
                               child: TextFieldContainer(
@@ -488,9 +501,6 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   enabled: false,
                                   initialValue: _addressPicked,
                                   keyboardType: TextInputType.text,
-                                  onChanged: (value) {
-                                    provider.saveAddress = value;
-                                  },
                                   decoration: const InputDecoration(
                                     hintText: 'Address',
                                     border: InputBorder.none,

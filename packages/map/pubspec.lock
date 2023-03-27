@@ -33,7 +33,7 @@ packages:
     source: path
     version: "1.0.0+1"
   better_home:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "../.."
       relative: true
@@ -64,7 +64,7 @@ packages:
     source: hosted
     version: "1.1.1"
   cloud_firestore:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cloud_firestore
       sha256: "0ad93f01816ab7e59560bffeece2d19cec872fedfea04a7ad5be418cad25d574"
@@ -160,7 +160,7 @@ packages:
     source: hosted
     version: "5.2.10"
   firebase_core:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_core
       sha256: "75f747cafd7cbd6c00b908e3a7aa59fc31593d46ba8165d9ee8a79e69464a394"
@@ -262,7 +262,7 @@ packages:
     source: sdk
     version: "0.0.0"
   google_api_headers:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: google_api_headers
       sha256: ac6f4e27e35c9eb4fbe8ce4ce7380e651d3a7bee3ad4c2ff30e67aaa73f005d3
@@ -302,7 +302,7 @@ packages:
     source: hosted
     version: "2.2.6"
   google_maps_webservice:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: google_maps_webservice
       sha256: d0ae4e4508afd74a3f051565261a3cdbae59db29448f9b6e6beb5674545e1eb7

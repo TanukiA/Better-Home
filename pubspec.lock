@@ -213,7 +213,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_google_places:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_google_places
       sha256: e9fb23ceacdc7359aa759627550146f7fd3ae6c067d16f39f3c50d8feebf4809
@@ -263,7 +263,7 @@ packages:
     source: hosted
     version: "1.5.0+1"
   google_maps_flutter:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: google_maps_flutter
       sha256: "24392ef192f3b00bcd93151375676805a9933574423a5bd5509a0ead2e8a4215"

@@ -67,11 +67,21 @@ abstract class User extends ModelMVC {
           } else if (userType == "technician" && purpose == "login") {
             Technician technician = Technician();
             technician.login(context, phoneNumber);
-          } else if (userType == "technician" && purpose == "register") {}
+          } else if (userType == "technician" && purpose == "register") {
+            Technician technician = Technician();
+            Map<String, dynamic> technicianData =
+                technician.getRegisterDataFromProvider(context);
+            Firestore firestore = Firestore();
+            firestore.addTechnicianData(technicianData);
+            technician.login(context, phoneNumber);
+          }
         });
   }
 
-  void login(BuildContext context, String phoneNumber);
+  void logout(BuildContext context) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    ap.userSignOut();
+  }
 
-  void logout();
+  void login(BuildContext context, String phoneNumber);
 }

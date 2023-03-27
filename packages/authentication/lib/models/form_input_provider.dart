@@ -9,8 +9,10 @@ class FormInputProvider with ChangeNotifier {
   String? _exp;
   String? _city;
   String? _address;
-  String? _latLong;
+  double? _lat;
+  double? _lng;
   PlatformFile? _pickedFile;
+  String? _fileName;
 
   String? get phone => _phone;
   String? get name => _name;
@@ -19,8 +21,10 @@ class FormInputProvider with ChangeNotifier {
   String? get exp => _exp;
   String? get city => _city;
   String? get address => _address;
-  String? get latLong => _latLong;
+  double? get lat => _lat;
+  double? get lng => _lng;
   PlatformFile? get pickedFile => _pickedFile;
+  String? get fileName => _fileName;
 
   set savePhone(String value) {
     _phone = value;
@@ -57,13 +61,23 @@ class FormInputProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set saveLatLong(String value) {
-    _latLong = value;
+  set saveLat(double value) {
+    _lat = value;
+    notifyListeners();
+  }
+
+  set saveLng(double value) {
+    _lng = value;
     notifyListeners();
   }
 
   set savePickedFile(PlatformFile value) {
     _pickedFile = value;
+    notifyListeners();
+  }
+
+  set saveFileName(String value) {
+    _fileName = value;
     notifyListeners();
   }
 }

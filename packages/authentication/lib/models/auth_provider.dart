@@ -11,21 +11,44 @@ import 'package:better_home/utils.dart';
 class AuthProvider extends ChangeNotifier {
   Map<String, dynamic>? _userData;
   int? _forceResendingToken;
-  bool _isSignedIn = false;
+  bool _isCustomerSignedIn = false;
+  bool _isTechnicianSignedIn = false;
   bool _isLoading = false;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  bool get isSignedIn => _isSignedIn;
+  bool get isCustomerSignedIn => _isCustomerSignedIn;
+  bool get isTechnicianSignedIn => _isTechnicianSignedIn;
   bool get isLoading => _isLoading;
   Map<String, dynamic> get userData => _userData!;
 
   AuthProvider() {
-    checkSignIn();
+    checkCustomerSignIn();
+    checkTechnicianSignIn();
   }
 
-  void checkSignIn() async {
+  void checkCustomerSignIn() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
-    _isSignedIn = s.getBool("is_signedin") ?? false;
+    _isCustomerSignedIn = s.getBool("is_customer_signedin") ?? false;
+    notifyListeners();
+  }
+
+  Future setCustomerSignIn() async {
+    final SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool("is_customer_signedin", true);
+    _isCustomerSignedIn = true;
+    notifyListeners();
+  }
+
+  void checkTechnicianSignIn() async {
+    final SharedPreferences s = await SharedPreferences.getInstance();
+    _isTechnicianSignedIn = s.getBool("is_technician_signedin") ?? false;
+    notifyListeners();
+  }
+
+  Future setTechnicianSignIn() async {
+    final SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool("is_technician_signedin", true);
+    _isTechnicianSignedIn = true;
     notifyListeners();
   }
 
@@ -96,7 +119,7 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      showSnackBar(context, "Something wrong. Please try again.");
+      showSnackBar(context, "Something went wrong. Please try again.");
     }
   }
 
@@ -137,17 +160,11 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future setSignIn() async {
-    final SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setBool("is_signedin", true);
-    _isSignedIn = true;
-    notifyListeners();
-  }
-
   Future userSignOut() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await _firebaseAuth.signOut();
-    _isSignedIn = false;
+    _isCustomerSignedIn = false;
+    _isTechnicianSignedIn = false;
     notifyListeners();
     sp.clear();
   }

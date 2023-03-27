@@ -116,7 +116,8 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<FormInputProvider>(context, listen: false);
+    FormInputProvider provider =
+        Provider.of<FormInputProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
@@ -162,7 +163,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
     return ChangeNotifierProvider<FormInputProvider>.value(
       value: provider,
       child: Consumer<FormInputProvider>(
-        builder: (context, provider, _) {
+        builder: (context, obtainedData, _) {
           return GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
@@ -283,8 +284,8 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
                             ),
                             const SizedBox(height: 13),
                             ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => LoginScreen(

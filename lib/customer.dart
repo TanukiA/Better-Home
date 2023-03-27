@@ -29,7 +29,7 @@ class Customer extends User {
     name = provider.name;
     email = provider.email;
 
-    User customer = Customer(
+    Customer customer = Customer(
         phone: phone!.trim(), name: name!.trim(), email: email!.trim());
     Map<String, dynamic> customerData = {
       'phoneNumber': customer.phone,
@@ -50,13 +50,10 @@ class Customer extends User {
       'email': email,
     };
     final ap = Provider.of<AuthProvider>(context, listen: false);
-    ap.storeUserDataToSP(customerData, "session_data");
-    ap.setSignIn();
+    ap.storeUserDataToSP(customerData, "customer_session_data");
+    ap.setCustomerSignIn();
 
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => const CustomerHomeScreen()));
   }
-
-  @override
-  void logout() {}
 }

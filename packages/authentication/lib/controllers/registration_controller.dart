@@ -13,6 +13,7 @@ class RegistrationController extends ControllerMVC {
   late User _user;
   late Firestore _db;
   UploadTask? uploadTask;
+  List<String> specs = [];
 
   User get user => _user;
 
@@ -71,20 +72,46 @@ class RegistrationController extends ControllerMVC {
     provider.saveEmail = email;
   }
 
-  List<String> checkboxStateChange(List<bool> checkboxValues, int i,
-      String specName, List<String> specs, FormInputProvider provider) {
+  void saveTechnicianDataToProvider(
+      BuildContext context,
+      String phoneNumber,
+      String name,
+      String email,
+      List<String> specs,
+      String exp,
+      String city,
+      String address,
+      double lat,
+      double lng,
+      PlatformFile pickedFile,
+      String fileName) {
+    final provider = Provider.of<FormInputProvider>(context, listen: false);
+    provider.savePhone = phoneNumber;
+    provider.saveName = name;
+    provider.saveEmail = email;
+    provider.saveSpecs = specs;
+    provider.saveExp = exp;
+    provider.saveCity = city;
+    provider.saveAddress = address;
+    provider.saveLat = lat;
+    provider.saveLng = lng;
+    provider.savePickedFile = pickedFile;
+    provider.saveFileName = fileName;
+  }
+
+  void checkboxStateChange(List<bool> checkboxValues, int i, String specName,
+      FormInputProvider provider) {
     if (checkboxValues[i] && !specs.contains(specName)) {
       specs.add(specName);
     } else if (!checkboxValues[i] && specs.contains(specName)) {
       specs.remove(specName);
     }
     provider.saveSpecs = specs;
-    return specs;
   }
 
   Future uploadFile(PlatformFile? pickedFile) async {
     final path = 'files/${pickedFile!.name}';
-    final file = File(pickedFile!.path!);
+    final file = File(pickedFile.path!);
 
     final ref = FirebaseStorage.instance.ref().child(path);
     uploadTask = ref.putFile(file);
