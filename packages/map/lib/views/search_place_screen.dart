@@ -5,7 +5,6 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
-import 'package:better_home/utils.dart';
 
 class SearchPlaceScreen extends StatefulWidget {
   const SearchPlaceScreen({Key? key, required this.controller})
@@ -92,47 +91,36 @@ class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
                     googleMapController = controller;
                   },
                 ),
-                ElevatedButton(
-                    onPressed: () => widget.controller.handleSearchButton(
-                        context, homeScaffoldKey, displayPrediction),
-                    child: const Text("Search Place")),
+                Positioned(
+                  top: 20,
+                  left: 30,
+                  child: SizedBox(
+                    width: 120,
+                    height: 45,
+                    child: ElevatedButton(
+                      onPressed: () => widget.controller.handleSearchButton(
+                          context, homeScaffoldKey, displayPrediction),
+                      child: const Text("Search Place"),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          ElevatedButton(
-            onPressed: _handleConfirmButton,
-            style: confirmBtnStyle,
-            child: const Text("Confirm"),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 30),
+            child: ElevatedButton(
+              onPressed: () => widget.controller
+                  .handleConfirmButton(context, selectedAddress, lat, lng),
+              style: confirmBtnStyle,
+              child: const Text("Confirm"),
+            ),
           ),
         ],
       ),
     );
   }
 
-/*
-  Future<void> _handleSearchButton() async {
-    Prediction? p = await PlacesAutocomplete.show(
-        context: context,
-        apiKey: kGoogleApiKey,
-        onError: handleError,
-        mode: _mode,
-        language: 'en',
-        strictbounds: false,
-        types: [""],
-        decoration: InputDecoration(
-            hintText: 'Search',
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(color: Colors.white))),
-        components: [Component(Component.country, "my")]);
-
-    displayPrediction(p!, homeScaffoldKey.currentState);
-  }
-
-  void handleError(PlacesAutocompleteResponse response) {
-    showSnackBar(context, response.errorMessage!);
-  }
-*/
   void displayPrediction(Prediction p, ScaffoldState? currentState) async {
     GoogleMapsPlaces places = GoogleMapsPlaces(
         apiKey: widget.controller.getApiKey(),
@@ -154,17 +142,5 @@ class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
 
     googleMapController
         .animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat!, lng!), 14.0));
-  }
-
-  Future<void> _handleConfirmButton() async {
-    if (selectedAddress != null && lat != null && lng != null) {
-      Navigator.of(context).pop({
-        'address': selectedAddress,
-        'latitude': lat,
-        'longitude': lng,
-      });
-    } else {
-      showSnackBar(context, 'Please select an address');
-    }
   }
 }

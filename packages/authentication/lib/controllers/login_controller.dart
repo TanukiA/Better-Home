@@ -25,7 +25,7 @@ class LoginController extends ControllerMVC {
 
   void verifyOTP(BuildContext context, String userOTP, String verificationId,
       String userType, String purpose, String phoneNumber) {
-    return verifyOTP(
+    return User.verifyOTP(
         context, userOTP, verificationId, userType, purpose, phoneNumber);
   }
 

@@ -91,8 +91,8 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
     }
   }
 
-  void pushToNextScreen() {
-    Navigator.push(
+  Future<void> pushToNextScreen() async {
+    await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TechnicianSignupScreen2(

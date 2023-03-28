@@ -526,6 +526,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   style: filePickBtnStyle,
                                   child: const Text('Select file'),
                                 ),
+                                const SizedBox(width: 10),
                                 Text(
                                   fileName,
                                   style: const TextStyle(
