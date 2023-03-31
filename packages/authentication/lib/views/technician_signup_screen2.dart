@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:map/controllers/location_controller.dart';
 import 'package:map/views/search_place_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:authentication/views/technician_signup_screen.dart';
 
 class TechnicianSignupScreen2 extends StatefulWidget {
   const TechnicianSignupScreen2({Key? key, required this.controller})
@@ -25,51 +26,80 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   bool _isValidCity = false;
   bool _isValidAddress = false;
   bool _isAllValid = false;
-  final TextEditingController _expController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
+
+  late FormInputProvider provider;
+  late TextEditingController _expController;
+  late TextEditingController _addressController;
 
   List<bool> checkboxValues = [false, false, false, false, false, false];
 
-  String? _selectedValue = 'Select your state';
-  String fileName = "";
+  String? _selectedValue;
   PlatformFile? pickedFile;
-  String _addressPicked = "Pick your address here";
-  double? _latitude;
-  double? _longitude;
+  String fileName = "";
 
   @override
   void initState() {
     _user = widget.controller.user;
     super.initState();
+    provider = Provider.of<FormInputProvider>(context, listen: false);
+    _expController = TextEditingController(text: provider.exp);
+    _addressController = TextEditingController(text: provider.address);
+    provider.city == null
+        ? _selectedValue = "Select your state"
+        : _selectedValue = provider.city;
+    checkCitySelected();
+    checkExpField();
+    checkAddressField();
 
     _expController.addListener(() {
       setState(() {
-        if (_expController.text.isNotEmpty) {
-          _isValidExp = true;
-          if (widget.controller.checkValidTechnicianForm(
-              _isValidSpec, _isValidExp, _isValidCity, _isValidAddress)) {
-            _isAllValid = true;
-          }
-        } else {
-          _isValidExp = false;
-          _isAllValid = false;
-        }
+        checkExpField();
       });
     });
 
     _addressController.addListener(() {
       setState(() {
-        if (_addressController.text.isNotEmpty) {
-          _isValidAddress = true;
-          if (widget.controller.checkValidTechnicianForm(
-              _isValidSpec, _isValidExp, _isValidCity, _isValidAddress)) {
-            _isAllValid = true;
-          }
-        } else {
-          _isValidAddress = false;
-          _isAllValid = false;
-        }
+        checkAddressField();
       });
+    });
+  }
+
+  void checkExpField() {
+    if (_expController.text.isNotEmpty) {
+      _isValidExp = true;
+      if (widget.controller.checkValidTechnicianForm(
+          _isValidSpec, _isValidExp, _isValidCity, _isValidAddress)) {
+        _isAllValid = true;
+      }
+    } else {
+      _isValidExp = false;
+      _isAllValid = false;
+    }
+  }
+
+  void checkAddressField() {
+    if (_addressController.text.isNotEmpty) {
+      _isValidAddress = true;
+      if (widget.controller.checkValidTechnicianForm(
+          _isValidSpec, _isValidExp, _isValidCity, _isValidAddress)) {
+        _isAllValid = true;
+      }
+    } else {
+      _isValidAddress = false;
+      _isAllValid = false;
+    }
+  }
+
+  void checkCitySelected() {
+    setState(() {
+      _isValidCity =
+          _selectedValue != null && _selectedValue != 'Select your state';
+      if (_isValidCity) {
+        if (widget.controller.checkValidTechnicianForm(
+            _isValidSpec, _isValidExp, _isValidCity, _isValidAddress)) {
+          _isAllValid = true;
+        }
+      }
     });
   }
 
@@ -123,8 +153,6 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
 
   @override
   Widget build(BuildContext context) {
-    FormInputProvider provider =
-        Provider.of<FormInputProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
@@ -196,7 +224,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                 leading: BackButton(
                   color: Colors.black,
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TechnicianSignupScreen(
+                            controller: RegistrationController(),
+                          ),
+                        ));
                   },
                 ),
                 iconTheme: const IconThemeData(
@@ -449,24 +483,9 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   }).toList(),
                                 ],
                                 onChanged: (newValue) {
-                                  setState(() {
-                                    _selectedValue = newValue;
-                                    _isValidCity = _selectedValue != null &&
-                                        _selectedValue != 'Select your state';
-                                    if (_isValidCity) {
-                                      if (widget.controller
-                                          .checkValidTechnicianForm(
-                                              _isValidSpec,
-                                              _isValidExp,
-                                              _isValidCity,
-                                              _isValidAddress)) {
-                                        _isAllValid = true;
-                                      }
-                                    } else {
-                                      _isAllValid = false;
-                                    }
-                                  });
-                                  provider.saveCity = newValue!;
+                                  _selectedValue = newValue;
+                                  checkCitySelected();
+                                  provider.saveCity = _selectedValue!;
                                 },
                                 style: const TextStyle(
                                   color: Colors.black,
@@ -476,33 +495,32 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                               ),
                             ),
                             const SizedBox(height: 10),
+                            const Text(
+                              'Address:',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Roboto',
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
                             GestureDetector(
-                              onTap: () async {
-                                final selectedPlace = await Navigator.push(
+                              onTap: () {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => SearchPlaceScreen(
                                             controller: LocationController(),
                                           )),
                                 );
-                                setState(() {
-                                  if (selectedPlace != null) {
-                                    _latitude = selectedPlace.latitude;
-                                    _longitude = selectedPlace.longitude;
-                                    _addressPicked = selectedPlace.address;
-                                  }
-                                  provider.saveLat = _latitude!;
-                                  provider.saveLng = _longitude!;
-                                  provider.saveAddress = _addressPicked;
-                                });
                               },
                               child: TextFieldContainer(
                                 child: TextFormField(
                                   enabled: false,
-                                  initialValue: _addressPicked,
+                                  controller: _addressController,
                                   keyboardType: TextInputType.text,
                                   decoration: const InputDecoration(
-                                    hintText: 'Address',
+                                    hintText: 'Pick your address here',
                                     border: InputBorder.none,
                                   ),
                                 ),
@@ -528,7 +546,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
-                                  fileName,
+                                  provider.fileName ?? "",
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontFamily: 'Roboto',

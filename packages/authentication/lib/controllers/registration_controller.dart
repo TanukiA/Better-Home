@@ -72,6 +72,7 @@ class RegistrationController extends ControllerMVC {
     provider.saveEmail = email;
   }
 
+/*
   void saveTechnicianDataToProvider(
       BuildContext context,
       String phoneNumber,
@@ -98,7 +99,7 @@ class RegistrationController extends ControllerMVC {
     provider.savePickedFile = pickedFile;
     provider.saveFileName = fileName;
   }
-
+*/
   void checkboxStateChange(List<bool> checkboxValues, int i, String specName,
       FormInputProvider provider) {
     if (checkboxValues[i] && !specs.contains(specName)) {

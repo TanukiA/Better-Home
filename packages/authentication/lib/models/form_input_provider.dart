@@ -13,6 +13,7 @@ class FormInputProvider with ChangeNotifier {
   double? _lng;
   PlatformFile? _pickedFile;
   String? _fileName;
+  List<bool>? checkboxValues = [];
 
   String? get phone => _phone;
   String? get name => _name;

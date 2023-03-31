@@ -1,5 +1,7 @@
+import 'package:authentication/controllers/registration_controller.dart';
+import 'package:authentication/models/form_input_provider.dart';
+import 'package:authentication/views/technician_signup_screen2.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map/models/map_service.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:firebase_db/models/database.dart';
@@ -22,14 +24,24 @@ class LocationController extends ControllerMVC {
         context, homeScaffoldKey, displayPredictionCallback);
   }
 
-  Future<void> handleConfirmButton(BuildContext context,
-      String? selectedAddress, double? lat, double? lng) async {
+  Future<void> handleConfirmButton(
+      BuildContext context,
+      String? selectedAddress,
+      double? lat,
+      double? lng,
+      FormInputProvider provider) async {
     if (selectedAddress != null && lat != null && lng != null) {
-      Navigator.of(context).pop({
-        'address': selectedAddress,
-        'latitude': lat,
-        'longitude': lng,
-      });
+      provider.saveAddress = selectedAddress;
+      provider.saveLat = lat;
+      provider.saveLng = lng;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TechnicianSignupScreen2(
+                  controller: RegistrationController(),
+                )),
+      );
     } else {
       showSnackBar(context, 'Please select an address');
     }

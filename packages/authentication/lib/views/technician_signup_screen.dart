@@ -25,61 +25,82 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
   bool _isValidEmail = false;
   bool _isValidPhone = false;
   bool _isAllValid = false;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
+
+  late FormInputProvider provider;
+  late TextEditingController _nameController;
+  late TextEditingController _emailController;
+  late TextEditingController _phoneController;
 
   @override
   void initState() {
     _user = widget.controller.user;
     super.initState();
+    provider = Provider.of<FormInputProvider>(context, listen: false);
+    _nameController = TextEditingController(text: provider.name);
+    _emailController = TextEditingController(text: provider.email);
+    _phoneController = TextEditingController(text: provider.phone);
+    checkNameField();
+    checkEmailField();
+    checkPhoneField();
 
     _nameController.addListener(() {
       setState(() {
-        if (_nameController.text.isNotEmpty) {
-          _isValidName = true;
-          if (widget.controller
-              .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
-            _isAllValid = true;
-          }
-        } else {
-          _isValidName = false;
-          _isAllValid = false;
-        }
+        checkNameField();
       });
     });
 
     _emailController.addListener(() {
       setState(() {
-        if (widget.controller.validEmailFormat(_emailController.text) == true &&
-            _emailController.text.isNotEmpty) {
-          _isValidEmail = true;
-          if (widget.controller
-              .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
-            _isAllValid = true;
-          }
-        } else {
-          _isValidEmail = false;
-          _isAllValid = false;
-        }
+        checkEmailField();
       });
     });
 
     _phoneController.addListener(() {
       setState(() {
-        if (widget.controller.validPhoneFormat(_phoneController.text) == true &&
-            _phoneController.text.isNotEmpty) {
-          _isValidPhone = true;
-          if (widget.controller
-              .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
-            _isAllValid = true;
-          }
-        } else {
-          _isValidPhone = false;
-          _isAllValid = false;
-        }
+        checkPhoneField();
       });
     });
+  }
+
+  void checkNameField() {
+    if (_nameController.text.isNotEmpty) {
+      _isValidName = true;
+      if (widget.controller
+          .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
+        _isAllValid = true;
+      }
+    } else {
+      _isValidName = false;
+      _isAllValid = false;
+    }
+  }
+
+  void checkEmailField() {
+    if (widget.controller.validEmailFormat(_emailController.text) == true &&
+        _emailController.text.isNotEmpty) {
+      _isValidEmail = true;
+      if (widget.controller
+          .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
+        _isAllValid = true;
+      }
+    } else {
+      _isValidEmail = false;
+      _isAllValid = false;
+    }
+  }
+
+  void checkPhoneField() {
+    if (widget.controller.validPhoneFormat(_phoneController.text) == true &&
+        _phoneController.text.isNotEmpty) {
+      _isValidPhone = true;
+      if (widget.controller
+          .checkValidForm(_isValidName, _isValidEmail, _isValidPhone)) {
+        _isAllValid = true;
+      }
+    } else {
+      _isValidPhone = false;
+      _isAllValid = false;
+    }
   }
 
   Future<void> continueBtnClicked() async {
@@ -91,19 +112,19 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
     }
   }
 
-  Future<void> pushToNextScreen() async {
-    await Navigator.push(
+  void showError() {
+    showDialogBox(context, "Phone number already exists",
+        "This phone number is already registered. Please login instead.");
+  }
+
+  void pushToNextScreen() {
+    Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TechnicianSignupScreen2(
             controller: RegistrationController(),
           ),
         ));
-  }
-
-  void showError() {
-    showDialogBox(context, "Phone number already exists",
-        "This phone number is already registered. Please login instead.");
   }
 
   @override
@@ -116,8 +137,6 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    FormInputProvider provider =
-        Provider.of<FormInputProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(

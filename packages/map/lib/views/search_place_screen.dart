@@ -5,6 +5,8 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
+import 'package:authentication/models/form_input_provider.dart';
+import 'package:provider/provider.dart';
 
 class SearchPlaceScreen extends StatefulWidget {
   const SearchPlaceScreen({Key? key, required this.controller})
@@ -18,6 +20,7 @@ class SearchPlaceScreen extends StatefulWidget {
 class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
   late MapService _map;
   late GoogleMapController googleMapController;
+  late FormInputProvider provider;
 
   String? selectedAddress;
   double? lat;
@@ -32,6 +35,7 @@ class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
   void initState() {
     _map = widget.controller.map;
     super.initState();
+    provider = Provider.of<FormInputProvider>(context, listen: false);
   }
 
   Future<void> loginBtnClicked() async {}
@@ -110,8 +114,8 @@ class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 30),
             child: ElevatedButton(
-              onPressed: () => widget.controller
-                  .handleConfirmButton(context, selectedAddress, lat, lng),
+              onPressed: () => widget.controller.handleConfirmButton(
+                  context, selectedAddress, lat, lng, provider),
               style: confirmBtnStyle,
               child: const Text("Confirm"),
             ),

@@ -88,16 +88,16 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
     }
   }
 
-  void showError() {
-    showDialogBox(context, "Phone number already exists",
-        "This phone number is already registered. Please login instead.");
-  }
-
   void signupProcess() {
     widget.controller.saveCustomerDataToProvider(context, _phoneController.text,
         _nameController.text, _emailController.text);
     widget.controller.sendPhoneNumber(
         context, _phoneController.text, "customer", "register");
+  }
+
+  void showError() {
+    showDialogBox(context, "Phone number already exists",
+        "This phone number is already registered. Please login instead.");
   }
 
   @override
