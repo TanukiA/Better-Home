@@ -1,9 +1,6 @@
-import 'dart:io';
 import 'package:authentication/models/form_input_provider.dart';
 import 'package:better_home/technician.dart';
 import 'package:better_home/user.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:firebase_db/models/database.dart';
@@ -11,8 +8,7 @@ import 'package:provider/provider.dart';
 
 class RegistrationController extends ControllerMVC {
   late User _user;
-  late Firestore _db;
-  UploadTask? uploadTask;
+  late Database _db;
   List<String> specs = [];
 
   User get user => _user;
@@ -58,7 +54,7 @@ class RegistrationController extends ControllerMVC {
   }
 
   Future<bool> isAccountExists(String phoneNumber, String userType) async {
-    _db = Firestore();
+    _db = Database();
     String collectionName = '$userType' 's';
     final exist = await _db.checkAccountExistence(phoneNumber, collectionName);
     return exist;
@@ -72,34 +68,6 @@ class RegistrationController extends ControllerMVC {
     provider.saveEmail = email;
   }
 
-/*
-  void saveTechnicianDataToProvider(
-      BuildContext context,
-      String phoneNumber,
-      String name,
-      String email,
-      List<String> specs,
-      String exp,
-      String city,
-      String address,
-      double lat,
-      double lng,
-      PlatformFile pickedFile,
-      String fileName) {
-    final provider = Provider.of<FormInputProvider>(context, listen: false);
-    provider.savePhone = phoneNumber;
-    provider.saveName = name;
-    provider.saveEmail = email;
-    provider.saveSpecs = specs;
-    provider.saveExp = exp;
-    provider.saveCity = city;
-    provider.saveAddress = address;
-    provider.saveLat = lat;
-    provider.saveLng = lng;
-    provider.savePickedFile = pickedFile;
-    provider.saveFileName = fileName;
-  }
-*/
   void checkboxStateChange(List<bool> checkboxValues, int i, String specName,
       FormInputProvider provider) {
     if (checkboxValues[i] && !specs.contains(specName)) {
@@ -107,17 +75,7 @@ class RegistrationController extends ControllerMVC {
     } else if (!checkboxValues[i] && specs.contains(specName)) {
       specs.remove(specName);
     }
+    provider.updateCheckboxValue(i, checkboxValues[i]);
     provider.saveSpecs = specs;
-  }
-
-  Future uploadFile(PlatformFile? pickedFile) async {
-    final path = 'files/${pickedFile!.name}';
-    final file = File(pickedFile.path!);
-
-    final ref = FirebaseStorage.instance.ref().child(path);
-    uploadTask = ref.putFile(file);
-
-    final snapshot = await uploadTask!.whenComplete(() {});
-    final urlDownload = await snapshot.ref.getDownloadURL();
   }
 }

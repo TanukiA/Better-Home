@@ -1,3 +1,5 @@
+import 'package:authentication/models/form_input_provider.dart';
+import 'package:authentication/views/first_screen.dart';
 import 'package:better_home/customer.dart';
 import 'package:better_home/technician.dart';
 import 'package:firebase_db/models/database.dart';
@@ -58,21 +60,36 @@ abstract class User extends ModelMVC {
             Customer customer = Customer();
             customer.login(context, phoneNumber);
           } else if (userType == "customer" && purpose == "register") {
-            Customer customer = Customer();
-            Map<String, dynamic> customerData =
-                customer.getRegisterDataFromProvider(context);
-            Firestore firestore = Firestore();
+            final fp = Provider.of<FormInputProvider>(context, listen: false);
+            Customer customer = Customer(
+                phone: fp.phone!.trim(),
+                name: fp.name!.trim(),
+                email: fp.email!.trim());
+            fp.clearFormInputs();
+            Map<String, dynamic> customerData = customer.mapRegisterData();
+            Database firestore = Database();
             firestore.addCustomerData(customerData);
             customer.login(context, phoneNumber);
           } else if (userType == "technician" && purpose == "login") {
             Technician technician = Technician();
             technician.login(context, phoneNumber);
           } else if (userType == "technician" && purpose == "register") {
-            Technician technician = Technician();
-            Map<String, dynamic> technicianData =
-                technician.getRegisterDataFromProvider(context);
-            Firestore firestore = Firestore();
-            firestore.addTechnicianData(technicianData);
+            final fp = Provider.of<FormInputProvider>(context, listen: false);
+            Technician technician = Technician(
+              phone: fp.phone!.trim(),
+              name: fp.name!.trim(),
+              email: fp.email!.trim(),
+              specs: fp.specs,
+              exp: fp.exp!.trim(),
+              city: fp.city,
+              address: fp.address!.trim(),
+              lat: fp.lat,
+              lng: fp.lng,
+              pickedFile: fp.pickedFile,
+            );
+            fp.clearFormInputs();
+            technician.mapRegisterData();
+            technician.saveTechnicianData(context);
             technician.login(context, phoneNumber);
           }
         });
@@ -80,7 +97,14 @@ abstract class User extends ModelMVC {
 
   void logout(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
-    ap.userSignOut();
+    ap.userSignOut().then(
+          (value) => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const FirstScreen(),
+            ),
+          ),
+        );
   }
 
   void login(BuildContext context, String phoneNumber);

@@ -38,8 +38,6 @@ class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
     provider = Provider.of<FormInputProvider>(context, listen: false);
   }
 
-  Future<void> loginBtnClicked() async {}
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

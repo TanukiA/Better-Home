@@ -9,7 +9,7 @@ import 'package:better_home/utils.dart';
 
 class LocationController extends ControllerMVC {
   late MapService _map;
-  late Firestore _db;
+  late Database _db;
 
   MapService get map => _map;
   LocationController() {

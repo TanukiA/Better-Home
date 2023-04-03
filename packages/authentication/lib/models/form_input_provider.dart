@@ -13,7 +13,7 @@ class FormInputProvider with ChangeNotifier {
   double? _lng;
   PlatformFile? _pickedFile;
   String? _fileName;
-  List<bool>? checkboxValues = [];
+  final List<bool> _checkboxValues = [false, false, false, false, false, false];
 
   String? get phone => _phone;
   String? get name => _name;
@@ -26,6 +26,7 @@ class FormInputProvider with ChangeNotifier {
   double? get lng => _lng;
   PlatformFile? get pickedFile => _pickedFile;
   String? get fileName => _fileName;
+  List<bool>? get checkboxValues => _checkboxValues;
 
   set savePhone(String value) {
     _phone = value;
@@ -79,6 +80,27 @@ class FormInputProvider with ChangeNotifier {
 
   set saveFileName(String value) {
     _fileName = value;
+    notifyListeners();
+  }
+
+  void updateCheckboxValue(int index, bool value) {
+    _checkboxValues[index] = value;
+    notifyListeners();
+  }
+
+  void clearFormInputs() {
+    _phone = null;
+    _name = null;
+    _email = null;
+    _specs = null;
+    _exp = null;
+    _city = null;
+    _address = null;
+    _lat = null;
+    _lng = null;
+    _pickedFile = null;
+    _fileName = null;
+    _checkboxValues.fillRange(0, _checkboxValues.length, false);
     notifyListeners();
   }
 }

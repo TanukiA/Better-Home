@@ -43,11 +43,14 @@ class FirstScreen extends StatelessWidget {
               const SizedBox(height: 100),
               ElevatedButton(
                 onPressed: () async {
+                  ap.checkCustomerSignIn();
+
                   ap.isCustomerSignedIn == true
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CustomerHomeScreen()))
+                              builder: (context) => CustomerHomeScreen(
+                                  controller: LoginController())))
                       : Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -65,6 +68,8 @@ class FirstScreen extends StatelessWidget {
               const SizedBox(height: 60),
               ElevatedButton(
                 onPressed: () async {
+                  ap.checkTechnicianSignIn();
+
                   ap.isTechnicianSignedIn == true
                       ? Navigator.push(
                           context,

@@ -5,6 +5,7 @@ import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/views/verification_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:better_home/utils.dart';
 
@@ -21,10 +22,7 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   Map<String, dynamic> get userData => _userData!;
 
-  AuthProvider() {
-    checkCustomerSignIn();
-    checkTechnicianSignIn();
-  }
+  AuthProvider();
 
   void checkCustomerSignIn() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
@@ -109,8 +107,6 @@ class AuthProvider extends ChangeNotifier {
 
         notifyListeners();
         onSuccess();
-      } else {
-        throw Exception("User is null");
       }
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
@@ -120,6 +116,7 @@ class AuthProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       showSnackBar(context, "Something went wrong. Please try again.");
+      print("Error2: $e");
     }
   }
 
@@ -165,6 +162,7 @@ class AuthProvider extends ChangeNotifier {
     await _firebaseAuth.signOut();
     _isCustomerSignedIn = false;
     _isTechnicianSignedIn = false;
+
     notifyListeners();
     sp.clear();
   }

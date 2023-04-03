@@ -1,5 +1,5 @@
+import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/models/auth_provider.dart';
-import 'package:authentication/models/form_input_provider.dart';
 import 'package:better_home/user.dart';
 import 'package:authentication/views/customer_home_screen.dart';
 import 'package:firebase_db/models/database.dart';
@@ -13,7 +13,7 @@ class Customer extends User {
       : super(phone: phone, name: name, email: email);
 
   retrieveLoginData(String phoneNumber) async {
-    final customerDoc = await Firestore.getCustomerByPhoneNumber(phoneNumber);
+    final customerDoc = await Database.getCustomerByPhoneNumber(phoneNumber);
 
     if (customerDoc.exists) {
       id = customerDoc.id;
@@ -23,18 +23,11 @@ class Customer extends User {
     }
   }
 
-  Map<String, dynamic> getRegisterDataFromProvider(BuildContext context) {
-    final provider = Provider.of<FormInputProvider>(context, listen: false);
-    phone = provider.phone;
-    name = provider.name;
-    email = provider.email;
-
-    Customer customer = Customer(
-        phone: phone!.trim(), name: name!.trim(), email: email!.trim());
+  Map<String, dynamic> mapRegisterData() {
     Map<String, dynamic> customerData = {
-      'phoneNumber': customer.phone,
-      'name': customer.name,
-      'email': customer.email,
+      'phoneNumber': phone,
+      'name': name,
+      'email': email,
     };
     return customerData;
   }
@@ -50,10 +43,13 @@ class Customer extends User {
       'email': email,
     };
     final ap = Provider.of<AuthProvider>(context, listen: false);
-    ap.storeUserDataToSP(customerData, "customer_session_data");
+    ap.storeUserDataToSP(customerData, "session_data");
     ap.setCustomerSignIn();
 
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const CustomerHomeScreen()));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                CustomerHomeScreen(controller: LoginController())));
   }
 }

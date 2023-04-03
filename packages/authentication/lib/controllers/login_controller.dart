@@ -6,7 +6,7 @@ import 'package:firebase_db/models/database.dart';
 
 class LoginController extends ControllerMVC {
   late User _user;
-  late Firestore _db;
+  late Database _db;
 
   User get user => _user;
 
@@ -30,15 +30,19 @@ class LoginController extends ControllerMVC {
   }
 
   Future<bool> isAccountExists(String phoneNumber, String userType) async {
-    _db = Firestore();
+    _db = Database();
     String collectionName = '$userType' 's';
     final exist = await _db.checkAccountExistence(phoneNumber, collectionName);
     return exist;
   }
 
   Future<bool> isApprovedAccount(String phoneNumber) async {
-    _db = Firestore();
+    _db = Database();
     final approved = await _db.checkApprovalStatus(phoneNumber);
     return approved;
+  }
+
+  void logout(BuildContext context) {
+    return _user.logout(context);
   }
 }

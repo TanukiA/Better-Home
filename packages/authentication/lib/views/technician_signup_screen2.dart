@@ -1,5 +1,6 @@
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/form_input_provider.dart';
+import 'package:better_home/technician.dart';
 import 'package:better_home/user.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:file_picker/file_picker.dart';
@@ -26,27 +27,27 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   bool _isValidCity = false;
   bool _isValidAddress = false;
   bool _isAllValid = false;
+  late List<bool> _checkboxValues;
+  String? _selectedValue;
+  PlatformFile? pickedFile;
+  String fileName = "";
 
   late FormInputProvider provider;
   late TextEditingController _expController;
   late TextEditingController _addressController;
-
-  List<bool> checkboxValues = [false, false, false, false, false, false];
-
-  String? _selectedValue;
-  PlatformFile? pickedFile;
-  String fileName = "";
 
   @override
   void initState() {
     _user = widget.controller.user;
     super.initState();
     provider = Provider.of<FormInputProvider>(context, listen: false);
+    _checkboxValues = provider.checkboxValues!;
     _expController = TextEditingController(text: provider.exp);
     _addressController = TextEditingController(text: provider.address);
     provider.city == null
         ? _selectedValue = "Select your state"
         : _selectedValue = provider.city;
+    validateCheckbox();
     checkCitySelected();
     checkExpField();
     checkAddressField();
@@ -107,7 +108,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
     bool isAnyChecked = false;
 
     setState(() {
-      for (bool value in checkboxValues) {
+      for (bool value in _checkboxValues) {
         if (value) {
           isAnyChecked = true;
           break;
@@ -125,8 +126,21 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
     });
   }
 
-  Future<void> signupBtnClicked() async {
-    widget.controller.uploadFile(pickedFile);
+  void signupBtnClicked() {
+    /*
+    print("phone: ${provider.phone}");
+    print("name: ${provider.name}");
+    print("email: ${provider.email}");
+    print("spes: ${provider.specs}");
+    print("exp: ${provider.exp}");
+    print("city: ${provider.city}");
+    print("address: ${provider.address}");
+    print("lat: ${provider.lat}");
+    print("lng: ${provider.lng}");
+    print("pickedFile: ${provider.pickedFile}");
+    */
+    widget.controller
+        .sendPhoneNumber(context, provider.phone!, "technician", "register");
   }
 
   Future selectFile(FormInputProvider provider) async {
@@ -248,12 +262,15 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                         padding: const EdgeInsets.all(18),
                         child: Column(
                           children: [
-                            const Text(
-                              'What is your specialized service area(s)?',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'Roboto',
-                                color: Colors.white,
+                            const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'What is your specialized service area(s)?',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: 'Roboto',
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -263,14 +280,14 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   checkColor: Colors.black,
                                   fillColor: MaterialStateProperty.resolveWith(
                                       getColor),
-                                  value: checkboxValues[0],
+                                  value: _checkboxValues[0],
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      checkboxValues[0] = value!;
+                                      _checkboxValues[0] = value!;
                                       validateCheckbox();
                                     });
                                     widget.controller.checkboxStateChange(
-                                        checkboxValues,
+                                        _checkboxValues,
                                         0,
                                         "Plumbing",
                                         provider);
@@ -288,14 +305,14 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   checkColor: Colors.black,
                                   fillColor: MaterialStateProperty.resolveWith(
                                       getColor),
-                                  value: checkboxValues[1],
+                                  value: _checkboxValues[1],
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      checkboxValues[1] = value!;
+                                      _checkboxValues[1] = value!;
                                       validateCheckbox();
                                     });
                                     widget.controller.checkboxStateChange(
-                                        checkboxValues,
+                                        _checkboxValues,
                                         1,
                                         "Aircon Servicing",
                                         provider);
@@ -317,14 +334,14 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   checkColor: Colors.black,
                                   fillColor: MaterialStateProperty.resolveWith(
                                       getColor),
-                                  value: checkboxValues[2],
+                                  value: _checkboxValues[2],
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      checkboxValues[2] = value!;
+                                      _checkboxValues[2] = value!;
                                       validateCheckbox();
                                     });
                                     widget.controller.checkboxStateChange(
-                                        checkboxValues,
+                                        _checkboxValues,
                                         2,
                                         "Roof Servicing",
                                         provider);
@@ -342,14 +359,14 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   checkColor: Colors.black,
                                   fillColor: MaterialStateProperty.resolveWith(
                                       getColor),
-                                  value: checkboxValues[3],
+                                  value: _checkboxValues[3],
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      checkboxValues[3] = value!;
+                                      _checkboxValues[3] = value!;
                                       validateCheckbox();
                                     });
                                     widget.controller.checkboxStateChange(
-                                        checkboxValues,
+                                        _checkboxValues,
                                         3,
                                         "Electrical & Wiring",
                                         provider);
@@ -371,14 +388,14 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   checkColor: Colors.black,
                                   fillColor: MaterialStateProperty.resolveWith(
                                       getColor),
-                                  value: checkboxValues[4],
+                                  value: _checkboxValues[4],
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      checkboxValues[4] = value!;
+                                      _checkboxValues[4] = value!;
                                       validateCheckbox();
                                     });
                                     widget.controller.checkboxStateChange(
-                                        checkboxValues,
+                                        _checkboxValues,
                                         4,
                                         "Window & Door",
                                         provider);
@@ -396,14 +413,14 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   checkColor: Colors.black,
                                   fillColor: MaterialStateProperty.resolveWith(
                                       getColor),
-                                  value: checkboxValues[5],
+                                  value: _checkboxValues[5],
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      checkboxValues[5] = value!;
+                                      _checkboxValues[5] = value!;
                                       validateCheckbox();
                                     });
                                     widget.controller.checkboxStateChange(
-                                        checkboxValues,
+                                        _checkboxValues,
                                         5,
                                         "Painting",
                                         provider);
@@ -420,12 +437,15 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                               ],
                             ),
                             const SizedBox(height: 25),
-                            const Text(
-                              'Briefly state your experience with the service area(s):',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'Roboto',
-                                color: Colors.white,
+                            const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Briefly state your experience with the service area(s):',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: 'Roboto',
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -443,64 +463,80 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            Container(
-                              margin: const EdgeInsets.all(20),
-                              padding: const EdgeInsets.only(left: 8, right: 8),
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                              ),
-                              child: DropdownButton<String>(
-                                value: _selectedValue,
-                                isExpanded: true,
-                                items: <DropdownMenuItem<String>>[
-                                  const DropdownMenuItem<String>(
-                                    value: 'Select your state',
-                                    child: Text('Select your state'),
+                            Row(
+                              children: [
+                                const Text(
+                                  'State:',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'Roboto',
+                                    color: Colors.white,
                                   ),
-                                  ...<String>[
-                                    'Kuala Lumpur / Selangor',
-                                    'Putrajaya',
-                                    'Johor',
-                                    'Kedah',
-                                    'Kelantan',
-                                    'Melaka',
-                                    'Negeri Sembilan',
-                                    'Pahang',
-                                    'Perak',
-                                    'Perlis',
-                                    'Pulau Pinang',
-                                    'Terengganu',
-                                    'Sabah',
-                                    'Sarawak'
-                                  ].map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                      ),
-                                    );
-                                  }).toList(),
-                                ],
-                                onChanged: (newValue) {
-                                  _selectedValue = newValue;
-                                  checkCitySelected();
-                                  provider.saveCity = _selectedValue!;
-                                },
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
                                 ),
-                                dropdownColor: Colors.white,
-                              ),
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.all(20),
+                                    padding: const EdgeInsets.only(
+                                        left: 8, right: 8),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                    ),
+                                    child: DropdownButton<String>(
+                                      value: _selectedValue,
+                                      items: <DropdownMenuItem<String>>[
+                                        const DropdownMenuItem<String>(
+                                          value: 'Select your state',
+                                          child: Text('Select your state'),
+                                        ),
+                                        ...<String>[
+                                          'Kuala Lumpur / Selangor',
+                                          'Putrajaya',
+                                          'Johor',
+                                          'Kedah',
+                                          'Kelantan',
+                                          'Melaka',
+                                          'Negeri Sembilan',
+                                          'Pahang',
+                                          'Perak',
+                                          'Perlis',
+                                          'Pulau Pinang',
+                                          'Terengganu',
+                                          'Sabah',
+                                          'Sarawak'
+                                        ].map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          },
+                                        ).toList(),
+                                      ],
+                                      onChanged: (newValue) {
+                                        _selectedValue = newValue;
+                                        checkCitySelected();
+                                        provider.saveCity = _selectedValue!;
+                                      },
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                      dropdownColor: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 10),
-                            const Text(
-                              'Address:',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'Roboto',
-                                color: Colors.white,
+                            const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Address:',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: 'Roboto',
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -521,6 +557,9 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   keyboardType: TextInputType.text,
                                   decoration: const InputDecoration(
                                     hintText: 'Pick your address here',
+                                    hintStyle: TextStyle(
+                                      color: Color.fromARGB(255, 48, 48, 48),
+                                    ),
                                     border: InputBorder.none,
                                   ),
                                 ),

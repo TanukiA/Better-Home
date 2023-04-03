@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+import 'package:authentication/models/form_input_provider.dart';
 
-class Firestore extends ChangeNotifier {
+class Database extends ChangeNotifier {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
@@ -45,12 +49,35 @@ class Firestore extends ChangeNotifier {
     return documentSnapshot;
   }
 
-  Future<void> addTechnicianData(Map<String, dynamic> technicianData) async {
-    await _firebaseFirestore
-        .collection('technicians')
-        .add(technicianData)
-        .then((value) => print('Technician added'))
-        .catchError((error) => print('Failed to add technician: $error'));
+  Future<void> addTechnicianData(
+      Map<String, dynamic> technicianData, FormInputProvider provider) async {
+    try {
+      DocumentReference documentReference = await _firebaseFirestore
+          .collection('technicians')
+          .add(technicianData);
+
+      final pickedFile = provider.pickedFile;
+
+      if (documentReference != null && pickedFile != null) {
+        uploadFile(documentReference.id, pickedFile);
+      }
+    } catch (e) {
+      print('Failed to add technician: $e');
+    }
+  }
+
+  Future<void> uploadFile(String documentID, PlatformFile pickedFile) async {
+    final path = 'files/${pickedFile.name}';
+    final file = File(pickedFile.path!);
+
+    final ref = _firebaseStorage.ref().child(path);
+    UploadTask uploadTask = ref.putFile(file);
+    final taskSnapshot = await uploadTask.whenComplete(() {});
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+    _firebaseFirestore.collection('technicians').doc(documentID).update({
+      'pickedFile': downloadUrl,
+    });
   }
 
   static Future<DocumentSnapshot<Map<String, dynamic>>>
