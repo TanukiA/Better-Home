@@ -5,7 +5,6 @@ import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/views/verification_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:better_home/utils.dart';
 
@@ -112,11 +111,6 @@ class AuthProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       showSnackBar(context, "Invalid OTP. Please try again.");
-    } catch (e) {
-      _isLoading = false;
-      notifyListeners();
-      showSnackBar(context, "Something went wrong. Please try again.");
-      print("Error2: $e");
     }
   }
 

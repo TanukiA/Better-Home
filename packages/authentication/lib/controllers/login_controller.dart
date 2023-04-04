@@ -1,5 +1,6 @@
 import 'package:better_home/technician.dart';
 import 'package:better_home/user.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_db/models/database.dart';
@@ -11,7 +12,14 @@ class LoginController extends ControllerMVC {
   User get user => _user;
 
   LoginController() {
-    _user = Technician();
+    _user = Technician(
+        address: '',
+        city: '',
+        exp: '',
+        lat: 0.0,
+        lng: 0.0,
+        specs: [],
+        pickedFile: PlatformFile(name: '', size: 0));
   }
 
   bool validPhoneFormat(String phone) {

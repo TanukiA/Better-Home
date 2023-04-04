@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 class Customer extends User {
   String? id;
 
-  Customer({String phone = "", String name = "", String email = ""})
+  Customer({String? phone, String? name, String? email})
       : super(phone: phone, name: name, email: email);
 
   retrieveLoginData(String phoneNumber) async {

@@ -2,6 +2,7 @@ import 'package:authentication/models/form_input_provider.dart';
 import 'package:authentication/views/first_screen.dart';
 import 'package:better_home/customer.dart';
 import 'package:better_home/technician.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -71,7 +72,14 @@ abstract class User extends ModelMVC {
             firestore.addCustomerData(customerData);
             customer.login(context, phoneNumber);
           } else if (userType == "technician" && purpose == "login") {
-            Technician technician = Technician();
+            Technician technician = Technician(
+                address: '',
+                city: '',
+                exp: '',
+                lat: 0.0,
+                lng: 0.0,
+                specs: [],
+                pickedFile: PlatformFile(name: '', size: 0));
             technician.login(context, phoneNumber);
           } else if (userType == "technician" && purpose == "register") {
             final fp = Provider.of<FormInputProvider>(context, listen: false);
@@ -79,13 +87,13 @@ abstract class User extends ModelMVC {
               phone: fp.phone!.trim(),
               name: fp.name!.trim(),
               email: fp.email!.trim(),
-              specs: fp.specs,
+              specs: fp.specs!,
               exp: fp.exp!.trim(),
-              city: fp.city,
+              city: fp.city!,
               address: fp.address!.trim(),
-              lat: fp.lat,
-              lng: fp.lng,
-              pickedFile: fp.pickedFile,
+              lat: fp.lat!,
+              lng: fp.lng!,
+              pickedFile: fp.pickedFile!,
             );
             fp.clearFormInputs();
             technician.mapRegisterData();

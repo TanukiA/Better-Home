@@ -21,16 +21,16 @@ class Technician extends User {
   Map<String, dynamic>? technicianData;
 
   Technician(
-      {String phone = "",
-      String name = "",
-      String email = "",
-      List<String>? specs = const [],
-      String? exp = "",
-      String? city = "",
-      String? address = "",
-      double? lat = 0.0,
-      double? lng = 0.0,
-      PlatformFile? pickedFile})
+      {String? phone,
+      String? name,
+      String? email,
+      required List<String> this.specs,
+      required String this.exp,
+      required String this.city,
+      required String this.address,
+      required double this.lat,
+      required double this.lng,
+      required PlatformFile this.pickedFile})
       : super(phone: phone, name: name, email: email);
 
   retrieveLoginData(String phoneNumber) async {
@@ -65,7 +65,7 @@ class Technician extends User {
   void saveTechnicianData(BuildContext context) {
     Database firestore = Database();
     final provider = Provider.of<FormInputProvider>(context, listen: false);
-    firestore.addTechnicianData(technicianData!, provider);
+    firestore.addTechnicianData(technicianData!, pickedFile!);
   }
 
   @override

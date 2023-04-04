@@ -50,13 +50,11 @@ class Database extends ChangeNotifier {
   }
 
   Future<void> addTechnicianData(
-      Map<String, dynamic> technicianData, FormInputProvider provider) async {
+      Map<String, dynamic> technicianData, PlatformFile pickedFile) async {
     try {
       DocumentReference documentReference = await _firebaseFirestore
           .collection('technicians')
           .add(technicianData);
-
-      final pickedFile = provider.pickedFile;
 
       if (documentReference != null && pickedFile != null) {
         uploadFile(documentReference.id, pickedFile);

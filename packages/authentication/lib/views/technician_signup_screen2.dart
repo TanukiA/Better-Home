@@ -44,9 +44,9 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
     _checkboxValues = provider.checkboxValues!;
     _expController = TextEditingController(text: provider.exp);
     _addressController = TextEditingController(text: provider.address);
-    provider.city == null
-        ? _selectedValue = "Select your state"
-        : _selectedValue = provider.city;
+    provider.city != null
+        ? _selectedValue = provider.city
+        : _selectedValue = null;
     validateCheckbox();
     checkCitySelected();
     checkExpField();
@@ -483,10 +483,15 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                     ),
                                     child: DropdownButton<String>(
                                       value: _selectedValue,
-                                      items: <DropdownMenuItem<String>>[
+                                      items: [
                                         const DropdownMenuItem<String>(
-                                          value: 'Select your state',
-                                          child: Text('Select your state'),
+                                          value: null,
+                                          child: Text(
+                                            'Select your state',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
                                         ),
                                         ...<String>[
                                           'Kuala Lumpur / Selangor',
@@ -503,14 +508,12 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                           'Terengganu',
                                           'Sabah',
                                           'Sarawak'
-                                        ].map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          },
-                                        ).toList(),
+                                        ].map((String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
                                       ],
                                       onChanged: (newValue) {
                                         _selectedValue = newValue;
@@ -584,12 +587,17 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                                   child: const Text('Select file'),
                                 ),
                                 const SizedBox(width: 10),
-                                Text(
-                                  provider.fileName ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontFamily: 'Roboto',
-                                    color: Colors.white,
+                                Container(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 200),
+                                  child: Text(
+                                    provider.fileName ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'Roboto',
+                                      color: Colors.white,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
