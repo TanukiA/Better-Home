@@ -127,18 +127,6 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
   }
 
   void signupBtnClicked() {
-    /*
-    print("phone: ${provider.phone}");
-    print("name: ${provider.name}");
-    print("email: ${provider.email}");
-    print("spes: ${provider.specs}");
-    print("exp: ${provider.exp}");
-    print("city: ${provider.city}");
-    print("address: ${provider.address}");
-    print("lat: ${provider.lat}");
-    print("lng: ${provider.lng}");
-    print("pickedFile: ${provider.pickedFile}");
-    */
     widget.controller
         .sendPhoneNumber(context, provider.phone!, "technician", "register");
   }
@@ -570,7 +558,7 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                             ),
                             const SizedBox(height: 25),
                             const Text(
-                              'Upload verification document (PDF or Doc) if any',
+                              'Upload verification document (PDF or Doc), if any:',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: 'Roboto',

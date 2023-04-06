@@ -93,7 +93,9 @@ abstract class User extends ModelMVC {
               address: fp.address!.trim(),
               lat: fp.lat!,
               lng: fp.lng!,
-              pickedFile: fp.pickedFile!,
+              pickedFile: fp.pickedFile != null
+                  ? fp.pickedFile!
+                  : PlatformFile(name: '', size: 0),
             );
             fp.clearFormInputs();
             technician.mapRegisterData();

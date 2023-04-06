@@ -13,7 +13,7 @@ class LocationController extends ControllerMVC {
 
   MapService get map => _map;
   LocationController() {
-    _map = MapService(this);
+    _map = MapService();
   }
 
   Future<void> handleSearchButton(

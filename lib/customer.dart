@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Customer extends User {
-  String? id;
+  String? _id;
 
   Customer({String? phone, String? name, String? email})
       : super(phone: phone, name: name, email: email);
@@ -16,7 +16,7 @@ class Customer extends User {
     final customerDoc = await Database.getCustomerByPhoneNumber(phoneNumber);
 
     if (customerDoc.exists) {
-      id = customerDoc.id;
+      _id = customerDoc.id;
       name = customerDoc['name'];
       email = customerDoc['email'];
       phone = customerDoc['phoneNumber'];
@@ -37,7 +37,7 @@ class Customer extends User {
     retrieveLoginData(phoneNumber);
 
     Map<String, dynamic> customerData = {
-      'id': id,
+      'id': _id,
       'phoneNumber': phone,
       'name': name,
       'email': email,

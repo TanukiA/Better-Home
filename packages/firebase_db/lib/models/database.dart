@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
-import 'package:authentication/models/form_input_provider.dart';
 
 class Database extends ChangeNotifier {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
@@ -56,7 +54,8 @@ class Database extends ChangeNotifier {
           .collection('technicians')
           .add(technicianData);
 
-      if (documentReference != null && pickedFile != null) {
+      if (documentReference != null &&
+          pickedFile != PlatformFile(name: '', size: 0)) {
         uploadFile(documentReference.id, pickedFile);
       }
     } catch (e) {
@@ -65,7 +64,7 @@ class Database extends ChangeNotifier {
   }
 
   Future<void> uploadFile(String documentID, PlatformFile pickedFile) async {
-    final path = 'files/${pickedFile.name}';
+    final path = 'technicianDoc/${pickedFile.name}';
     final file = File(pickedFile.path!);
 
     final ref = _firebaseStorage.ref().child(path);

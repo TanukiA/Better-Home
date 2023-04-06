@@ -24,6 +24,17 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    final ButtonStyle btnStyle = ElevatedButton.styleFrom(
+        textStyle: const TextStyle(
+          fontSize: 15,
+          fontFamily: 'Roboto',
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        fixedSize: const Size(130, 80),
+        elevation: 5);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(152, 161, 127, 1),
@@ -48,23 +59,141 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
           ),
         ],
       ),
-      body: Container(
-        height: size.height,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(152, 161, 127, 1),
-              Color(0xFFE8E5D4),
-            ],
-            stops: [0.2, 0.6],
+      body: SingleChildScrollView(
+        child: Container(
+          height: size.height,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromRGBO(152, 161, 127, 1),
+                Color(0xFFE8E5D4),
+              ],
+              stops: [0.15, 0.5],
+            ),
           ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [],
+          child: Center(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 40.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'BetterHome.',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontFamily: 'Roboto',
+                        color: Colors.white,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const Text(
+                  'solutions for your home',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontFamily: 'Roboto',
+                    color: Colors.white,
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(30),
+                  padding: const EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/renovation_img.jpg',
+                        width: size.width * 0.3,
+                        height: size.height * 0.2,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // Handle button 1 press
+                            },
+                            style: btnStyle,
+                            child: const Text('Plumbing'),
+                          ),
+                          const SizedBox(width: 22),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Handle button 1 press
+                            },
+                            style: btnStyle,
+                            child: const Text(
+                              'Aircon Servicing',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 22),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // Handle button 1 press
+                            },
+                            style: btnStyle,
+                            child: const Text(
+                              'Roof Servicing',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(width: 22),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Handle button 1 press
+                            },
+                            style: btnStyle,
+                            child: const Text(
+                              'Electrical & Wiring',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 22),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // Handle button 1 press
+                            },
+                            style: btnStyle,
+                            child: const Text(
+                              'Window & Door',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(width: 22),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Handle button 1 press
+                            },
+                            style: btnStyle,
+                            child: const Text('Painting'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

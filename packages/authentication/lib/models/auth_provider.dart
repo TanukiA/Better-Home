@@ -21,7 +21,10 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   Map<String, dynamic> get userData => _userData!;
 
-  AuthProvider();
+  AuthProvider() {
+    checkCustomerSignIn();
+    checkTechnicianSignIn();
+  }
 
   void checkCustomerSignIn() async {
     final SharedPreferences s = await SharedPreferences.getInstance();

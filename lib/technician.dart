@@ -64,7 +64,6 @@ class Technician extends User {
 
   void saveTechnicianData(BuildContext context) {
     Database firestore = Database();
-    final provider = Provider.of<FormInputProvider>(context, listen: false);
     firestore.addTechnicianData(technicianData!, pickedFile!);
   }
 
