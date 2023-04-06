@@ -44,13 +44,8 @@ abstract class User extends ModelMVC {
     return regex.hasMatch(email);
   }
 
-  static void verifyOTP(
-      BuildContext context,
-      String userOTP,
-      String verificationId,
-      String userType,
-      String purpose,
-      String phoneNumber) {
+  void verifyOTP(BuildContext context, String userOTP, String verificationId,
+      String userType, String purpose, String phoneNumber) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     ap.verifyOTP(
         context: context,
@@ -61,7 +56,7 @@ abstract class User extends ModelMVC {
             Customer customer = Customer();
             customer.login(context, phoneNumber);
           } else if (userType == "customer" && purpose == "register") {
-            final fp = Provider.of<FormInputProvider>(context, listen: false);
+            final fp = Provider.of<FormInputProvider>(context);
             Customer customer = Customer(
                 phone: fp.phone!.trim(),
                 name: fp.name!.trim(),

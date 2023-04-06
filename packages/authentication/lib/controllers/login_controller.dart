@@ -33,7 +33,7 @@ class LoginController extends ControllerMVC {
 
   void verifyOTP(BuildContext context, String userOTP, String verificationId,
       String userType, String purpose, String phoneNumber) {
-    return User.verifyOTP(
+    return _user.verifyOTP(
         context, userOTP, verificationId, userType, purpose, phoneNumber);
   }
 

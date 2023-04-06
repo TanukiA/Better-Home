@@ -9,6 +9,7 @@ import 'package:authentication/views/text_field_container.dart';
 import 'package:better_home/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 
 class TechnicianSignupScreen extends StatefulWidget {
   const TechnicianSignupScreen({Key? key, required this.controller})
@@ -16,10 +17,11 @@ class TechnicianSignupScreen extends StatefulWidget {
   final RegistrationController controller;
 
   @override
-  State<TechnicianSignupScreen> createState() => _TechnicianSignupScreenState();
+  StateMVC<TechnicianSignupScreen> createState() =>
+      _TechnicianSignupScreenState();
 }
 
-class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
+class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
   late User _user;
   bool _isValidName = false;
   bool _isValidEmail = false;
@@ -35,7 +37,7 @@ class _TechnicianSignupScreenState extends State<TechnicianSignupScreen> {
   void initState() {
     _user = widget.controller.user;
     super.initState();
-    provider = Provider.of<FormInputProvider>(context, listen: false);
+    provider = Provider.of<FormInputProvider>(context);
     _nameController = TextEditingController(text: provider.name);
     _emailController = TextEditingController(text: provider.email);
     _phoneController = TextEditingController(text: provider.phone);

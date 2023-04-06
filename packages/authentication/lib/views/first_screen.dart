@@ -6,6 +6,7 @@ import 'package:authentication/views/technician_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:service/controllers/customer_controller.dart';
 
 class FirstScreen extends StatelessWidget {
   const FirstScreen({super.key});
@@ -48,7 +49,9 @@ class FirstScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CustomerHomeScreen(
-                                  controller: LoginController())))
+                                    loginCon: LoginController(),
+                                    cusCon: CustomerController(),
+                                  )))
                       : Navigator.push(
                           context,
                           MaterialPageRoute(

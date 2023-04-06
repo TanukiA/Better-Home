@@ -1,6 +1,5 @@
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/form_input_provider.dart';
-import 'package:better_home/technician.dart';
 import 'package:better_home/user.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:file_picker/file_picker.dart';
@@ -9,6 +8,7 @@ import 'package:map/controllers/location_controller.dart';
 import 'package:map/views/search_place_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:authentication/views/technician_signup_screen.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 
 class TechnicianSignupScreen2 extends StatefulWidget {
   const TechnicianSignupScreen2({Key? key, required this.controller})
@@ -16,21 +16,21 @@ class TechnicianSignupScreen2 extends StatefulWidget {
   final RegistrationController controller;
 
   @override
-  State<TechnicianSignupScreen2> createState() =>
+  StateMVC<TechnicianSignupScreen2> createState() =>
       _TechnicianSignupScreen2State();
 }
 
-class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
+class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
   late User _user;
   bool _isValidSpec = false;
   bool _isValidExp = false;
   bool _isValidCity = false;
   bool _isValidAddress = false;
   bool _isAllValid = false;
-  late List<bool> _checkboxValues;
   String? _selectedValue;
   PlatformFile? pickedFile;
   String fileName = "";
+  late List<bool> _checkboxValues;
 
   late FormInputProvider provider;
   late TextEditingController _expController;
@@ -124,11 +124,6 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
         _isAllValid = true;
       }
     });
-  }
-
-  void signupBtnClicked() {
-    widget.controller
-        .sendPhoneNumber(context, provider.phone!, "technician", "register");
   }
 
   Future selectFile(FormInputProvider provider) async {
@@ -592,7 +587,13 @@ class _TechnicianSignupScreen2State extends State<TechnicianSignupScreen2> {
                             ),
                             const SizedBox(height: 30),
                             ElevatedButton(
-                              onPressed: _isAllValid ? signupBtnClicked : null,
+                              onPressed: _isAllValid
+                                  ? () => widget.controller.sendPhoneNumber(
+                                      context,
+                                      provider.phone!,
+                                      "technician",
+                                      "register")
+                                  : null,
                               style: signupBtnStyle.copyWith(
                                 backgroundColor: backgroundColor,
                               ),

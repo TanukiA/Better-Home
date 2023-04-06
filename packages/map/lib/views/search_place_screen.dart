@@ -35,7 +35,7 @@ class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
   void initState() {
     _map = widget.controller.map;
     super.initState();
-    provider = Provider.of<FormInputProvider>(context, listen: false);
+    provider = Provider.of<FormInputProvider>(context);
   }
 
   @override

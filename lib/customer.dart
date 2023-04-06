@@ -5,6 +5,7 @@ import 'package:authentication/views/customer_home_screen.dart';
 import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:service/controllers/customer_controller.dart';
 
 class Customer extends User {
   String? _id;
@@ -49,7 +50,9 @@ class Customer extends User {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                CustomerHomeScreen(controller: LoginController())));
+            builder: (context) => CustomerHomeScreen(
+                  loginCon: LoginController(),
+                  cusCon: CustomerController(),
+                )));
   }
 }

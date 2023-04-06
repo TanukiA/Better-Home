@@ -82,7 +82,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
 
   void showError2() {
     showDialogBox(context, "Unapproved account",
-        "Please wait for admin's approval via email.");
+        "Please wait for admin's approval email.");
   }
 
   @override

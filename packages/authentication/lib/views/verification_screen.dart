@@ -6,6 +6,7 @@ import 'package:better_home/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 
 class VerificationScreen extends StatefulWidget {
   const VerificationScreen(
@@ -27,10 +28,10 @@ class VerificationScreen extends StatefulWidget {
   final Function onResendPressed;
 
   @override
-  State<VerificationScreen> createState() => _VerificationScreenState();
+  StateMVC<VerificationScreen> createState() => _VerificationScreenState();
 }
 
-class _VerificationScreenState extends State<VerificationScreen> {
+class _VerificationScreenState extends StateMVC<VerificationScreen> {
   late User _user;
   String? otpCode;
 

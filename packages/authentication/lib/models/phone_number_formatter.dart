@@ -30,7 +30,7 @@ class MalaysiaPhoneNumberFormatter extends TextInputFormatter {
     }
 
     return TextEditingValue(
-        text: newValue.text,
-        selection: TextSelection.collapsed(offset: newValue.text.length));
+        text: digitsOnly,
+        selection: TextSelection.collapsed(offset: digitsOnly.length));
   }
 }

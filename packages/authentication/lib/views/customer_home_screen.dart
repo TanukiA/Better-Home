@@ -1,23 +1,31 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:better_home/user.dart';
+import 'package:better_home/customer.dart';
 import 'package:flutter/material.dart';
+import 'package:service/controllers/customer_controller.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:better_home/bottom_nav_bar.dart';
 
 class CustomerHomeScreen extends StatefulWidget {
-  const CustomerHomeScreen({Key? key, required this.controller})
+  const CustomerHomeScreen(
+      {Key? key, required this.loginCon, required this.cusCon})
       : super(key: key);
-  final LoginController controller;
+  final LoginController loginCon;
+  final CustomerController cusCon;
 
   @override
-  State<CustomerHomeScreen> createState() => _CustomerHomeScreenState();
+  StateMVC<CustomerHomeScreen> createState() => _CustomerHomeScreenState();
 }
 
-class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
+class _CustomerHomeScreenState extends StateMVC<CustomerHomeScreen> {
   late User _user;
+  late Customer _cus;
   int _currentIndex = 0;
 
   @override
   void initState() {
-    _user = widget.controller.user;
+    _user = widget.loginCon.user;
+    _cus = widget.cusCon.cus;
     super.initState();
   }
 
@@ -50,7 +58,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                   PopupMenuItem(
                     child: const Text('Logout'),
                     onTap: () {
-                      widget.controller.logout(context);
+                      widget.loginCon.logout(context);
                     },
                   ),
                 ];
@@ -120,7 +128,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              // Handle button 1 press
+                              widget.cusCon.setServiceCategoryScreen(
+                                  'Plumbing', context);
                             },
                             style: btnStyle,
                             child: const Text('Plumbing'),
@@ -128,7 +137,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                           const SizedBox(width: 22),
                           ElevatedButton(
                             onPressed: () {
-                              // Handle button 1 press
+                              widget.cusCon.setServiceCategoryScreen(
+                                  'Aircon Servicing', context);
                             },
                             style: btnStyle,
                             child: const Text(
@@ -144,7 +154,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              // Handle button 1 press
+                              widget.cusCon.setServiceCategoryScreen(
+                                  'Roof Servicing', context);
                             },
                             style: btnStyle,
                             child: const Text(
@@ -155,7 +166,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                           const SizedBox(width: 22),
                           ElevatedButton(
                             onPressed: () {
-                              // Handle button 1 press
+                              widget.cusCon.setServiceCategoryScreen(
+                                  'Electrical & Wiring', context);
                             },
                             style: btnStyle,
                             child: const Text(
@@ -171,7 +183,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              // Handle button 1 press
+                              widget.cusCon.setServiceCategoryScreen(
+                                  'Window & Door', context);
                             },
                             style: btnStyle,
                             child: const Text(
@@ -182,7 +195,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                           const SizedBox(width: 22),
                           ElevatedButton(
                             onPressed: () {
-                              // Handle button 1 press
+                              widget.cusCon.setServiceCategoryScreen(
+                                  'Painting', context);
                             },
                             style: btnStyle,
                             child: const Text('Painting'),
@@ -197,37 +211,13 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (int index) {
+        onTap: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.black, size: 33),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.build, color: Colors.black, size: 30),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message, color: Colors.black, size: 30),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications, color: Colors.black, size: 30),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon:
-                Icon(Icons.account_circle_sharp, color: Colors.black, size: 33),
-            label: '',
-          ),
-        ],
       ),
     );
   }

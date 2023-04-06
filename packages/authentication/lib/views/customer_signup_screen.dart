@@ -6,6 +6,7 @@ import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
 import 'package:better_home/utils.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 
 class CustomerSignupScreen extends StatefulWidget {
   const CustomerSignupScreen({Key? key, required this.controller})
@@ -13,10 +14,10 @@ class CustomerSignupScreen extends StatefulWidget {
   final RegistrationController controller;
 
   @override
-  State<CustomerSignupScreen> createState() => _CustomerSignupScreenState();
+  StateMVC<CustomerSignupScreen> createState() => _CustomerSignupScreenState();
 }
 
-class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
+class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
   late User _user;
   bool _isValidName = false;
   bool _isValidEmail = false;

@@ -40,7 +40,7 @@ class RegistrationController extends ControllerMVC {
 
   void verifyOTP(BuildContext context, String userOTP, String verificationId,
       String userType, String purpose, String phoneNumber) {
-    return User.verifyOTP(
+    return _user.verifyOTP(
         context, userOTP, verificationId, userType, purpose, phoneNumber);
   }
 
@@ -70,7 +70,7 @@ class RegistrationController extends ControllerMVC {
 
   void saveCustomerDataToProvider(
       BuildContext context, String phoneNumber, String name, String email) {
-    final provider = Provider.of<FormInputProvider>(context, listen: false);
+    final provider = Provider.of<FormInputProvider>(context);
     provider.savePhone = phoneNumber;
     provider.saveName = name;
     provider.saveEmail = email;
