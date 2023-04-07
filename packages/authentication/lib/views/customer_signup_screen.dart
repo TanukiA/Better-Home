@@ -270,7 +270,7 @@ class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
                               MaterialPageRoute(
                                 builder: (context) => LoginScreen(
                                   userType: 'customer',
-                                  controller: LoginController(),
+                                  controller: LoginController("customer"),
                                 ),
                               ));
                         },

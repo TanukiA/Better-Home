@@ -1,3 +1,4 @@
+import 'package:better_home/customer.dart';
 import 'package:better_home/technician.dart';
 import 'package:better_home/user.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,15 +12,22 @@ class LoginController extends ControllerMVC {
 
   User get user => _user;
 
-  LoginController() {
-    _user = Technician(
-        address: '',
-        city: '',
-        exp: '',
-        lat: 0.0,
-        lng: 0.0,
-        specs: [],
-        pickedFile: PlatformFile(name: '', size: 0));
+  LoginController(String userType) {
+    if (userType == 'technician') {
+      _user = Technician(
+          address: '',
+          city: '',
+          exp: '',
+          lat: 0.0,
+          lng: 0.0,
+          specs: [],
+          pickedFile: PlatformFile(name: '', size: 0));
+    } else if (userType == 'customer') {
+      _user = Customer();
+    } else {
+      throw Exception('Invalid userType');
+    }
+    _db = Database();
   }
 
   bool validPhoneFormat(String phone) {
@@ -28,7 +36,7 @@ class LoginController extends ControllerMVC {
 
   void sendPhoneNumber(BuildContext context, String phoneInput, String userType,
       String purpose) {
-    return User.sendPhoneNumber(context, phoneInput, userType, purpose);
+    return _user.sendPhoneNumber(context, phoneInput, userType, purpose);
   }
 
   void verifyOTP(BuildContext context, String userOTP, String verificationId,
@@ -38,14 +46,12 @@ class LoginController extends ControllerMVC {
   }
 
   Future<bool> isAccountExists(String phoneNumber, String userType) async {
-    _db = Database();
     String collectionName = '$userType' 's';
     final exist = await _db.checkAccountExistence(phoneNumber, collectionName);
     return exist;
   }
 
   Future<bool> isApprovedAccount(String phoneNumber) async {
-    _db = Database();
     final approved = await _db.checkApprovalStatus(phoneNumber);
     return approved;
   }

@@ -1,4 +1,3 @@
-import 'package:map/controllers/location_controller.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';

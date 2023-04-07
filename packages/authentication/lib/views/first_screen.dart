@@ -49,7 +49,7 @@ class FirstScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CustomerHomeScreen(
-                                    loginCon: LoginController(),
+                                    loginCon: LoginController("customer"),
                                     cusCon: CustomerController(),
                                   )))
                       : Navigator.push(
@@ -57,7 +57,7 @@ class FirstScreen extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => LoginScreen(
                               userType: 'customer',
-                              controller: LoginController(),
+                              controller: LoginController("customer"),
                             ),
                           ));
                 },
@@ -80,7 +80,7 @@ class FirstScreen extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => LoginScreen(
                               userType: 'technician',
-                              controller: LoginController(),
+                              controller: LoginController("technician"),
                             ),
                           ));
                 },

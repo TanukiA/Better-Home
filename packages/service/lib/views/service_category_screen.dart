@@ -81,13 +81,13 @@ class _ServiceCategoryScreenState extends StateMVC<ServiceCategoryScreen> {
         ),
       ),
       bottomNavigationBar: MyBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          userType: "customer"),
     );
   }
 }

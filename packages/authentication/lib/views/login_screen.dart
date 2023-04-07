@@ -215,7 +215,8 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => CustomerSignupScreen(
-                                  controller: RegistrationController(),
+                                  controller:
+                                      RegistrationController("customer"),
                                 ),
                               ));
                         } else {
@@ -223,7 +224,8 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => TechnicianSignupScreen(
-                                  controller: RegistrationController(),
+                                  controller:
+                                      RegistrationController("technician"),
                                 ),
                               ));
                         }

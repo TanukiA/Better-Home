@@ -72,8 +72,8 @@ class AuthProvider extends ChangeNotifier {
               MaterialPageRoute(
                 builder: (context) => VerificationScreen(
                   verificationId: verificationId,
-                  loginCon: LoginController(),
-                  registerCon: RegistrationController(),
+                  loginCon: LoginController(userType),
+                  registerCon: RegistrationController(userType),
                   userType: userType,
                   purpose: purpose,
                   phoneNumber: phoneNumber,

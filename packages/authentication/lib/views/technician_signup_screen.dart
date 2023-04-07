@@ -124,7 +124,7 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => TechnicianSignupScreen2(
-            controller: RegistrationController(),
+            controller: RegistrationController("technician"),
           ),
         ));
   }
@@ -311,7 +311,8 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
                                     MaterialPageRoute(
                                       builder: (context) => LoginScreen(
                                         userType: 'technician',
-                                        controller: LoginController(),
+                                        controller:
+                                            LoginController("technician"),
                                       ),
                                     ));
                               },

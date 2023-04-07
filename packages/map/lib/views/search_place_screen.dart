@@ -14,10 +14,10 @@ class SearchPlaceScreen extends StatefulWidget {
   final LocationController controller;
 
   @override
-  StateMVC<SearchPlaceScreen> createState() => _LoginScreenState();
+  StateMVC<SearchPlaceScreen> createState() => _SearchPlaceScreenState();
 }
 
-class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
+class _SearchPlaceScreenState extends StateMVC<SearchPlaceScreen> {
   late MapService _map;
   late GoogleMapController googleMapController;
   late FormInputProvider provider;
@@ -97,12 +97,15 @@ class _LoginScreenState extends StateMVC<SearchPlaceScreen> {
                   top: 20,
                   left: 30,
                   child: SizedBox(
-                    width: 120,
-                    height: 45,
+                    width: 124,
+                    height: 48,
                     child: ElevatedButton(
                       onPressed: () => widget.controller.handleSearchButton(
                           context, homeScaffoldKey, displayPrediction),
-                      child: const Text("Search Place"),
+                      child: const Text(
+                        "Search Place",
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
                 ),

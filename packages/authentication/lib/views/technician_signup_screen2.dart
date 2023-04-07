@@ -225,7 +225,7 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => TechnicianSignupScreen(
-                            controller: RegistrationController(),
+                            controller: RegistrationController("technician"),
                           ),
                         ));
                   },

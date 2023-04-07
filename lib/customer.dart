@@ -51,7 +51,7 @@ class Customer extends User {
         context,
         MaterialPageRoute(
             builder: (context) => CustomerHomeScreen(
-                  loginCon: LoginController(),
+                  loginCon: LoginController("customer"),
                   cusCon: CustomerController(),
                 )));
   }

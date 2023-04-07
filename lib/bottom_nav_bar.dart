@@ -8,9 +8,11 @@ class MyBottomNavigationBar extends StatelessWidget {
     Key? key,
     required this.currentIndex,
     required this.onTap,
+    required this.userType,
   }) : super(key: key);
 
   final int currentIndex;
+  final String userType;
   final void Function(int) onTap;
 
   @override
@@ -28,7 +30,7 @@ class MyBottomNavigationBar extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CustomerHomeScreen(
-                    loginCon: LoginController(),
+                    loginCon: LoginController(userType),
                     cusCon: CustomerController(),
                   ),
                 ),

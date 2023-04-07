@@ -39,7 +39,7 @@ class LocationController extends ControllerMVC {
         context,
         MaterialPageRoute(
             builder: (context) => TechnicianSignupScreen2(
-                  controller: RegistrationController(),
+                  controller: RegistrationController("technician"),
                 )),
       );
     } else {

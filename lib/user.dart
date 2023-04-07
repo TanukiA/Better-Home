@@ -28,8 +28,8 @@ abstract class User extends ModelMVC {
     }
   }
 
-  static void sendPhoneNumber(BuildContext context, String phoneInput,
-      String userType, String purpose) {
+  void sendPhoneNumber(BuildContext context, String phoneInput, String userType,
+      String purpose) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String phoneNumber = phoneInput.trim();
     ap.signInWithPhone(context, phoneNumber, userType, purpose);
