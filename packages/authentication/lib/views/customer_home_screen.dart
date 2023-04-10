@@ -67,147 +67,145 @@ class _CustomerHomeScreenState extends StateMVC<CustomerHomeScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: size.height,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromRGBO(152, 161, 127, 1),
-                Color(0xFFE8E5D4),
-              ],
-              stops: [0.15, 0.5],
-            ),
+      body: Container(
+        height: size.height,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromRGBO(152, 161, 127, 1),
+              Color(0xFFE8E5D4),
+            ],
+            stops: [0.15, 0.5],
           ),
-          child: Center(
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 40.0),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'BetterHome.',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontFamily: 'Roboto',
-                        color: Colors.white,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold,
-                      ),
+        ),
+        child: Center(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 40.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'BetterHome.',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontFamily: 'Roboto',
+                      color: Colors.white,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const Text(
-                  'solutions for your home',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontFamily: 'Roboto',
-                    color: Colors.white,
-                  ),
+              ),
+              const Text(
+                'solutions for your home',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontFamily: 'Roboto',
+                  color: Colors.white,
                 ),
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.all(30),
-                  padding: const EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'assets/renovation_img.jpg',
-                        width: size.width * 0.3,
-                        height: size.height * 0.2,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.cusCon.setServiceCategoryScreen(
-                                  'Plumbing', context);
-                            },
-                            style: btnStyle,
-                            child: const Text('Plumbing'),
-                          ),
-                          const SizedBox(width: 22),
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.cusCon.setServiceCategoryScreen(
-                                  'Aircon Servicing', context);
-                            },
-                            style: btnStyle,
-                            child: const Text(
-                              'Aircon Servicing',
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 22),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.cusCon.setServiceCategoryScreen(
-                                  'Roof Servicing', context);
-                            },
-                            style: btnStyle,
-                            child: const Text(
-                              'Roof Servicing',
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          const SizedBox(width: 22),
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.cusCon.setServiceCategoryScreen(
-                                  'Electrical & Wiring', context);
-                            },
-                            style: btnStyle,
-                            child: const Text(
-                              'Electrical & Wiring',
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 22),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.cusCon.setServiceCategoryScreen(
-                                  'Window & Door', context);
-                            },
-                            style: btnStyle,
-                            child: const Text(
-                              'Window & Door',
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          const SizedBox(width: 22),
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.cusCon.setServiceCategoryScreen(
-                                  'Painting', context);
-                            },
-                            style: btnStyle,
-                            child: const Text('Painting'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.all(30),
+                padding: const EdgeInsets.all(25),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
                 ),
-              ],
-            ),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/renovation_img.jpg',
+                      width: size.width * 0.44,
+                      height: size.height * 0.17,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            widget.cusCon
+                                .setServiceCategoryScreen('Plumbing', context);
+                          },
+                          style: btnStyle,
+                          child: const Text('Plumbing'),
+                        ),
+                        const SizedBox(width: 22),
+                        ElevatedButton(
+                          onPressed: () {
+                            widget.cusCon.setServiceCategoryScreen(
+                                'Aircon Servicing', context);
+                          },
+                          style: btnStyle,
+                          child: const Text(
+                            'Aircon Servicing',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 22),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            widget.cusCon.setServiceCategoryScreen(
+                                'Roof Servicing', context);
+                          },
+                          style: btnStyle,
+                          child: const Text(
+                            'Roof Servicing',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(width: 22),
+                        ElevatedButton(
+                          onPressed: () {
+                            widget.cusCon.setServiceCategoryScreen(
+                                'Electrical & Wiring', context);
+                          },
+                          style: btnStyle,
+                          child: const Text(
+                            'Electrical & Wiring',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 22),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            widget.cusCon.setServiceCategoryScreen(
+                                'Window & Door', context);
+                          },
+                          style: btnStyle,
+                          child: const Text(
+                            'Window & Door',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(width: 22),
+                        ElevatedButton(
+                          onPressed: () {
+                            widget.cusCon
+                                .setServiceCategoryScreen('Painting', context);
+                          },
+                          style: btnStyle,
+                          child: const Text('Painting'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -108,15 +108,12 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
   Future<void> continueBtnClicked() async {
     if (await widget.controller
         .isAccountExists(_phoneController.text, "technician")) {
-      showError();
+      if (mounted) {
+        widget.controller.showExistError(context);
+      }
     } else {
       pushToNextScreen();
     }
-  }
-
-  void showError() {
-    showDialogBox(context, "Phone number already exists",
-        "This phone number is already registered. Please login instead.");
   }
 
   void pushToNextScreen() {

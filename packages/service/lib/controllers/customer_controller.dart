@@ -2,6 +2,7 @@ import 'package:better_home/customer.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:service/views/service_category_screen.dart';
+import 'package:service/views/service_descript_screen.dart';
 
 class CustomerController extends ControllerMVC {
   late Customer _cus;
@@ -48,7 +49,40 @@ class CustomerController extends ControllerMVC {
           builder: (context) => ServiceCategoryScreen(
             serviceCategory: serviceCategory,
             services: services,
+            controller: CustomerController(),
           ),
         ));
+  }
+
+  void setServiceDescriptionScreen(
+      String serviceCategory, String serviceType, BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ServiceDescriptionScreen(
+            serviceCategory: serviceCategory,
+            serviceType: serviceType,
+            controller: CustomerController(),
+          ),
+        ));
+  }
+
+  Future<Map<String, dynamic>> retrieveServiceDescription(
+      String serviceCategory, String serviceType) async {
+    String serviceTitle = "$serviceCategory - $serviceType";
+    final descripTexts = await _cus.retrieveServiceDescription(serviceTitle);
+    return descripTexts;
+  }
+
+  List<String> retrieveExplanations(Map<String, dynamic> descripTexts) {
+    return List<String>.from(descripTexts['explanations']);
+  }
+
+  String retrievePriceRange(Map<String, dynamic> descripTexts) {
+    return descripTexts['priceRange'];
+  }
+
+  String retrieveImgPath(Map<String, dynamic> descripTexts) {
+    return descripTexts['img'];
   }
 }

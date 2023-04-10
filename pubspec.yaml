@@ -31,6 +31,7 @@ dependencies:
   mvc_pattern: ^8.12.0
   file_picker: ^5.2.5
   google_maps_flutter: ^2.2.5
+  mockito: ^5.4.0
 
 dev_dependencies:
   flutter_test:
@@ -47,3 +48,7 @@ flutter:
     - assets/people_img.svg
     - assets/betterhome_logo.png
     - assets/renovation_img.jpg
+    - assets/leakage_repair_img.jpeg
+    - assets/aircon_img.jpg
+    - assets/roof_repair_img.jpg
+    - assets/serviceDescription.json

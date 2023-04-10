@@ -1,13 +1,19 @@
+import 'package:better_home/customer.dart';
 import 'package:flutter/material.dart';
 import 'package:better_home/bottom_nav_bar.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:service/controllers/customer_controller.dart';
 
 class ServiceCategoryScreen extends StatefulWidget {
   const ServiceCategoryScreen(
-      {Key? key, required this.serviceCategory, required this.services})
+      {Key? key,
+      required this.serviceCategory,
+      required this.services,
+      required this.controller})
       : super(key: key);
   final String serviceCategory;
   final List<String> services;
+  final CustomerController controller;
 
   @override
   StateMVC<ServiceCategoryScreen> createState() =>
@@ -15,10 +21,12 @@ class ServiceCategoryScreen extends StatefulWidget {
 }
 
 class _ServiceCategoryScreenState extends StateMVC<ServiceCategoryScreen> {
+  late Customer _cus;
   int _currentIndex = 0;
 
   @override
   void initState() {
+    _cus = widget.controller.cus;
     super.initState();
   }
 
@@ -67,7 +75,10 @@ class _ServiceCategoryScreenState extends StateMVC<ServiceCategoryScreen> {
                 const SizedBox(height: 25),
                 ElevatedButton(
                   onPressed: () {
-                    // CONT
+                    widget.controller.setServiceDescriptionScreen(
+                        widget.serviceCategory,
+                        widget.services[index],
+                        context);
                   },
                   style: btnStyle,
                   child: Text(

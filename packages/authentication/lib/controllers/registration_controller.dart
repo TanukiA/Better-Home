@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:firebase_db/models/database.dart';
 import 'package:provider/provider.dart';
+import 'package:better_home/utils.dart';
 
 class RegistrationController extends ControllerMVC {
   late User _user;
@@ -73,6 +74,11 @@ class RegistrationController extends ControllerMVC {
     String collectionName = '$userType' 's';
     final exist = await _db.checkAccountExistence(phoneNumber, collectionName);
     return exist;
+  }
+
+  void showExistError(BuildContext context) {
+    showDialogBox(context, "Phone number already exists",
+        "This phone number is already registered. Please login instead.");
   }
 
   void saveCustomerDataToProvider(

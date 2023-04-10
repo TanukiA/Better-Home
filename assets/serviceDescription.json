@@ -1,0 +1,31 @@
+{
+    "Plumbing - Leakage Repair": {
+      "explanations": [
+        "Leaky pipes",
+        "Damaged / cracked pipes",
+        "Dripping taps",
+        "Toilet repair"
+      ],
+      "priceRange": "RM 100 - 140",
+      "img": "assets/leakage_repair_img.jpeg"
+    },
+    "Aircon Servicing - Aircon Repair / Install": {
+      "explanations": [
+        "Water leak",
+        "Aircon on and off issue",
+        "No cold air",
+        "Wall / Casette aircon installation"
+      ],
+      "priceRange": "RM 80 - 110",
+      "img": "assets/aircon_img.jpg"
+    },
+    "Roof Servicing - Leakage Repair": {
+      "explanations": [
+        "Inspect roofing",
+        "Long-term solution to leakage",
+        "Cover all types of roof"
+      ],
+      "priceRange": "RM 130 - 200",
+      "img": "assets/roof_repair_img.jpg"
+    }
+  }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:better_home/user.dart';
@@ -6,6 +8,7 @@ import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class Customer extends User {
   String? _id;
@@ -31,6 +34,15 @@ class Customer extends User {
       'email': email,
     };
     return customerData;
+  }
+
+  Future<Map<String, dynamic>> retrieveServiceDescription(
+      String serviceTitle) async {
+    final jsonString =
+        await rootBundle.loadString('assets/serviceDescription.json');
+    Map<String, dynamic> data = jsonDecode(jsonString);
+
+    return data[serviceTitle];
   }
 
   @override

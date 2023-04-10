@@ -5,7 +5,6 @@ import 'package:better_home/user.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
-import 'package:better_home/utils.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 class CustomerSignupScreen extends StatefulWidget {
@@ -83,7 +82,9 @@ class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
   Future<void> signupBtnClicked() async {
     if (await widget.controller
         .isAccountExists(_phoneController.text, "customer")) {
-      showError();
+      if (mounted) {
+        widget.controller.showExistError(context);
+      }
     } else {
       signupProcess();
     }
@@ -94,11 +95,6 @@ class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
         _nameController.text, _emailController.text);
     widget.controller.sendPhoneNumber(
         context, _phoneController.text, "customer", "register");
-  }
-
-  void showError() {
-    showDialogBox(context, "Phone number already exists",
-        "This phone number is already registered. Please login instead.");
   }
 
   @override
@@ -155,7 +151,6 @@ class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
 
     return GestureDetector(
       onTap: () {
-        // Dismiss the keyboard when user taps anywhere outside the TextFormField
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(

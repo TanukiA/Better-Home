@@ -1,3 +1,5 @@
+import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/views/login_screen.dart';
 import 'package:better_home/user.dart';
 import 'package:authentication/views/technician_home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -64,6 +66,33 @@ class Technician extends User {
   void saveTechnicianData(BuildContext context) {
     Database firestore = Database();
     firestore.addTechnicianData(technicianData!, pickedFile!);
+  }
+
+  void goToLoginScreen(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Success"),
+          content: const Text("You have signed up successfully."),
+          actions: [
+            ElevatedButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LoginScreen(
+                              userType: "technician",
+                              controller: LoginController("technician"),
+                            )));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

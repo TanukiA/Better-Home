@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_db/models/database.dart';
+import 'package:better_home/utils.dart';
 
 class LoginController extends ControllerMVC {
   late User _user;
@@ -54,6 +55,16 @@ class LoginController extends ControllerMVC {
   Future<bool> isApprovedAccount(String phoneNumber) async {
     final approved = await _db.checkApprovalStatus(phoneNumber);
     return approved;
+  }
+
+  void showUnregisteredError(BuildContext context) {
+    showDialogBox(context, "Unregistered phone number",
+        "Please login with a registered number.");
+  }
+
+  void showUnapprovedError(BuildContext context) {
+    showDialogBox(context, "Unapproved account",
+        "Please wait for admin's approval email.");
   }
 
   void logout(BuildContext context) {

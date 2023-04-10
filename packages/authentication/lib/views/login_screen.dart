@@ -7,7 +7,6 @@ import 'package:authentication/views/text_field_container.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:better_home/user.dart';
-import 'package:better_home/utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen(
@@ -54,7 +53,9 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
           .isAccountExists(_phoneController.text, widget.userType)) {
         loginProcess();
       } else {
-        showError1();
+        if (mounted) {
+          widget.controller.showUnregisteredError(context);
+        }
       }
     } else {
       if (await widget.controller
@@ -62,10 +63,14 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
         if (await widget.controller.isApprovedAccount(_phoneController.text)) {
           loginProcess();
         } else {
-          showError2();
+          if (mounted) {
+            widget.controller.showUnapprovedError(context);
+          }
         }
       } else {
-        showError1();
+        if (mounted) {
+          widget.controller.showUnregisteredError(context);
+        }
       }
     }
   }
@@ -73,16 +78,6 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
   void loginProcess() {
     widget.controller.sendPhoneNumber(
         context, _phoneController.text, widget.userType, "login");
-  }
-
-  void showError1() {
-    showDialogBox(context, "Unregistered phone number",
-        "Please login with a registered number.");
-  }
-
-  void showError2() {
-    showDialogBox(context, "Unapproved account",
-        "Please wait for admin's approval email.");
   }
 
   @override

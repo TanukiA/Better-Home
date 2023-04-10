@@ -95,7 +95,7 @@ abstract class User extends ModelMVC {
             fp.clearFormInputs();
             technician.mapRegisterData();
             technician.saveTechnicianData(context);
-            technician.login(context, phoneNumber);
+            technician.goToLoginScreen(context);
           }
         });
   }

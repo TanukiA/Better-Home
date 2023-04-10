@@ -56,6 +56,8 @@ class MyBottomNavigationBar extends StatelessWidget {
           label: '',
         ),
       ],
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
     );
   }
 }
