@@ -32,7 +32,6 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
   String fileName = "";
   late List<bool> _checkboxValues;
 
-  late FormInputProvider provider;
   late TextEditingController _expController;
   late TextEditingController _addressController;
 
@@ -40,7 +39,8 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
   void initState() {
     _user = widget.controller.user;
     super.initState();
-    provider = Provider.of<FormInputProvider>(context, listen: false);
+
+    final provider = Provider.of<FormInputProvider>(context, listen: false);
     _checkboxValues = provider.checkboxValues!;
     _expController = TextEditingController(text: provider.exp);
     _addressController = TextEditingController(text: provider.address);
@@ -151,6 +151,7 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final provider = Provider.of<FormInputProvider>(context);
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(

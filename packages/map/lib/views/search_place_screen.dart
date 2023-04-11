@@ -20,7 +20,6 @@ class SearchPlaceScreen extends StatefulWidget {
 class _SearchPlaceScreenState extends StateMVC<SearchPlaceScreen> {
   late MapService _map;
   late GoogleMapController googleMapController;
-  late FormInputProvider provider;
 
   String? selectedAddress;
   double? lat;
@@ -35,12 +34,12 @@ class _SearchPlaceScreenState extends StateMVC<SearchPlaceScreen> {
   void initState() {
     _map = widget.controller.map;
     super.initState();
-    provider = Provider.of<FormInputProvider>(context);
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final provider = Provider.of<FormInputProvider>(context);
 
     final ButtonStyle confirmBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(

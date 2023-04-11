@@ -6,7 +6,6 @@ import 'package:better_home/user.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/technician_signup_screen2.dart';
 import 'package:authentication/views/text_field_container.dart';
-import 'package:better_home/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -28,7 +27,6 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
   bool _isValidPhone = false;
   bool _isAllValid = false;
 
-  late FormInputProvider provider;
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
@@ -36,11 +34,13 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
   @override
   void initState() {
     _user = widget.controller.user;
+    final provider = Provider.of<FormInputProvider>(context, listen: false);
     super.initState();
-    provider = Provider.of<FormInputProvider>(context);
+
     _nameController = TextEditingController(text: provider.name);
     _emailController = TextEditingController(text: provider.email);
     _phoneController = TextEditingController(text: provider.phone);
+
     checkNameField();
     checkEmailField();
     checkPhoneField();
@@ -137,6 +137,8 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    final provider = Provider.of<FormInputProvider>(context);
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(

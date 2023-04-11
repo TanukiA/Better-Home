@@ -146,7 +146,12 @@ class _ServiceDescriptionScreenState
                           ),
                           const SizedBox(height: 30),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              widget.controller.setServiceRequestForm1(
+                                  widget.serviceCategory,
+                                  widget.serviceType,
+                                  context);
+                            },
                             style: btnStyle,
                             child: const Text('Request Service'),
                           ),
