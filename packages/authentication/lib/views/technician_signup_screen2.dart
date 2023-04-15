@@ -1,7 +1,7 @@
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/form_input_provider.dart';
 import 'package:better_home/user.dart';
-import 'package:authentication/views/text_field_container.dart';
+import 'package:better_home/text_field_container.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:map/controllers/location_controller.dart';
@@ -38,9 +38,9 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
   @override
   void initState() {
     _user = widget.controller.user;
+    final provider = Provider.of<FormInputProvider>(context, listen: false);
     super.initState();
 
-    final provider = Provider.of<FormInputProvider>(context, listen: false);
     _checkboxValues = provider.checkboxValues!;
     _expController = TextEditingController(text: provider.exp);
     _addressController = TextEditingController(text: provider.address);

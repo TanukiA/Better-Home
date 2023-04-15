@@ -3,10 +3,9 @@ import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/views/customer_signup_screen.dart';
 import 'package:authentication/models/phone_number_formatter.dart';
 import 'package:authentication/views/technician_signup_screen.dart';
-import 'package:authentication/views/text_field_container.dart';
+import 'package:better_home/text_field_container.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:better_home/user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen(
@@ -20,13 +19,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends StateMVC<LoginScreen> {
-  late User _user;
+  //late User _user;
   final TextEditingController _phoneController = TextEditingController();
   bool _isValid = false;
 
   @override
   void initState() {
-    _user = widget.controller.user;
+    //_user = widget.controller.user;
     super.initState();
 
     _phoneController.addListener(() {
@@ -39,12 +38,6 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
         }
       });
     });
-  }
-
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    super.dispose();
   }
 
   Future<void> loginBtnClicked() async {
@@ -78,6 +71,12 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
   void loginProcess() {
     widget.controller.sendPhoneNumber(
         context, _phoneController.text, widget.userType, "login");
+  }
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    super.dispose();
   }
 
   @override

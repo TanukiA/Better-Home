@@ -26,6 +26,10 @@ class AuthProvider extends ChangeNotifier {
     checkTechnicianSignIn();
   }
 
+  set setForceResendingToken(int value) {
+    _forceResendingToken = value;
+  }
+
   void checkCustomerSignIn() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     _isCustomerSignedIn = s.getBool("is_customer_signedin") ?? false;

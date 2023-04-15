@@ -3,7 +3,7 @@ import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/phone_number_formatter.dart';
 import 'package:better_home/user.dart';
 import 'package:authentication/views/login_screen.dart';
-import 'package:authentication/views/text_field_container.dart';
+import 'package:better_home/text_field_container.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 

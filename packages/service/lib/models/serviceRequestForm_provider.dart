@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
-class FormInputProvider with ChangeNotifier {
+class ServiceRequestFormProvider with ChangeNotifier {
   String? _address;
   double? _lat;
   double? _lng;

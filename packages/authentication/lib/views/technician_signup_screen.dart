@@ -5,7 +5,7 @@ import 'package:authentication/models/phone_number_formatter.dart';
 import 'package:better_home/user.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/technician_signup_screen2.dart';
-import 'package:authentication/views/text_field_container.dart';
+import 'package:better_home/text_field_container.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
