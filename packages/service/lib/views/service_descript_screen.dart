@@ -22,7 +22,6 @@ class ServiceDescriptionScreen extends StatefulWidget {
 
 class _ServiceDescriptionScreenState
     extends StateMVC<ServiceDescriptionScreen> {
-  late Customer _cus;
   int _currentIndex = 0;
   List<String> explanations = [];
   String priceRange = "";
@@ -31,7 +30,6 @@ class _ServiceDescriptionScreenState
 
   @override
   initState() {
-    _cus = widget.controller.cus;
     getTexts();
     super.initState();
   }
@@ -147,7 +145,7 @@ class _ServiceDescriptionScreenState
                           const SizedBox(height: 30),
                           ElevatedButton(
                             onPressed: () {
-                              widget.controller.setServiceRequestForm1(
+                              widget.controller.setServiceRequestForm(
                                   widget.serviceCategory,
                                   widget.serviceType,
                                   context);

@@ -4,13 +4,10 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
 import 'package:service/models/serviceRequestForm_provider.dart';
-import 'package:better_home/text_field_container.dart';
-import 'package:map/controllers/location_controller.dart';
-import 'package:map/views/search_place_screen.dart';
-import 'package:intl/intl.dart';
+import 'package:service/views/service_request_screen1.dart';
 
-class ServiceRequestForm1 extends StatefulWidget {
-  const ServiceRequestForm1(
+class ServiceRequestForm extends StatefulWidget {
+  const ServiceRequestForm(
       {Key? key,
       required this.serviceCategory,
       required this.serviceType,
@@ -21,13 +18,10 @@ class ServiceRequestForm1 extends StatefulWidget {
   final CustomerController controller;
 
   @override
-  StateMVC<ServiceRequestForm1> createState() => _ServiceRequestFormState1();
+  StateMVC<ServiceRequestForm> createState() => _ServiceRequestFormState();
 }
 
-class _ServiceRequestFormState1 extends StateMVC<ServiceRequestForm1> {
-  late Customer _cus;
-  late TextEditingController _addressController;
-  late TextEditingController _preferredDateController;
+class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
   TextEditingController email = TextEditingController();
   TextEditingController pass = TextEditingController();
   TextEditingController address = TextEditingController();
@@ -36,107 +30,18 @@ class _ServiceRequestFormState1 extends StateMVC<ServiceRequestForm1> {
 
   @override
   initState() {
-    _cus = widget.controller.cus;
-    final provider =
-        Provider.of<ServiceRequestFormProvider>(context, listen: false);
     super.initState();
-    _addressController = TextEditingController(text: provider.address);
-    _preferredDateController =
-        TextEditingController(text: provider.preferredDate);
-
-    _addressController.addListener(() {
-      setState(() {
-        checkAddressField();
-      });
-    });
   }
-
-  void checkAddressField() {}
 
   List<Step> stepList() => [
         Step(
           state: _activeStepIndex <= 0 ? StepState.editing : StepState.complete,
           isActive: _activeStepIndex >= 0,
           title: const Text('Appointment'),
-          content: Column(
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Address:',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SearchPlaceScreen(
-                              controller: LocationController(),
-                            )),
-                  );
-                },
-                child: TextFieldContainer(
-                  child: TextFormField(
-                    enabled: false,
-                    controller: _addressController,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(
-                      hintText: 'Pick your address here',
-                      hintStyle: TextStyle(
-                        color: Color.fromARGB(255, 48, 48, 48),
-                      ),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _preferredDateController,
-                onTap: () async {
-                  DateTime? date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (date != null) {
-                    _preferredDateController.text =
-                        DateFormat('yyyy-MM-dd').format(date);
-                  }
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Date',
-                  hintText: 'Select a date',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: email,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Email',
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                controller: pass,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                ),
-              ),
-            ],
+          content: ServiceRequestScreen1(
+            serviceCategory: widget.serviceCategory,
+            serviceType: widget.serviceType,
+            controller: widget.controller,
           ),
         ),
         Step(

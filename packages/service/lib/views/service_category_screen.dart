@@ -21,12 +21,10 @@ class ServiceCategoryScreen extends StatefulWidget {
 }
 
 class _ServiceCategoryScreenState extends StateMVC<ServiceCategoryScreen> {
-  late Customer _cus;
   int _currentIndex = 0;
 
   @override
   void initState() {
-    _cus = widget.controller.cus;
     super.initState();
   }
 

@@ -21,7 +21,6 @@ class TechnicianSignupScreen2 extends StatefulWidget {
 }
 
 class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
-  late User _user;
   bool _isValidSpec = false;
   bool _isValidExp = false;
   bool _isValidCity = false;
@@ -37,7 +36,6 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
 
   @override
   void initState() {
-    _user = widget.controller.user;
     final provider = Provider.of<FormInputProvider>(context, listen: false);
     super.initState();
 

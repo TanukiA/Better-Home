@@ -17,7 +17,6 @@ class CustomerSignupScreen extends StatefulWidget {
 }
 
 class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
-  late User _user;
   bool _isValidName = false;
   bool _isValidEmail = false;
   bool _isValidPhone = false;
@@ -28,7 +27,6 @@ class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
 
   @override
   void initState() {
-    _user = widget.controller.user;
     super.initState();
 
     _nameController.addListener(() {

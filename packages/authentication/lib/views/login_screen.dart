@@ -19,13 +19,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends StateMVC<LoginScreen> {
-  //late User _user;
   final TextEditingController _phoneController = TextEditingController();
   bool _isValid = false;
 
   @override
   void initState() {
-    //_user = widget.controller.user;
     super.initState();
 
     _phoneController.addListener(() {

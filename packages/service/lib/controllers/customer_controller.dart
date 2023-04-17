@@ -3,7 +3,7 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:service/views/service_category_screen.dart';
 import 'package:service/views/service_descript_screen.dart';
-import 'package:service/views/service_request_form1.dart';
+import 'package:service/views/service_request_form.dart';
 
 class CustomerController extends ControllerMVC {
   late Customer _cus;
@@ -87,12 +87,12 @@ class CustomerController extends ControllerMVC {
     return descripTexts['img'];
   }
 
-  void setServiceRequestForm1(
+  void setServiceRequestForm(
       String serviceCategory, String serviceType, BuildContext context) {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ServiceRequestForm1(
+          builder: (context) => ServiceRequestForm(
             serviceCategory: serviceCategory,
             serviceType: serviceType,
             controller: CustomerController(),
