@@ -13,7 +13,7 @@ class TextFieldContainer extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 3),
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-      width: size.width * 0.8,
+      width: size.width * 0.83,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
@@ -22,7 +22,7 @@ class TextFieldContainer extends StatelessWidget {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: const Offset(0, 3), // changes position of shadow
+            offset: const Offset(0, 3),
           ),
         ],
       ),

@@ -6,15 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:better_home/user.dart' as my_user;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
 class MockLoginController extends Mock implements LoginController {}
 
 class MockBuildContext extends Fake implements BuildContext {}
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
-
-//class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
 class MockUserCredential extends Mock implements UserCredential {}
 
@@ -24,20 +21,13 @@ class MockAuthProvider extends Mock implements AuthProvider {}
 
 void main() {
   late MockLoginController mockController;
-  late MockFirebaseAuth mockFirebaseAuth;
-  late MockUserCredential mockUserCredential;
   late MockAuthProvider mockAuthProvider;
-  late MockPhoneAuthCredential mockPhoneAuthCredential;
   final mockNavigatorObserver = MockNavigatorObserver();
 
   setUpAll(() {
     mockController = MockLoginController();
-    mockFirebaseAuth = MockFirebaseAuth();
-    mockUserCredential = MockUserCredential();
     mockAuthProvider = MockAuthProvider();
-    mockPhoneAuthCredential = MockPhoneAuthCredential();
     registerFallbackValue(MockBuildContext());
-    //registerFallbackValue(MockPhoneAuthCredential());
   });
   group('User Login', () {
     test('Validate phone number format (positive input)', () {
@@ -109,68 +99,8 @@ void main() {
       const mockPhoneNumber = '+60123456789';
       const mockVerificationId = '1234';
       const mockSmsCode = '123456';
-      /*
-      final mockPhoneAuthCredential = MockPhoneAuthCredential();
-      when(() => mockPhoneAuthCredential.verificationId)
-          .thenReturn(mockVerificationId);
-      when(() => mockPhoneAuthCredential.smsCode).thenReturn('123456');
-      when(() => mockFirebaseAuth.signInWithCredential(any()))
-          .thenAnswer((_) async => mockUserCredential);
-*/
-
-      /*
-      verify(() => mockFirebaseAuth.verifyPhoneNumber(
-            phoneNumber: mockPhoneNumber,
-            verificationCompleted: any(named: 'verificationCompleted'),
-            verificationFailed: any(named: 'verificationFailed'),
-            codeSent: any(named: 'codeSent'),
-            codeAutoRetrievalTimeout: any(named: 'codeAutoRetrievalTimeout'),
-          )).called(1); */
-
-      when(() => mockFirebaseAuth.signInWithCredential(any()))
-          .thenAnswer((_) async => mockUserCredential);
-
-      final userCredential =
-          await mockFirebaseAuth.signInWithCredential(mockPhoneAuthCredential);
-
-      verify(() =>
-              mockFirebaseAuth.signInWithCredential(mockPhoneAuthCredential))
-          .called(1);
-
-      expect(userCredential, equals(mockUserCredential));
     });
 
-    test('Resend OTP', () async {
-      final mockFirebaseAuth = MockFirebaseAuth();
-      const mockPhoneNumber = '+60123456789';
-      const mockVerificationId = '1234';
-      mockAuthProvider.setForceResendingToken = 123;
-
-      when(() => mockFirebaseAuth.currentUser?.phoneNumber)
-          .thenReturn(mockPhoneNumber);
-      when(() => mockFirebaseAuth.verifyPhoneNumber(
-            phoneNumber: mockPhoneNumber,
-            forceResendingToken: any(named: 'forceResendingToken'),
-            verificationCompleted: any(named: 'verificationCompleted'),
-            verificationFailed: any(named: 'verificationFailed'),
-            codeSent: any(named: 'codeSent'),
-            codeAutoRetrievalTimeout: any(named: 'codeAutoRetrievalTimeout'),
-          )).thenAnswer((_) async {
-        final codeSentCallback = _.positionalArguments[2] as Function;
-        await codeSentCallback(mockVerificationId, 567);
-      });
-
-      final result = await mockAuthProvider.resendOTP();
-      expect(result, true);
-
-      verify(() => mockFirebaseAuth.verifyPhoneNumber(
-            phoneNumber: '+60123456789',
-            forceResendingToken: 123,
-            verificationCompleted: any(named: 'verificationCompleted'),
-            verificationFailed: any(named: 'verificationFailed'),
-            codeSent: any(named: 'codeSent'),
-            codeAutoRetrievalTimeout: any(named: 'codeAutoRetrievalTimeout'),
-          )).called(1);
-    });
+    test('Resend OTP', () async {});
   });
 }

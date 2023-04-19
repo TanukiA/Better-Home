@@ -54,8 +54,7 @@ class Database extends ChangeNotifier {
           .collection('technicians')
           .add(technicianData);
 
-      if (documentReference != null &&
-          pickedFile != PlatformFile(name: '', size: 0)) {
+      if (pickedFile != PlatformFile(name: '', size: 0)) {
         uploadFile(documentReference.id, pickedFile);
       }
     } catch (e) {
@@ -86,5 +85,53 @@ class Database extends ChangeNotifier {
         .get();
     final documentSnapshot = querySnapshot.docs.first;
     return documentSnapshot;
+  }
+
+  int getTechnicianQuantityMatched(String serviceCategory, String city) {
+    int docQuantity = 0;
+    _firebaseFirestore
+        .collection('technicians')
+        .where('specialization', arrayContains: serviceCategory)
+        .where('city', isEqualTo: city)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      docQuantity = querySnapshot.size;
+    });
+    return docQuantity;
+  }
+
+  Future<void> checkTechnicianAvailability(
+      String serviceCategory, String city) async {
+    final techniciansQuerySnapshot =
+        await _firebaseFirestore.collection("technicians").get();
+    bool found = false;
+    for (final technicianDocument in techniciansQuerySnapshot.docs) {
+      final specialization = technicianDocument.get("specialization");
+      final city = technicianDocument.get("city");
+      if (specialization.contains("Plumbing") && city == "Perak") {
+        final workSchedulesCollection =
+            technicianDocument.reference.collection("work_schedules");
+        final workSchedulesQuerySnapshot = await workSchedulesCollection.get();
+        if (workSchedulesQuerySnapshot.docs.isEmpty) {
+          continue;
+        }
+        found = true;
+        for (final workScheduleDocument in workSchedulesQuerySnapshot.docs) {
+          final startTime = workScheduleDocument.get("startTime").toDate();
+          final endTime = workScheduleDocument.get("endTime").toDate();
+          if (startTime.isAfter(DateTime.now())) {
+            // Do your desired operation here
+            print(
+                "Technician ${technicianDocument.id} has available work schedule");
+          } else {
+            found = false;
+            break;
+          }
+        }
+        if (found) {
+          break;
+        }
+      }
+    }
   }
 }

@@ -1,11 +1,11 @@
-import 'package:authentication/models/form_input_provider.dart';
+import 'package:authentication/models/registration_form_provider.dart';
 import 'package:authentication/views/first_screen.dart';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:service/models/serviceRequestForm_provider.dart';
+import 'package:service/models/service_request_form_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider<FormInputProvider>(
-            create: (_) => FormInputProvider()),
+        ChangeNotifierProvider<RegistrationFormProvider>(
+            create: (_) => RegistrationFormProvider()),
         ChangeNotifierProvider<ServiceRequestFormProvider>(
             create: (_) => ServiceRequestFormProvider()),
       ],

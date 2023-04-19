@@ -2,12 +2,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class ServiceRequestFormProvider with ChangeNotifier {
+  String? _serviceCategory;
+  String? _serviceType;
+  String? _city;
   String? _address;
   double? _lat;
   double? _lng;
-  String? _preferredDate;
+  DateTime? _preferredDate;
   String? _preferredTimeSlot;
-  String? _alternativeDate;
+  DateTime? _alternativeDate;
   String? _alternativeTimeSlot;
   String? _variation;
   String? _description;
@@ -15,18 +18,36 @@ class ServiceRequestFormProvider with ChangeNotifier {
   PlatformFile? _pickedFile;
   String? _fileName;
 
+  String? get serviceCategory => _serviceCategory;
+  String? get serviceType => _serviceType;
+  String? get city => _city;
   String? get address => _address;
   double? get lat => _lat;
   double? get lng => _lng;
-  String? get preferredDate => _preferredDate;
+  DateTime? get preferredDate => _preferredDate;
   String? get preferredTimeSlot => _preferredTimeSlot;
-  String? get alternativeDate => _alternativeDate;
+  DateTime? get alternativeDate => _alternativeDate;
   String? get alternativeTimeSlot => _alternativeTimeSlot;
   String? get variation => _variation;
   String? get description => _description;
   String? get propertyType => _propertyType;
   PlatformFile? get pickedFile => _pickedFile;
   String? get fileName => _fileName;
+
+  set saveServiceCategory(String value) {
+    _serviceCategory = value;
+    notifyListeners();
+  }
+
+  set saveServiceType(String value) {
+    _serviceType = value;
+    notifyListeners();
+  }
+
+  set saveCity(String value) {
+    _city = value;
+    notifyListeners();
+  }
 
   set saveAddress(String value) {
     _address = value;
@@ -43,7 +64,7 @@ class ServiceRequestFormProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set savePreferredDate(String value) {
+  set savePreferredDate(DateTime value) {
     _preferredDate = value;
     notifyListeners();
   }
@@ -53,7 +74,7 @@ class ServiceRequestFormProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set saveAlternativeDate(String value) {
+  set saveAlternativeDate(DateTime value) {
     _alternativeDate = value;
     notifyListeners();
   }
@@ -89,6 +110,9 @@ class ServiceRequestFormProvider with ChangeNotifier {
   }
 
   void clearFormInputs() {
+    _serviceCategory = null;
+    _serviceType = null;
+    _city = null;
     _address = null;
     _lat = null;
     _lng = null;

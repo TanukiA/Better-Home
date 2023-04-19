@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
-class FormInputProvider with ChangeNotifier {
+class RegistrationFormProvider with ChangeNotifier {
   String? _phone;
   String? _name;
   String? _email;

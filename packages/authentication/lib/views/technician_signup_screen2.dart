@@ -1,6 +1,5 @@
 import 'package:authentication/controllers/registration_controller.dart';
-import 'package:authentication/models/form_input_provider.dart';
-import 'package:better_home/user.dart';
+import 'package:authentication/models/registration_form_provider.dart';
 import 'package:better_home/text_field_container.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +35,8 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
 
   @override
   void initState() {
-    final provider = Provider.of<FormInputProvider>(context, listen: false);
+    final provider =
+        Provider.of<RegistrationFormProvider>(context, listen: false);
     super.initState();
 
     _checkboxValues = provider.checkboxValues!;
@@ -124,7 +124,7 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
     });
   }
 
-  Future selectFile(FormInputProvider provider) async {
+  Future selectFile(RegistrationFormProvider provider) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'doc'],
@@ -149,7 +149,7 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final provider = Provider.of<FormInputProvider>(context);
+    final provider = Provider.of<RegistrationFormProvider>(context);
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(
@@ -196,9 +196,9 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
       },
     );
 
-    return ChangeNotifierProvider<FormInputProvider>.value(
+    return ChangeNotifierProvider<RegistrationFormProvider>.value(
       value: provider,
-      child: Consumer<FormInputProvider>(
+      child: Consumer<RegistrationFormProvider>(
         builder: (context, obtainedData, _) {
           return GestureDetector(
             onTap: () {
@@ -460,8 +460,16 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
                                     margin: const EdgeInsets.all(20),
                                     padding: const EdgeInsets.only(
                                         left: 8, right: 8),
-                                    decoration: const BoxDecoration(
+                                    decoration: BoxDecoration(
                                       color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 2,
+                                          blurRadius: 5,
+                                          offset: const Offset(0, 3),
+                                        ),
+                                      ],
                                     ),
                                     child: DropdownButton<String>(
                                       value: _selectedValue,
@@ -500,7 +508,7 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
                                       onChanged: (newValue) {
                                         _selectedValue = newValue;
                                         checkCitySelected();
-                                        provider.saveCity = _selectedValue!;
+                                        provider.saveCity = newValue!;
                                       },
                                       style: const TextStyle(
                                         color: Colors.black,
@@ -532,6 +540,7 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
                                   MaterialPageRoute(
                                       builder: (context) => SearchPlaceScreen(
                                             controller: LocationController(),
+                                            purpose: "register",
                                           )),
                                 );
                               },

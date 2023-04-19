@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:map/controllers/location_controller.dart';
-import 'package:map/models/map_service.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
-import 'package:authentication/models/form_input_provider.dart';
-import 'package:provider/provider.dart';
 
 class SearchPlaceScreen extends StatefulWidget {
-  const SearchPlaceScreen({Key? key, required this.controller})
+  const SearchPlaceScreen(
+      {Key? key, required this.controller, required this.purpose})
       : super(key: key);
   final LocationController controller;
+  final String purpose;
 
   @override
   StateMVC<SearchPlaceScreen> createState() => _SearchPlaceScreenState();
 }
 
 class _SearchPlaceScreenState extends StateMVC<SearchPlaceScreen> {
-  late MapService _map;
   late GoogleMapController googleMapController;
 
   String? selectedAddress;
@@ -32,14 +30,12 @@ class _SearchPlaceScreenState extends StateMVC<SearchPlaceScreen> {
 
   @override
   void initState() {
-    _map = widget.controller.map;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final provider = Provider.of<FormInputProvider>(context);
 
     final ButtonStyle confirmBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(
@@ -117,8 +113,15 @@ class _SearchPlaceScreenState extends StateMVC<SearchPlaceScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 30),
             child: ElevatedButton(
-              onPressed: () => widget.controller.handleConfirmButton(
-                  context, selectedAddress, lat, lng, provider),
+              onPressed: () {
+                if (widget.purpose == "register") {
+                  widget.controller
+                      .handleConfirmButton1(context, selectedAddress, lat, lng);
+                } else if (widget.purpose == "service") {
+                  widget.controller
+                      .handleConfirmButton2(context, selectedAddress, lat, lng);
+                }
+              },
               style: confirmBtnStyle,
               child: const Text("Confirm"),
             ),

@@ -1,4 +1,4 @@
-import 'package:authentication/models/form_input_provider.dart';
+import 'package:authentication/models/registration_form_provider.dart';
 import 'package:authentication/views/first_screen.dart';
 import 'package:better_home/customer.dart';
 import 'package:better_home/technician.dart';
@@ -56,7 +56,7 @@ abstract class User extends ModelMVC {
             Customer customer = Customer();
             customer.login(context, phoneNumber);
           } else if (userType == "customer" && purpose == "register") {
-            final fp = Provider.of<FormInputProvider>(context);
+            final fp = Provider.of<RegistrationFormProvider>(context);
             Customer customer = Customer(
                 phone: fp.phone!.trim(),
                 name: fp.name!.trim(),
@@ -77,7 +77,8 @@ abstract class User extends ModelMVC {
                 pickedFile: PlatformFile(name: '', size: 0));
             technician.login(context, phoneNumber);
           } else if (userType == "technician" && purpose == "register") {
-            final fp = Provider.of<FormInputProvider>(context, listen: false);
+            final fp =
+                Provider.of<RegistrationFormProvider>(context, listen: false);
             Technician technician = Technician(
               phone: fp.phone!.trim(),
               name: fp.name!.trim(),

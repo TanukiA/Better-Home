@@ -1,8 +1,7 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/controllers/registration_controller.dart';
-import 'package:authentication/models/form_input_provider.dart';
+import 'package:authentication/models/registration_form_provider.dart';
 import 'package:authentication/models/phone_number_formatter.dart';
-import 'package:better_home/user.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/technician_signup_screen2.dart';
 import 'package:better_home/text_field_container.dart';
@@ -32,7 +31,8 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
 
   @override
   void initState() {
-    final provider = Provider.of<FormInputProvider>(context, listen: false);
+    final provider =
+        Provider.of<RegistrationFormProvider>(context, listen: false);
     super.initState();
 
     _nameController = TextEditingController(text: provider.name);
@@ -136,7 +136,7 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    final provider = Provider.of<FormInputProvider>(context);
+    final provider = Provider.of<RegistrationFormProvider>(context);
 
     final ButtonStyle signupBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(
@@ -178,9 +178,9 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
       },
     );
 
-    return ChangeNotifierProvider<FormInputProvider>.value(
+    return ChangeNotifierProvider<RegistrationFormProvider>.value(
       value: provider,
-      child: Consumer<FormInputProvider>(
+      child: Consumer<RegistrationFormProvider>(
         builder: (context, obtainedData, _) {
           return GestureDetector(
             onTap: () {

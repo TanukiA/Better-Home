@@ -1,6 +1,8 @@
 import 'package:better_home/customer.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:service/models/service_request_form_provider.dart';
 import 'package:service/views/service_category_screen.dart';
 import 'package:service/views/service_descript_screen.dart';
 import 'package:service/views/service_request_form.dart';
@@ -89,6 +91,10 @@ class CustomerController extends ControllerMVC {
 
   void setServiceRequestForm(
       String serviceCategory, String serviceType, BuildContext context) {
+    final provider =
+        Provider.of<ServiceRequestFormProvider>(context, listen: false);
+    provider.saveServiceCategory = serviceCategory;
+    provider.saveServiceType = serviceType;
     Navigator.push(
         context,
         MaterialPageRoute(

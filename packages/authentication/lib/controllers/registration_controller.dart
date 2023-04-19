@@ -1,4 +1,4 @@
-import 'package:authentication/models/form_input_provider.dart';
+import 'package:authentication/models/registration_form_provider.dart';
 import 'package:better_home/customer.dart';
 import 'package:better_home/technician.dart';
 import 'package:better_home/user.dart';
@@ -83,14 +83,14 @@ class RegistrationController extends ControllerMVC {
 
   void saveCustomerDataToProvider(
       BuildContext context, String phoneNumber, String name, String email) {
-    final provider = Provider.of<FormInputProvider>(context);
+    final provider = Provider.of<RegistrationFormProvider>(context);
     provider.savePhone = phoneNumber;
     provider.saveName = name;
     provider.saveEmail = email;
   }
 
   void checkboxStateChange(List<bool> checkboxValues, int i, String specName,
-      FormInputProvider provider) {
+      RegistrationFormProvider provider) {
     if (checkboxValues[i] && !specs.contains(specName)) {
       specs.add(specName);
     } else if (!checkboxValues[i] && specs.contains(specName)) {
