@@ -17,6 +17,10 @@ class ServiceRequestFormProvider with ChangeNotifier {
   String? _propertyType;
   PlatformFile? _pickedFile;
   String? _fileName;
+  bool _isPreferredDatePicked = false;
+  bool _isAlternativeDatePicked = false;
+  List<bool> _availPreferredTime = [true, true, true, true];
+  List<bool> _availAlternativeTime = [true, true, true, true];
 
   String? get serviceCategory => _serviceCategory;
   String? get serviceType => _serviceType;
@@ -33,6 +37,10 @@ class ServiceRequestFormProvider with ChangeNotifier {
   String? get propertyType => _propertyType;
   PlatformFile? get pickedFile => _pickedFile;
   String? get fileName => _fileName;
+  bool get isPreferredDatePicked => _isPreferredDatePicked;
+  bool get isAlternativeDatePicked => _isAlternativeDatePicked;
+  List<bool> get availPreferredTime => _availPreferredTime;
+  List<bool> get availAlternativeTime => _availAlternativeTime;
 
   set saveServiceCategory(String value) {
     _serviceCategory = value;
@@ -109,6 +117,26 @@ class ServiceRequestFormProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  set saveIsPreferredDatePicked(bool value) {
+    _isPreferredDatePicked = value;
+    notifyListeners();
+  }
+
+  set saveIsAlternativeDatePicked(bool value) {
+    _isAlternativeDatePicked = value;
+    notifyListeners();
+  }
+
+  set saveAvailPreferredTime(List<bool> value) {
+    _availPreferredTime = value;
+    notifyListeners();
+  }
+
+  set saveAvailAlternativeTime(List<bool> value) {
+    _availAlternativeTime = value;
+    notifyListeners();
+  }
+
   void clearFormInputs() {
     _serviceCategory = null;
     _serviceType = null;
@@ -125,6 +153,10 @@ class ServiceRequestFormProvider with ChangeNotifier {
     _propertyType = null;
     _pickedFile = null;
     _fileName = null;
+    _isPreferredDatePicked = false;
+    _isAlternativeDatePicked = false;
+    _availPreferredTime.fillRange(0, _availPreferredTime.length, true);
+    _availAlternativeTime.fillRange(0, _availAlternativeTime.length, true);
     notifyListeners();
   }
 }

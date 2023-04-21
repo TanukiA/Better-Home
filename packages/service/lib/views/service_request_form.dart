@@ -73,7 +73,7 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
         Step(
             state: StepState.complete,
             isActive: _activeStepIndex >= 2,
-            title: const Text('Confirm'),
+            title: const Text('Pay'),
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,

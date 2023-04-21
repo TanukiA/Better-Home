@@ -7,6 +7,7 @@ import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class Customer extends User {
@@ -20,8 +21,6 @@ class Customer extends User {
 
     if (customerDoc.exists) {
       _id = customerDoc.id;
-      name = customerDoc['name'];
-      email = customerDoc['email'];
       phone = customerDoc['phoneNumber'];
     }
   }
@@ -44,6 +43,28 @@ class Customer extends User {
     return data[serviceTitle];
   }
 
+  Future<List<bool>> retrieveTechnicianAvailability(String serviceCategory,
+      String city, DateTime date, int matchedQty) async {
+    List<bool> availResult = [false, false, false, false];
+    List<String> timeStartStr = ['10:00AM', '1:00PM', '3:00PM', '5:00PM'];
+    List<String> timeEndStr = ['12:00PM', '3:00PM', '5:00PM', '7:00PM'];
+    final timeFormat = DateFormat('h:mma');
+    final timeStartList =
+        timeStartStr.map((timeString) => timeFormat.parse(timeString)).toList();
+    final timeEndList =
+        timeEndStr.map((timeString) => timeFormat.parse(timeString)).toList();
+
+    Database firestore = Database();
+    for (int i = 0; i < timeStartList.length; i++) {
+      bool avail = await firestore.checkTechnicianAvailability(serviceCategory,
+          city, date, timeStartList[i], timeEndList[i], matchedQty);
+      availResult[i] = avail;
+    }
+
+    print("Availability: $availResult");
+    return availResult;
+  }
+
   @override
   void login(BuildContext context, String phoneNumber) {
     retrieveLoginData(phoneNumber);
@@ -51,8 +72,6 @@ class Customer extends User {
     Map<String, dynamic> customerData = {
       'id': _id,
       'phoneNumber': phone,
-      'name': name,
-      'email': email,
     };
     final ap = Provider.of<AuthProvider>(context, listen: false);
     ap.storeUserDataToSP(customerData, "session_data");

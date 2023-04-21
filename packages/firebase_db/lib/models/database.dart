@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
+import 'dart:core';
 
 class Database extends ChangeNotifier {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
@@ -87,51 +88,67 @@ class Database extends ChangeNotifier {
     return documentSnapshot;
   }
 
-  int getTechnicianQuantityMatched(String serviceCategory, String city) {
-    int docQuantity = 0;
-    _firebaseFirestore
+  Future<int> getTechnicianQtyMatched(
+      String serviceCategory, String city) async {
+    final querySnapshot = await _firebaseFirestore
         .collection('technicians')
         .where('specialization', arrayContains: serviceCategory)
         .where('city', isEqualTo: city)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      docQuantity = querySnapshot.size;
-    });
-    return docQuantity;
+        .get();
+    return querySnapshot.size;
   }
 
-  Future<void> checkTechnicianAvailability(
-      String serviceCategory, String city) async {
+  // Check technician's availability for one given time slot
+  Future<bool> checkTechnicianAvailability(
+      String serviceCategory,
+      String city,
+      DateTime date,
+      DateTime timeSlotStart,
+      DateTime timeSlotEnd,
+      int matchedQty) async {
     final techniciansQuerySnapshot =
         await _firebaseFirestore.collection("technicians").get();
-    bool found = false;
-    for (final technicianDocument in techniciansQuerySnapshot.docs) {
-      final specialization = technicianDocument.get("specialization");
-      final city = technicianDocument.get("city");
-      if (specialization.contains("Plumbing") && city == "Perak") {
+    int countOverlap = 0;
+
+    for (final technicianDoc in techniciansQuerySnapshot.docs) {
+      final specialization = technicianDoc.get("specialization");
+      final city = technicianDoc.get("city");
+
+      if (specialization.contains(serviceCategory) && city == city) {
+        // Check whether work schedules is overlapping with the service time slot
         final workSchedulesCollection =
-            technicianDocument.reference.collection("work_schedules");
+            technicianDoc.reference.collection("work_schedules");
         final workSchedulesQuerySnapshot = await workSchedulesCollection.get();
+
         if (workSchedulesQuerySnapshot.docs.isEmpty) {
           continue;
         }
-        found = true;
-        for (final workScheduleDocument in workSchedulesQuerySnapshot.docs) {
-          final startTime = workScheduleDocument.get("startTime").toDate();
-          final endTime = workScheduleDocument.get("endTime").toDate();
-          if (startTime.isAfter(DateTime.now())) {
-            // Do your desired operation here
-            print(
-                "Technician ${technicianDocument.id} has available work schedule");
-          } else {
-            found = false;
-            break;
+
+        for (final workScheduleDoc in workSchedulesQuerySnapshot.docs) {
+          final temp = workScheduleDoc.get("startTime").toDate().toLocal();
+          final workDate = DateTime(temp.year, temp.month, temp.day);
+
+          if (date == workDate) {
+            DateTime startTime = workScheduleDoc.get("startTime").toDate();
+            DateTime endTime = workScheduleDoc.get("endTime").toDate();
+            // Check if the preferred time slot overlaps with the start and end time
+            if ((timeSlotStart.isAfter(startTime) &&
+                    timeSlotStart.isBefore(endTime)) ||
+                (timeSlotEnd.isAfter(startTime) &&
+                    timeSlotEnd.isBefore(endTime))) {
+              print('Overlapping');
+              countOverlap++;
+              break;
+            }
           }
         }
-        if (found) {
-          break;
-        }
       }
+    }
+
+    if (countOverlap < matchedQty) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

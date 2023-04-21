@@ -474,15 +474,6 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
                                     child: DropdownButton<String>(
                                       value: _selectedValue,
                                       items: [
-                                        const DropdownMenuItem<String>(
-                                          value: null,
-                                          child: Text(
-                                            'Select your state',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
                                         ...<String>[
                                           'Kuala Lumpur / Selangor',
                                           'Putrajaya',
@@ -493,11 +484,7 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
                                           'Negeri Sembilan',
                                           'Pahang',
                                           'Perak',
-                                          'Perlis',
-                                          'Pulau Pinang',
-                                          'Terengganu',
-                                          'Sabah',
-                                          'Sarawak'
+                                          'Pulau Pinang'
                                         ].map((String value) {
                                           return DropdownMenuItem<String>(
                                             value: value,
@@ -510,6 +497,9 @@ class _TechnicianSignupScreen2State extends StateMVC<TechnicianSignupScreen2> {
                                         checkCitySelected();
                                         provider.saveCity = newValue!;
                                       },
+                                      hint: _selectedValue == null
+                                          ? const Text("Select your state")
+                                          : null,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,

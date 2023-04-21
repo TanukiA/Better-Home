@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Technician extends User {
-  String? id;
+  String? _id;
   List<String>? specs;
   String? exp;
   String? city;
@@ -39,9 +39,7 @@ class Technician extends User {
         await Database.getTechnicianByPhoneNumber(phoneNumber);
 
     if (technicianDoc.exists) {
-      id = technicianDoc.id;
-      name = technicianDoc['name'];
-      email = technicianDoc['email'];
+      _id = technicianDoc.id;
       phone = technicianDoc['phoneNumber'];
     }
   }
@@ -100,10 +98,8 @@ class Technician extends User {
     retrieveLoginData(phoneNumber);
 
     Map<String, dynamic> technicianData = {
-      'id': id,
+      'id': _id,
       'phoneNumber': phone,
-      'name': name,
-      'email': email,
     };
     final ap = Provider.of<AuthProvider>(context, listen: false);
     ap.storeUserDataToSP(technicianData, "session_data");

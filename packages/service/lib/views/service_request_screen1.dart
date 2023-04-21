@@ -27,8 +27,8 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
   String? _selectedCity;
   String? _selectedPreferredTime;
   String? _selectedAlternativeTime;
-  bool isPreferredDatePicked = false;
-  bool isAlternativeDatePicked = false;
+  bool isLoadingPreferred = false;
+  bool isLoadingAlternative = false;
 
   late TextEditingController _addressController;
   late TextEditingController _preferredDateController;
@@ -57,14 +57,28 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
     provider.alternativeTimeSlot != null
         ? _selectedAlternativeTime = provider.alternativeTimeSlot
         : _selectedAlternativeTime = null;
+  }
 
-    _preferredDateController.addListener(() {
-      setState(() {});
-    });
+  void handlePreferredDatePicked(ServiceRequestFormProvider provider) async {
+    isLoadingPreferred = true;
+    _selectedPreferredTime = null;
+    provider.savePreferredTimeSlot = "";
+    provider.saveAvailPreferredTime = await widget.controller
+        .retrieveTechnicianAvailability(
+            widget.serviceCategory, provider.city!, provider.preferredDate!);
+    isLoadingPreferred = false;
+    provider.saveIsPreferredDatePicked = true;
+  }
 
-    _alternativeDateController.addListener(() {
-      setState(() {});
-    });
+  void handleAlternativeDatePicked(ServiceRequestFormProvider provider) async {
+    isLoadingAlternative = true;
+    _selectedAlternativeTime = null;
+    provider.saveAlternativeTimeSlot = "";
+    provider.saveAvailAlternativeTime = await widget.controller
+        .retrieveTechnicianAvailability(
+            widget.serviceCategory, provider.city!, provider.alternativeDate!);
+    isLoadingAlternative = false;
+    provider.saveIsAlternativeDatePicked = true;
   }
 
   @override
@@ -111,15 +125,6 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                   child: DropdownButton<String>(
                     value: _selectedCity,
                     items: [
-                      const DropdownMenuItem<String>(
-                        value: null,
-                        child: Text(
-                          'Select your state',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
                       ...<String>[
                         'Kuala Lumpur / Selangor',
                         'Putrajaya',
@@ -130,11 +135,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                         'Negeri Sembilan',
                         'Pahang',
                         'Perak',
-                        'Perlis',
-                        'Pulau Pinang',
-                        'Terengganu',
-                        'Sabah',
-                        'Sarawak'
+                        'Pulau Pinang'
                       ].map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -146,6 +147,9 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                       _selectedCity = newValue;
                       provider.saveCity = newValue!;
                     },
+                    hint: _selectedCity == null
+                        ? const Text("Select your state")
+                        : null,
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16,
@@ -218,7 +222,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                       DateFormat('yyyy-MM-dd').format(date);
                   provider.savePreferredDate = date;
                   setState(() {
-                    isPreferredDatePicked = true;
+                    handlePreferredDatePicked(provider);
                   });
                 }
               },
@@ -253,7 +257,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                               DateFormat('yyyy-MM-dd').format(date);
                           provider.savePreferredDate = date;
                           setState(() {
-                            isPreferredDatePicked = true;
+                            handlePreferredDatePicked(provider);
                           });
                         }
                       },
@@ -276,60 +280,74 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: Container(
-                margin: const EdgeInsets.all(15),
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Opacity(
-                  opacity: isPreferredDatePicked ? 1.0 : 0.4,
-                  child: IgnorePointer(
-                    ignoring: !isPreferredDatePicked,
-                    child: DropdownButton<String>(
-                      value: _selectedPreferredTime,
-                      items: [
-                        const DropdownMenuItem<String>(
-                          value: null,
-                          child: Text(
-                            'Select preferred time slot',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
+              child: Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
-                        ...<String>[
-                          '10:00AM - 12:00PM',
-                          '1:00PM - 3:00PM',
-                          '3:00PM - 5:00PM',
-                          '5:00PM - 7:00PM',
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
                       ],
-                      onChanged: (newValue) {
-                        _selectedPreferredTime = newValue;
-                        provider.savePreferredTimeSlot = newValue!;
-                      },
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
+                    ),
+                    child: Opacity(
+                      opacity: provider.isPreferredDatePicked ? 1.0 : 0.4,
+                      child: IgnorePointer(
+                        ignoring: !provider.isPreferredDatePicked,
+                        child: DropdownButton<String>(
+                          value: _selectedPreferredTime,
+                          items: provider.availPreferredTime
+                                  .every((value) => !value)
+                              ? [
+                                  const DropdownMenuItem(
+                                      value: null,
+                                      child: Text("No slot available"))
+                                ]
+                              : provider.availPreferredTime
+                                  .asMap()
+                                  .entries
+                                  .where((entry) => entry.value)
+                                  .map((entry) {
+                                  final index = entry.key;
+                                  final value = <String>[
+                                    '10:00AM - 12:00PM',
+                                    '1:00PM - 3:00PM',
+                                    '3:00PM - 5:00PM',
+                                    '5:00PM - 7:00PM',
+                                  ][index];
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                          onChanged: (newValue) {
+                            _selectedPreferredTime = newValue;
+                            provider.savePreferredTimeSlot = newValue!;
+                          },
+                          hint: _selectedPreferredTime == null
+                              ? const Text("Select preferred time slot")
+                              : null,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          dropdownColor: Colors.white,
+                        ),
                       ),
-                      dropdownColor: Colors.white,
                     ),
                   ),
-                ),
+                  isLoadingPreferred == true
+                      ? const CircularProgressIndicator(
+                          color: Color.fromARGB(255, 51, 119, 54),
+                        )
+                      : Container(),
+                ],
               ),
             ),
             const SizedBox(height: 15),
@@ -353,11 +371,11 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                   lastDate: DateTime(2100),
                 );
                 if (date != null) {
-                  _preferredDateController.text =
+                  _alternativeDateController.text =
                       DateFormat('yyyy-MM-dd').format(date);
                   provider.saveAlternativeDate = date;
                   setState(() {
-                    isAlternativeDatePicked = true;
+                    handleAlternativeDatePicked(provider);
                   });
                 }
               },
@@ -392,7 +410,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                               DateFormat('yyyy-MM-dd').format(date);
                           provider.saveAlternativeDate = date;
                           setState(() {
-                            isAlternativeDatePicked = true;
+                            handleAlternativeDatePicked(provider);
                           });
                         }
                       },
@@ -415,60 +433,74 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: Container(
-                margin: const EdgeInsets.all(15),
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Opacity(
-                  opacity: isAlternativeDatePicked ? 1.0 : 0.4,
-                  child: IgnorePointer(
-                    ignoring: !isAlternativeDatePicked,
-                    child: DropdownButton<String>(
-                      value: _selectedAlternativeTime,
-                      items: [
-                        const DropdownMenuItem<String>(
-                          value: null,
-                          child: Text(
-                            'Select alternative time slot',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
+              child: Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
-                        ...<String>[
-                          '10:00AM - 12:00PM',
-                          '1:00PM - 3:00PM',
-                          '3:00PM - 5:00PM',
-                          '5:00PM - 7:00PM',
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
                       ],
-                      onChanged: (newValue) {
-                        _selectedAlternativeTime = newValue;
-                        provider.saveAlternativeTimeSlot = newValue!;
-                      },
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
+                    ),
+                    child: Opacity(
+                      opacity: provider.isAlternativeDatePicked ? 1.0 : 0.4,
+                      child: IgnorePointer(
+                        ignoring: !provider.isAlternativeDatePicked,
+                        child: DropdownButton<String>(
+                          value: _selectedAlternativeTime,
+                          items: provider.availAlternativeTime
+                                  .every((value) => !value)
+                              ? [
+                                  const DropdownMenuItem(
+                                      value: null,
+                                      child: Text("No slot available"))
+                                ]
+                              : provider.availAlternativeTime
+                                  .asMap()
+                                  .entries
+                                  .where((entry) => entry.value)
+                                  .map((entry) {
+                                  final index = entry.key;
+                                  final value = <String>[
+                                    '10:00AM - 12:00PM',
+                                    '1:00PM - 3:00PM',
+                                    '3:00PM - 5:00PM',
+                                    '5:00PM - 7:00PM',
+                                  ][index];
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                          onChanged: (newValue) {
+                            _selectedAlternativeTime = newValue;
+                            provider.saveAlternativeTimeSlot = newValue!;
+                          },
+                          hint: _selectedAlternativeTime == null
+                              ? const Text("Select alternative time slot")
+                              : null,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          dropdownColor: Colors.white,
+                        ),
                       ),
-                      dropdownColor: Colors.white,
                     ),
                   ),
-                ),
+                  isLoadingAlternative == true
+                      ? const CircularProgressIndicator(
+                          color: Color.fromARGB(255, 51, 119, 54),
+                        )
+                      : Container(),
+                ],
               ),
             ),
             const SizedBox(height: 25),

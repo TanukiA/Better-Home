@@ -6,6 +6,7 @@ import 'package:service/models/service_request_form_provider.dart';
 import 'package:service/views/service_category_screen.dart';
 import 'package:service/views/service_descript_screen.dart';
 import 'package:service/views/service_request_form.dart';
+import 'package:firebase_db/models/database.dart';
 
 class CustomerController extends ControllerMVC {
   late Customer _cus;
@@ -104,5 +105,22 @@ class CustomerController extends ControllerMVC {
             controller: CustomerController(),
           ),
         ));
+  }
+
+  Future<List<bool>> retrieveTechnicianAvailability(
+      String serviceCategory, String city, DateTime date) async {
+    Database firestore = Database();
+    int matchedQty =
+        await firestore.getTechnicianQtyMatched(serviceCategory, city);
+    print("serviceCategory: $serviceCategory");
+    print("city: $city");
+    print("matchedQty: $matchedQty");
+    if (matchedQty == 0) {
+      Future<List<bool>> result = Future.value([false, false, false, false]);
+      return result;
+    } else {
+      return _cus.retrieveTechnicianAvailability(
+          serviceCategory, city, date, matchedQty);
+    }
   }
 }
