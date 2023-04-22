@@ -98,7 +98,7 @@ class Database extends ChangeNotifier {
     return querySnapshot.size;
   }
 
-  // Check technician's availability for one given time slot
+  // Check technician's availability for one given time slot, return true/false for available/not available
   Future<bool> checkTechnicianAvailability(
       String serviceCategory,
       String city,
@@ -106,45 +106,40 @@ class Database extends ChangeNotifier {
       DateTime timeSlotStart,
       DateTime timeSlotEnd,
       int matchedQty) async {
-    final techniciansQuerySnapshot =
-        await _firebaseFirestore.collection("technicians").get();
+    final techniciansQuerySnapshot = await _firebaseFirestore
+        .collection("technicians")
+        .where("specialization", arrayContains: serviceCategory)
+        .where("city", isEqualTo: city)
+        .get();
     int countOverlap = 0;
 
     for (final technicianDoc in techniciansQuerySnapshot.docs) {
-      final specialization = technicianDoc.get("specialization");
-      final city = technicianDoc.get("city");
+      final workSchedulesCollection =
+          technicianDoc.reference.collection("work_schedules");
+      final workSchedulesQuerySnapshot = await workSchedulesCollection.get();
 
-      if (specialization.contains(serviceCategory) && city == city) {
-        // Check whether work schedules is overlapping with the service time slot
-        final workSchedulesCollection =
-            technicianDoc.reference.collection("work_schedules");
-        final workSchedulesQuerySnapshot = await workSchedulesCollection.get();
+      if (workSchedulesQuerySnapshot.docs.isEmpty) {
+        continue;
+      }
 
-        if (workSchedulesQuerySnapshot.docs.isEmpty) {
-          continue;
-        }
+      for (final workScheduleDoc in workSchedulesQuerySnapshot.docs) {
+        final temp = workScheduleDoc.get("startTime").toDate().toLocal();
+        final workDate = DateTime(temp.year, temp.month, temp.day);
 
-        for (final workScheduleDoc in workSchedulesQuerySnapshot.docs) {
-          final temp = workScheduleDoc.get("startTime").toDate().toLocal();
-          final workDate = DateTime(temp.year, temp.month, temp.day);
-
-          if (date == workDate) {
-            DateTime startTime = workScheduleDoc.get("startTime").toDate();
-            DateTime endTime = workScheduleDoc.get("endTime").toDate();
-            // Check if the preferred time slot overlaps with the start and end time
-            if ((timeSlotStart.isAfter(startTime) &&
-                    timeSlotStart.isBefore(endTime)) ||
-                (timeSlotEnd.isAfter(startTime) &&
-                    timeSlotEnd.isBefore(endTime))) {
-              print('Overlapping');
-              countOverlap++;
-              break;
-            }
+        if (date == workDate) {
+          DateTime startTime = workScheduleDoc.get("startTime").toDate();
+          DateTime endTime = workScheduleDoc.get("endTime").toDate();
+          // Check if the preferred time slot overlaps with the start and end time
+          if ((timeSlotStart.isAfter(startTime) &&
+                  timeSlotStart.isBefore(endTime)) ||
+              (timeSlotEnd.isAfter(startTime) &&
+                  timeSlotEnd.isBefore(endTime))) {
+            countOverlap++;
+            break;
           }
         }
       }
     }
-
     if (countOverlap < matchedQty) {
       return true;
     } else {

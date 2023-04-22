@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/customer_controller.dart';
 import 'package:service/views/service_request_screen1.dart';
+import 'package:service/views/service_request_screen2.dart';
 
 class ServiceRequestForm extends StatefulWidget {
   const ServiceRequestForm(
@@ -19,10 +20,6 @@ class ServiceRequestForm extends StatefulWidget {
 }
 
 class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
-  TextEditingController email = TextEditingController();
-  TextEditingController pass = TextEditingController();
-  TextEditingController address = TextEditingController();
-  TextEditingController pincode = TextEditingController();
   int _activeStepIndex = 0;
 
   @override
@@ -32,7 +29,7 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
 
   List<Step> stepList() => [
         Step(
-          state: _activeStepIndex <= 0 ? StepState.editing : StepState.complete,
+          state: StepState.editing,
           isActive: _activeStepIndex >= 0,
           title: const Text('Appointment'),
           content: ServiceRequestScreen1(
@@ -42,48 +39,20 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
           ),
         ),
         Step(
-            state:
-                _activeStepIndex <= 1 ? StepState.editing : StepState.complete,
-            isActive: _activeStepIndex >= 1,
-            title: const Text('Details'),
-            content: Column(
-              children: [
-                const SizedBox(
-                  height: 8,
-                ),
-                TextField(
-                  controller: address,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Full House Address',
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                TextField(
-                  controller: pincode,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Pin Code',
-                  ),
-                ),
-              ],
-            )),
+          state: StepState.editing,
+          isActive: _activeStepIndex >= 1,
+          title: const Text('Details'),
+          content: ServiceRequestScreen2(
+            serviceCategory: widget.serviceCategory,
+            serviceType: widget.serviceType,
+            controller: widget.controller,
+          ),
+        ),
         Step(
             state: StepState.complete,
             isActive: _activeStepIndex >= 2,
             title: const Text('Pay'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text('Email: ${email.text}'),
-                const Text('Password: *****'),
-                Text('Address : ${address.text}'),
-                Text('PinCode : ${pincode.text}'),
-              ],
-            ))
+            content: Column())
       ];
 
   @override
@@ -166,6 +135,7 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: controlDetails.onStepCancel,
+                        style: btnStyle,
                         child: const Text('Back'),
                       ),
                     ),

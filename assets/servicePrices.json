@@ -1,0 +1,68 @@
+{
+    "categories":[
+       {
+          "name":"Plumbing - Leakage Repair",
+          "issues":[
+             {
+                "name": "Leak/drip",
+                "price": 100
+             },
+             {
+                "name": "Burst/cracked",
+                "price": 140
+             },
+             {
+                "name": "Noisy",
+                "price": 100
+             },
+             {
+                "name": "Fixture not draining/flushing",
+                "price": 120
+             }
+          ]
+       },
+       {
+          "name":"Aircon Servicing - Aircon Repair / Install",
+          "issues":[
+             {
+                "name": "Repair: water leak",
+                "price": 80
+             },
+             {
+                "name": "Repair: on and off issue",
+                "price": 90
+             },
+             {
+                "name": "Repair: no cold air",
+                "price": 80
+             },
+             {
+                "name": "Install: wall aircon",
+                "price": 100
+             },
+             {
+                "name": "Install: casette aircon",
+                "price": 110
+             }
+          ]
+       },
+       {
+          "name":"Roof Servicing - Leakage Repair",
+          "issues":[
+             {
+                "name": "Hip roof",
+                "price": 130
+             },
+             {
+                "name": "Gable roof",
+                "price": 160
+             },
+             {
+                "name": "Flat roof",
+                "price": 200
+             }
+          ]
+       }
+    ]
+ }
+ 

@@ -93,6 +93,8 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
   Widget build(BuildContext context) {
     final provider = Provider.of<ServiceRequestFormProvider>(context);
 
+    Size size = MediaQuery.of(context).size;
+
     return ChangeNotifierProvider<ServiceRequestFormProvider>.value(
       value: provider,
       child: Consumer<ServiceRequestFormProvider>(
@@ -211,9 +213,14 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
             const SizedBox(height: 10),
             GestureDetector(
               onTap: () async {
+                DateTime? initialDate = _preferredDateController.text.isNotEmpty
+                    ? DateFormat('yyyy-MM-dd')
+                        .parse(_preferredDateController.text)
+                    : DateTime.now().add(const Duration(days: 1));
+
                 DateTime? date = await showDatePicker(
                   context: context,
-                  initialDate: DateTime.now().add(const Duration(days: 1)),
+                  initialDate: initialDate,
                   firstDate: DateTime.now().add(const Duration(days: 1)),
                   lastDate: DateTime(2100),
                 );
@@ -244,10 +251,15 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                     ),
                     IconButton(
                       onPressed: () async {
+                        DateTime? initialDate =
+                            _preferredDateController.text.isNotEmpty
+                                ? DateFormat('yyyy-MM-dd')
+                                    .parse(_preferredDateController.text)
+                                : DateTime.now().add(const Duration(days: 1));
+
                         DateTime? date = await showDatePicker(
                           context: context,
-                          initialDate:
-                              DateTime.now().add(const Duration(days: 1)),
+                          initialDate: initialDate,
                           firstDate:
                               DateTime.now().add(const Duration(days: 1)),
                           lastDate: DateTime(2100),
@@ -364,9 +376,15 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
             const SizedBox(height: 10),
             GestureDetector(
               onTap: () async {
+                DateTime? initialDate =
+                    _alternativeDateController.text.isNotEmpty
+                        ? DateFormat('yyyy-MM-dd')
+                            .parse(_alternativeDateController.text)
+                        : DateTime.now().add(const Duration(days: 1));
+
                 DateTime? date = await showDatePicker(
                   context: context,
-                  initialDate: DateTime.now().add(const Duration(days: 1)),
+                  initialDate: initialDate,
                   firstDate: DateTime.now().add(const Duration(days: 1)),
                   lastDate: DateTime(2100),
                 );
@@ -397,10 +415,15 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                     ),
                     IconButton(
                       onPressed: () async {
+                        DateTime? initialDate =
+                            _alternativeDateController.text.isNotEmpty
+                                ? DateFormat('yyyy-MM-dd')
+                                    .parse(_alternativeDateController.text)
+                                : DateTime.now().add(const Duration(days: 1));
+
                         DateTime? date = await showDatePicker(
                           context: context,
-                          initialDate:
-                              DateTime.now().add(const Duration(days: 1)),
+                          initialDate: initialDate,
                           firstDate:
                               DateTime.now().add(const Duration(days: 1)),
                           lastDate: DateTime(2100),
@@ -503,6 +526,24 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                 ],
               ),
             ),
+            if (widget.controller.validDateAndTime(
+                    provider.preferredDate,
+                    _selectedPreferredTime,
+                    provider.alternativeDate,
+                    _selectedAlternativeTime) ==
+                false)
+              SizedBox(
+                width: size.width * 0.8,
+                height: 32,
+                child: const Text(
+                  'Please set a different appointment time as your alternative',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
             const SizedBox(height: 25),
           ],
         );

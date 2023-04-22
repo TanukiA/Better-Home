@@ -58,10 +58,10 @@ class Customer extends User {
     for (int i = 0; i < timeStartList.length; i++) {
       bool avail = await firestore.checkTechnicianAvailability(serviceCategory,
           city, date, timeStartList[i], timeEndList[i], matchedQty);
+
       availResult[i] = avail;
     }
 
-    print("Availability: $availResult");
     return availResult;
   }
 

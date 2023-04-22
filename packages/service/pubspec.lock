@@ -184,7 +184,7 @@ packages:
     source: hosted
     version: "2.2.2"
   firebase_db:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "../firebase_db"
       relative: true

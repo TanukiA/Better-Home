@@ -123,4 +123,20 @@ class CustomerController extends ControllerMVC {
           serviceCategory, city, date, matchedQty);
     }
   }
+
+  bool validDateAndTime(DateTime? preferredDate, String? preferredTimeSlot,
+      DateTime? alternativeDate, String? alternativeTimeSlot) {
+    if (preferredDate == null ||
+        preferredTimeSlot == null ||
+        alternativeDate == null ||
+        alternativeTimeSlot == null) {
+      return true;
+    }
+
+    if ((preferredDate == alternativeDate) &&
+        (preferredTimeSlot == alternativeTimeSlot)) {
+      return false;
+    }
+    return true;
+  }
 }
