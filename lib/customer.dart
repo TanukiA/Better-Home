@@ -7,8 +7,8 @@ import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:service/models/handle_services_json.dart';
 
 class Customer extends User {
   String? _id;
@@ -43,16 +43,14 @@ class Customer extends User {
     return data[serviceTitle];
   }
 
-  Future<List<bool>> retrieveTechnicianAvailability(String serviceCategory,
-      String city, DateTime date, int matchedQty) async {
+  Future<List<bool>> retrieveTechnicianAvailability(
+      String serviceCategory,
+      String city,
+      DateTime date,
+      int matchedQty,
+      List<DateTime> timeStartList,
+      List<DateTime> timeEndList) async {
     List<bool> availResult = [false, false, false, false];
-    List<String> timeStartStr = ['10:00AM', '1:00PM', '3:00PM', '5:00PM'];
-    List<String> timeEndStr = ['12:00PM', '3:00PM', '5:00PM', '7:00PM'];
-    final timeFormat = DateFormat('h:mma');
-    final timeStartList =
-        timeStartStr.map((timeString) => timeFormat.parse(timeString)).toList();
-    final timeEndList =
-        timeEndStr.map((timeString) => timeFormat.parse(timeString)).toList();
 
     Database firestore = Database();
     for (int i = 0; i < timeStartList.length; i++) {
@@ -63,6 +61,21 @@ class Customer extends User {
     }
 
     return availResult;
+  }
+
+  Future<List<String>> retrieveServiceVariations(String serviceTitle) async {
+    final jsonString =
+        await rootBundle.loadString('assets/serviceVariations.json');
+
+    final List<ServicePrice> services =
+        (json.decode(jsonString)['categories'] as List)
+            .map((category) => ServicePrice.fromJson(category))
+            .toList();
+
+    ServicePrice currentTitle =
+        services.firstWhere((sp) => sp.name == serviceTitle);
+
+    return currentTitle.issues.map((issue) => issue.name).toList();
   }
 
   @override

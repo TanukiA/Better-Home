@@ -1,6 +1,9 @@
+import 'package:better_home/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
+import 'package:service/models/service_request_form_provider.dart';
 import 'package:service/views/service_request_screen1.dart';
 import 'package:service/views/service_request_screen2.dart';
 
@@ -57,6 +60,7 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ServiceRequestFormProvider>(context);
     Size size = MediaQuery.of(context).size;
 
     final ButtonStyle btnStyle = ElevatedButton.styleFrom(
@@ -88,8 +92,11 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
             ),
           ),
           backgroundColor: const Color.fromRGBO(152, 161, 127, 1),
-          leading: const BackButton(
-            color: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.clear, color: Colors.black),
+            onPressed: () {
+              widget.controller.handleCancelForm(context);
+            },
           ),
           iconTheme: const IconThemeData(
             size: 40,
@@ -106,12 +113,25 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
             currentStep: _activeStepIndex,
             steps: stepList(),
             onStepContinue: () {
-              if (_activeStepIndex < (stepList().length - 1)) {
-                setState(() {
-                  _activeStepIndex += 1;
-                });
+              bool isValid = true;
+
+              // Validate user input for the second step
+              if (_activeStepIndex == 1) {
+                isValid =
+                    widget.controller.validateServiceRequestInput(provider);
+              } else if (_activeStepIndex == 2) {}
+
+              if (isValid) {
+                if (_activeStepIndex < (stepList().length - 1)) {
+                  setState(() {
+                    _activeStepIndex += 1;
+                  });
+                } else {
+                  print('Submited');
+                }
               } else {
-                print('Submited');
+                showDialogBox(context, "Empty field found",
+                    "Please fill up all the required fields.");
               }
             },
             onStepCancel: () {

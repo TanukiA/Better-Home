@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,8 @@ class ServiceRequestScreen2 extends StatefulWidget {
 
 class _ServiceRequestScreen2State extends StateMVC<ServiceRequestScreen2> {
   String? _selectedVariation;
+  String? _selectedPropertyType;
+  List<String> _serviceVariationList = [];
   late TextEditingController _descriptionController;
 
   @override
@@ -29,7 +32,14 @@ class _ServiceRequestScreen2State extends StateMVC<ServiceRequestScreen2> {
     final provider =
         Provider.of<ServiceRequestFormProvider>(context, listen: false);
     super.initState();
-    _descriptionController = TextEditingController();
+    setServiceVariationList();
+    provider.variation != null
+        ? _selectedVariation = provider.variation
+        : _selectedVariation = null;
+    _descriptionController = TextEditingController(text: provider.description);
+    provider.propertyType != null
+        ? _selectedPropertyType = provider.propertyType
+        : _selectedPropertyType = null;
   }
 
   @override
@@ -38,9 +48,23 @@ class _ServiceRequestScreen2State extends StateMVC<ServiceRequestScreen2> {
     super.dispose();
   }
 
+  void setServiceVariationList() async {
+    _serviceVariationList = await widget.controller
+        .retrieveServiceVariations(widget.serviceCategory, widget.serviceType);
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ServiceRequestFormProvider>(context);
+
+    final ButtonStyle filePickBtnStyle = ElevatedButton.styleFrom(
+      textStyle: const TextStyle(
+        fontSize: 16,
+        fontFamily: 'Roboto',
+      ),
+      backgroundColor: Colors.blueGrey,
+      foregroundColor: Colors.white,
+    );
 
     return ChangeNotifierProvider<ServiceRequestFormProvider>.value(
       value: provider,
@@ -48,45 +72,56 @@ class _ServiceRequestScreen2State extends StateMVC<ServiceRequestScreen2> {
         builder: (context, obtainedData, _) {
           return Column(
             children: [
-              Container(
-                margin: const EdgeInsets.all(15),
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Service variation:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                  ),
                 ),
-                child: DropdownButton<String>(
-                  value: _selectedVariation,
-                  items: [
-                    ...<String>[
-                      'Kuala Lumpur / Selangor',
-                      'Putrajaya',
-                      'Johor',
-                    ].map((String value) {
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  margin: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.only(left: 8, right: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: DropdownButton<String>(
+                    value: _selectedVariation,
+                    items: _serviceVariationList.map((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
                       );
                     }).toList(),
-                  ],
-                  onChanged: (newValue) {},
-                  hint: _selectedVariation == null
-                      ? const Text("Select service variation")
-                      : null,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
+                    onChanged: (newValue) {
+                      _selectedVariation = newValue;
+                      provider.saveVariation = newValue!;
+                    },
+                    hint: _selectedVariation == null
+                        ? const Text("Select service variation")
+                        : null,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                    dropdownColor: Colors.white,
                   ),
-                  dropdownColor: Colors.white,
                 ),
               ),
+              const SizedBox(height: 15),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -101,16 +136,135 @@ class _ServiceRequestScreen2State extends StateMVC<ServiceRequestScreen2> {
               TextFieldContainer(
                 child: TextFormField(
                   controller: _descriptionController,
-                  maxLines: 6,
+                  maxLines: 7,
                   keyboardType: TextInputType.text,
                   onChanged: (value) {
-                    //provider.saveExp = value;
+                    provider.saveDescription = value;
                   },
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                   ),
                 ),
               ),
+              const SizedBox(height: 15),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Property type:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  margin: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.only(left: 8, right: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: DropdownButton<String>(
+                    value: _selectedPropertyType,
+                    items: [
+                      ...<String>[
+                        "Landed",
+                        "Flat/Apartment",
+                        "Condo/Serviced Residence",
+                        "Shophouse",
+                        "Others"
+                      ].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ],
+                    onChanged: (newValue) {
+                      _selectedPropertyType = newValue;
+                      provider.savePropertyType = newValue!;
+                    },
+                    hint: _selectedPropertyType == null
+                        ? const Text("Select your property type")
+                        : null,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                    dropdownColor: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Upload photo(s) to show your issue (optional):',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: ElevatedButton(
+                  onPressed: () =>
+                      widget.controller.pickImages(context, provider),
+                  style: filePickBtnStyle,
+                  child: const Text('Select file'),
+                ),
+              ),
+              const SizedBox(height: 10),
+              provider.imgFiles != null
+                  ? Wrap(
+                      children: provider.imgFiles!.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final imageone = entry.value;
+                        return Card(
+                          child: Stack(
+                            children: [
+                              GestureDetector(
+                                onTap: () => setState(() {
+                                  widget.controller
+                                      .removeImage(index, provider);
+                                }),
+                                child: SizedBox(
+                                  height: 120,
+                                  width: 120,
+                                  child: Image.file(File(imageone.path)),
+                                ),
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: GestureDetector(
+                                  onTap: () => setState(() {
+                                    widget.controller
+                                        .removeImage(index, provider);
+                                  }),
+                                  child: const Icon(
+                                    Icons.close,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    )
+                  : Container(),
               const SizedBox(height: 25),
             ],
           );

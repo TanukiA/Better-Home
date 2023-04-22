@@ -17,6 +17,8 @@ dependencies:
     path: ../map
   firebase_db:
     path: ../firebase_db
+  authentication:
+    path: ../authentication
     
   cupertino_icons: ^1.0.2
   firebase_core: ^2.7.0
@@ -26,6 +28,7 @@ dependencies:
   cloud_firestore: ^4.4.4
   shared_preferences: ^2.0.18
   intl: ^0.17.0
+  image_picker: ^0.8.7+4
 
 dev_dependencies:
   flutter_test:

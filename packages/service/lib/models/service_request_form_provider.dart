@@ -1,5 +1,5 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ServiceRequestFormProvider with ChangeNotifier {
   String? _serviceCategory;
@@ -15,8 +15,7 @@ class ServiceRequestFormProvider with ChangeNotifier {
   String? _variation;
   String? _description;
   String? _propertyType;
-  PlatformFile? _pickedFile;
-  String? _fileName;
+  List<XFile>? _imgFiles;
   bool _isPreferredDatePicked = false;
   bool _isAlternativeDatePicked = false;
   List<bool> _availPreferredTime = [true, true, true, true];
@@ -35,8 +34,7 @@ class ServiceRequestFormProvider with ChangeNotifier {
   String? get variation => _variation;
   String? get description => _description;
   String? get propertyType => _propertyType;
-  PlatformFile? get pickedFile => _pickedFile;
-  String? get fileName => _fileName;
+  List<XFile>? get imgFiles => _imgFiles;
   bool get isPreferredDatePicked => _isPreferredDatePicked;
   bool get isAlternativeDatePicked => _isAlternativeDatePicked;
   List<bool> get availPreferredTime => _availPreferredTime;
@@ -107,13 +105,8 @@ class ServiceRequestFormProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set savePickedFile(PlatformFile value) {
-    _pickedFile = value;
-    notifyListeners();
-  }
-
-  set saveFileName(String value) {
-    _fileName = value;
+  set saveImgFiles(List<XFile> value) {
+    _imgFiles = value;
     notifyListeners();
   }
 
@@ -151,8 +144,7 @@ class ServiceRequestFormProvider with ChangeNotifier {
     _variation = null;
     _description = null;
     _propertyType = null;
-    _pickedFile = null;
-    _fileName = null;
+    _imgFiles = null;
     _isPreferredDatePicked = false;
     _isAlternativeDatePicked = false;
     _availPreferredTime.fillRange(0, _availPreferredTime.length, true);
