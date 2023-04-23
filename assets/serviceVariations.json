@@ -1,7 +1,7 @@
 {
-    "categories":[
+    "services":[
        {
-          "name":"Plumbing - Leakage Repair",
+          "title":"Plumbing - Leakage Repair",
           "issues":[
              {
                 "name": "Leak/drip",
@@ -22,7 +22,7 @@
           ]
        },
        {
-          "name":"Aircon Servicing - Aircon Repair / Install",
+          "title":"Aircon Servicing - Aircon Repair / Install",
           "issues":[
              {
                 "name": "Repair: water leak",
@@ -47,7 +47,7 @@
           ]
        },
        {
-          "name":"Roof Servicing - Leakage Repair",
+          "title":"Roof Servicing - Leakage Repair",
           "issues":[
              {
                 "name": "Hip roof",

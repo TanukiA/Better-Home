@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
+import 'package:service/controllers/service_controller.dart';
 import 'package:service/models/service_request_form_provider.dart';
+import 'package:service/views/payment_screen.dart';
 import 'package:service/views/service_request_screen1.dart';
 import 'package:service/views/service_request_screen2.dart';
 
@@ -12,11 +14,13 @@ class ServiceRequestForm extends StatefulWidget {
       {Key? key,
       required this.serviceCategory,
       required this.serviceType,
-      required this.controller})
+      required this.cusController,
+      required this.serviceController})
       : super(key: key);
   final String serviceCategory;
   final String serviceType;
-  final CustomerController controller;
+  final CustomerController cusController;
+  final ServiceController serviceController;
 
   @override
   StateMVC<ServiceRequestForm> createState() => _ServiceRequestFormState();
@@ -27,6 +31,7 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
 
   @override
   initState() {
+    widget.serviceController.passBuildContext(context);
     super.initState();
   }
 
@@ -38,7 +43,7 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
           content: ServiceRequestScreen1(
             serviceCategory: widget.serviceCategory,
             serviceType: widget.serviceType,
-            controller: widget.controller,
+            controller: widget.cusController,
           ),
         ),
         Step(
@@ -48,14 +53,19 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
           content: ServiceRequestScreen2(
             serviceCategory: widget.serviceCategory,
             serviceType: widget.serviceType,
-            controller: widget.controller,
+            controller: widget.cusController,
           ),
         ),
         Step(
-            state: StepState.complete,
-            isActive: _activeStepIndex >= 2,
-            title: const Text('Pay'),
-            content: Column())
+          state: StepState.complete,
+          isActive: _activeStepIndex >= 2,
+          title: const Text('Pay'),
+          content: PaymentScreen(
+            serviceCategory: widget.serviceCategory,
+            serviceType: widget.serviceType,
+            controller: widget.serviceController,
+          ),
+        ),
       ];
 
   @override
@@ -95,7 +105,7 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
           leading: IconButton(
             icon: const Icon(Icons.clear, color: Colors.black),
             onPressed: () {
-              widget.controller.handleCancelForm(context);
+              widget.serviceController.handleCancelForm(context, provider);
             },
           ),
           iconTheme: const IconThemeData(
@@ -115,11 +125,11 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
             onStepContinue: () {
               bool isValid = true;
 
-              // Validate user input for the second step
+              // Validate user input of service request form
               if (_activeStepIndex == 1) {
-                isValid =
-                    widget.controller.validateServiceRequestInput(provider);
-              } else if (_activeStepIndex == 2) {}
+                isValid = widget.serviceController
+                    .validateServiceRequestInput(provider);
+              }
 
               if (isValid) {
                 if (_activeStepIndex < (stepList().length - 1)) {
@@ -164,7 +174,16 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
                   ),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: controlDetails.onStepContinue,
+                      onPressed: (isLastStep)
+                          ? () => widget.serviceController.makePayment()
+                          : controlDetails.onStepContinue,
+                      /*() {
+                        if (isLastStep) {
+                          widget.serviceController.makePayment();
+                        } else {
+                          controlDetails.onStepContinue;
+                        }
+                      },*/
                       style: btnStyle,
                       child: (isLastStep)
                           ? const Text('Submit')

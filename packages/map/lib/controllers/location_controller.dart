@@ -7,6 +7,7 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:better_home/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
+import 'package:service/controllers/service_controller.dart';
 import 'package:service/models/service_request_form_provider.dart';
 import 'package:service/views/service_request_form.dart';
 
@@ -63,7 +64,8 @@ class LocationController extends ControllerMVC {
             builder: (context) => ServiceRequestForm(
                   serviceCategory: provider.serviceCategory!,
                   serviceType: provider.serviceType!,
-                  controller: CustomerController(),
+                  cusController: CustomerController(),
+                  serviceController: ServiceController(),
                 )),
       );
     } else {

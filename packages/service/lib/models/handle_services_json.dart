@@ -1,15 +1,15 @@
-class ServicePrice {
-  final String name;
+class ServiceVariation {
+  final String title;
   final List<Issue> issues;
 
-  ServicePrice({required this.name, required this.issues});
+  ServiceVariation({required this.title, required this.issues});
 
-  factory ServicePrice.fromJson(Map<String, dynamic> json) {
+  factory ServiceVariation.fromJson(Map<String, dynamic> json) {
     var issues = json['issues'] as List;
     List<Issue> issueList =
         issues.map((issue) => Issue.fromJson(issue)).toList();
 
-    return ServicePrice(name: json['name'], issues: issueList);
+    return ServiceVariation(title: json['title'], issues: issueList);
   }
 }
 

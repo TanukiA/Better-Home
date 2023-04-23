@@ -251,6 +251,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.9"
+  flutter_stripe:
+    dependency: "direct main"
+    description:
+      name: flutter_stripe
+      sha256: "95f3c4b907493ff5cdd6b3cdeda03bb59c2bc409d0c0bfb44db948374f9c3595"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.1"
   flutter_svg:
     dependency: transitive
     description:
@@ -269,6 +277,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: aeac15850ef1b38ee368d4c53ba9a847e900bb2c53a4db3f6881cbb3cb684338
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   google_api_headers:
     dependency: transitive
     description:
@@ -318,7 +334,7 @@ packages:
     source: hosted
     version: "0.0.20-nullsafety.5"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "6aa2946395183537c8b880962d935877325d6a09a2867c3970c05c0fed6ac482"
@@ -673,6 +689,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  stripe_android:
+    dependency: transitive
+    description:
+      name: stripe_android
+      sha256: b0777d7d4db53e4cb6451a530e1d9d0aa09eca1304297944a236399b77b6357a
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.0"
+  stripe_ios:
+    dependency: transitive
+    description:
+      name: stripe_ios
+      sha256: "1ce3922c9e9fd2e3ced6b9d349966fa19074794eec1c9bac3cec1bca53e98c85"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.0"
+  stripe_platform_interface:
+    dependency: transitive
+    description:
+      name: stripe_platform_interface
+      sha256: "662a152075d1f3ac70b6b3302509381e716dd12e265316320a3a06c06c147f96"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.0"
   term_glyph:
     dependency: transitive
     description:

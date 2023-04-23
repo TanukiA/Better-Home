@@ -34,7 +34,7 @@ class Customer extends User {
     return customerData;
   }
 
-  Future<Map<String, dynamic>> retrieveServiceDescription(
+  Future<Map<String, dynamic>> loadServiceDescription(
       String serviceTitle) async {
     final jsonString =
         await rootBundle.loadString('assets/serviceDescription.json');
@@ -63,17 +63,17 @@ class Customer extends User {
     return availResult;
   }
 
-  Future<List<String>> retrieveServiceVariations(String serviceTitle) async {
+  Future<List<String>> loadServiceVariations(String serviceTitle) async {
     final jsonString =
         await rootBundle.loadString('assets/serviceVariations.json');
 
-    final List<ServicePrice> services =
-        (json.decode(jsonString)['categories'] as List)
-            .map((category) => ServicePrice.fromJson(category))
+    final List<ServiceVariation> services =
+        (json.decode(jsonString)['services'] as List)
+            .map((category) => ServiceVariation.fromJson(category))
             .toList();
 
-    ServicePrice currentTitle =
-        services.firstWhere((sp) => sp.name == serviceTitle);
+    ServiceVariation currentTitle =
+        services.firstWhere((sp) => sp.title == serviceTitle);
 
     return currentTitle.issues.map((issue) => issue.name).toList();
   }

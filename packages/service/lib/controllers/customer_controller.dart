@@ -1,10 +1,9 @@
-import 'package:authentication/controllers/login_controller.dart';
-import 'package:authentication/views/customer_home_screen.dart';
 import 'package:better_home/customer.dart';
 import 'package:better_home/utils.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:service/controllers/service_controller.dart';
 import 'package:service/models/service_request_form_provider.dart';
 import 'package:service/views/service_category_screen.dart';
 import 'package:service/views/service_descript_screen.dart';
@@ -80,7 +79,7 @@ class CustomerController extends ControllerMVC {
   Future<Map<String, dynamic>> retrieveServiceDescription(
       String serviceCategory, String serviceType) async {
     String serviceTitle = "$serviceCategory - $serviceType";
-    final descripTexts = await _cus.retrieveServiceDescription(serviceTitle);
+    final descripTexts = await _cus.loadServiceDescription(serviceTitle);
     return descripTexts;
   }
 
@@ -108,7 +107,8 @@ class CustomerController extends ControllerMVC {
           builder: (context) => ServiceRequestForm(
             serviceCategory: serviceCategory,
             serviceType: serviceType,
-            controller: CustomerController(),
+            cusController: CustomerController(),
+            serviceController: ServiceController(),
           ),
         ));
   }
@@ -160,8 +160,7 @@ class CustomerController extends ControllerMVC {
   Future<List<String>> retrieveServiceVariations(
       String serviceCategory, String serviceType) async {
     String serviceTitle = "$serviceCategory - $serviceType";
-    final serviceVariations =
-        await _cus.retrieveServiceVariations(serviceTitle);
+    final serviceVariations = await _cus.loadServiceVariations(serviceTitle);
     return serviceVariations;
   }
 
@@ -181,84 +180,5 @@ class CustomerController extends ControllerMVC {
 
   void removeImage(int index, ServiceRequestFormProvider provider) {
     provider.imgFiles!.removeAt(index);
-  }
-
-  bool validateServiceRequestInput(ServiceRequestFormProvider provider) {
-    if (provider.city == null || provider.city!.isEmpty) {
-      return false;
-    }
-    if (provider.address == null || provider.address!.isEmpty) {
-      return false;
-    }
-    if (provider.lat == null) {
-      return false;
-    }
-    if (provider.lng == null) {
-      return false;
-    }
-    if (provider.preferredDate == null) {
-      return false;
-    }
-    if (provider.preferredTimeSlot == null ||
-        provider.preferredTimeSlot!.isEmpty) {
-      return false;
-    }
-    if (provider.alternativeDate == null) {
-      return false;
-    }
-    if (provider.alternativeTimeSlot == null ||
-        provider.alternativeTimeSlot!.isEmpty) {
-      return false;
-    }
-    if (provider.variation == null || provider.variation!.isEmpty) {
-      return false;
-    }
-    if (provider.description == null || provider.description!.isEmpty) {
-      return false;
-    }
-    if (provider.propertyType == null || provider.propertyType!.isEmpty) {
-      return false;
-    }
-
-    if (!validDateAndTime(provider.preferredDate, provider.preferredTimeSlot,
-        provider.alternativeDate, provider.alternativeTimeSlot)) {
-      return false;
-    }
-    return true;
-  }
-
-  void handleCancelForm(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Cancel this order?"),
-          content: const Text("Your progress will be discarded."),
-          actions: [
-            TextButton(
-              child: const Text("No"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            ElevatedButton(
-              child: const Text("Yes"),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CustomerHomeScreen(
-                      loginCon: LoginController("customer"),
-                      cusCon: CustomerController(),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

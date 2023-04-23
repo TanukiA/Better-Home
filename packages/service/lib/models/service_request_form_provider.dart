@@ -20,6 +20,7 @@ class ServiceRequestFormProvider with ChangeNotifier {
   bool _isAlternativeDatePicked = false;
   List<bool> _availPreferredTime = [true, true, true, true];
   List<bool> _availAlternativeTime = [true, true, true, true];
+  int? _price;
 
   String? get serviceCategory => _serviceCategory;
   String? get serviceType => _serviceType;
@@ -39,6 +40,7 @@ class ServiceRequestFormProvider with ChangeNotifier {
   bool get isAlternativeDatePicked => _isAlternativeDatePicked;
   List<bool> get availPreferredTime => _availPreferredTime;
   List<bool> get availAlternativeTime => _availAlternativeTime;
+  int? get price => _price;
 
   set saveServiceCategory(String value) {
     _serviceCategory = value;
@@ -130,6 +132,11 @@ class ServiceRequestFormProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  set savePrice(int value) {
+    _price = value;
+    notifyListeners();
+  }
+
   void clearFormInputs() {
     _serviceCategory = null;
     _serviceType = null;
@@ -149,6 +156,7 @@ class ServiceRequestFormProvider with ChangeNotifier {
     _isAlternativeDatePicked = false;
     _availPreferredTime.fillRange(0, _availPreferredTime.length, true);
     _availAlternativeTime.fillRange(0, _availAlternativeTime.length, true);
+    _price = null;
     notifyListeners();
   }
 }
