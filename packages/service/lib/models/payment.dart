@@ -11,6 +11,8 @@ class Payment extends ModelMVC {
   Map<String, dynamic>? _paymentIntentData;
   BuildContext? _context;
 
+  BuildContext? get context => _context;
+
   Payment() {
     Stripe.publishableKey =
         'pk_test_51MzjMXBaKsiCNQU8rVcgJfQxlnLm30Wrr10tL3lZoXC65o4T8FGejooPFWRuC8QYvHfiJu1iqmiZZebJLWA7VH4N00UYYMpPSr';
@@ -53,7 +55,7 @@ class Payment extends ModelMVC {
       showSnackBar(_context!, e.toString());
     }
   }
-  
+
   void setBuildContext(BuildContext context) {
     _context = context;
   }

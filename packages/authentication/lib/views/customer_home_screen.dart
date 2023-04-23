@@ -18,14 +18,10 @@ class CustomerHomeScreen extends StatefulWidget {
 }
 
 class _CustomerHomeScreenState extends StateMVC<CustomerHomeScreen> {
-  late User _user;
-  late Customer _cus;
   int _currentIndex = 0;
 
   @override
   void initState() {
-    _user = widget.loginCon.user;
-    _cus = widget.cusCon.cus;
     super.initState();
   }
 

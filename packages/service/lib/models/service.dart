@@ -2,9 +2,11 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:service/models/payment.dart';
+import 'package:service/models/technician_assigner.dart';
 
 class Service extends ModelMVC {
   late Payment _payment;
+  late TechnicianAssigner _techAssigner;
 
   Service() {
     _payment = Payment();
@@ -24,9 +26,12 @@ class Service extends ModelMVC {
     return issue['price'];
   }
 
-  void processServiceRequest(int price) {
-    _payment.makePayment(price);
+  void processServiceRequest(int price) async {
+    await _payment.makePayment(price);
     // calculate shortest distance using Map
+    print("DONE PAYMENT, going to technician assign");
+    _techAssigner = TechnicianAssigner(_payment.context!);
+    _techAssigner.pickSuitableTechnician();
   }
 
   void saveServiceRequest() {}

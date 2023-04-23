@@ -8,6 +8,7 @@ import 'dart:core';
 class Database extends ChangeNotifier {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  static List<String> overlappedTechnicianIDs = [];
 
   Future<bool> checkAccountExistence(
       String phoneNumber, String collectionName) async {
@@ -73,7 +74,7 @@ class Database extends ChangeNotifier {
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
     _firebaseFirestore.collection('technicians').doc(documentID).update({
-      'pickedFile': downloadUrl,
+      'verificationDoc': downloadUrl,
     });
   }
 
@@ -98,7 +99,7 @@ class Database extends ChangeNotifier {
     return querySnapshot.size;
   }
 
-  // Check technician's availability for one given time slot, return true/false for available/not available
+  // Check technician's availability for one given time slot, return true/false represents available/not available
   Future<bool> checkTechnicianAvailability(
       String serviceCategory,
       String city,
@@ -130,11 +131,13 @@ class Database extends ChangeNotifier {
           DateTime startTime = workScheduleDoc.get("startTime").toDate();
           DateTime endTime = workScheduleDoc.get("endTime").toDate();
           // Check if the preferred time slot overlaps with the start and end time
+          // Increment number of overlapped technician, and store the document ID to be used later for filtering out
           if ((timeSlotStart.isAfter(startTime) &&
                   timeSlotStart.isBefore(endTime)) ||
               (timeSlotEnd.isAfter(startTime) &&
                   timeSlotEnd.isBefore(endTime))) {
             countOverlap++;
+            overlappedTechnicianIDs.add(technicianDoc.id);
             break;
           }
         }
@@ -145,5 +148,28 @@ class Database extends ChangeNotifier {
     } else {
       return false;
     }
+  }
+
+  List<Map<String, dynamic>> getLocationOfAvailableTechnician(
+      String serviceCategory, String city) {
+    print("Overlapped Technician IDs: $overlappedTechnicianIDs");
+
+    List<Map<String, dynamic>> techniciansData = [];
+    CollectionReference techniciansCollection =
+        _firebaseFirestore.collection('technicians');
+
+    techniciansCollection
+        .where("specialization", arrayContains: serviceCategory)
+        .where("city", isEqualTo: city)
+        .where(FieldPath.documentId, whereNotIn: overlappedTechnicianIDs)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        final technicianData = {'id': doc.id, 'location': doc.get('location')};
+        techniciansData.add(technicianData);
+      }
+    });
+    print("Technicians to be chosen: $techniciansData");
+    return techniciansData;
   }
 }
