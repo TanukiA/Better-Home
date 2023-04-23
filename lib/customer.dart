@@ -9,9 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:service/models/handle_services_json.dart';
+import 'package:service/models/service.dart';
 
 class Customer extends User {
   String? _id;
+  //late Service service;
 
   Customer({String? phone, String? name, String? email})
       : super(phone: phone, name: name, email: email);

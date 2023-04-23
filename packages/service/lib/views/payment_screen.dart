@@ -3,7 +3,6 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 import 'package:service/controllers/service_controller.dart';
 import 'package:service/models/service_request_form_provider.dart';
-import 'package:better_home/text_field_container.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen(
@@ -27,8 +26,6 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
 
   @override
   initState() {
-    final provider =
-        Provider.of<ServiceRequestFormProvider>(context, listen: false);
     super.initState();
   }
 
@@ -94,7 +91,7 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
                         fontSize: 16.0,
                       ),
                     ),
-                    const SizedBox(height: 18.0),
+                    const SizedBox(height: 19.0),
                     const Text(
                       'Variation:',
                       style: TextStyle(
@@ -108,7 +105,7 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
                         fontSize: 16.0,
                       ),
                     ),
-                    const SizedBox(height: 18.0),
+                    const SizedBox(height: 19.0),
                     const Text(
                       'Property Type:',
                       style: TextStyle(
@@ -122,7 +119,7 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
                         fontSize: 16.0,
                       ),
                     ),
-                    const SizedBox(height: 18.0),
+                    const SizedBox(height: 19.0),
                     const Text(
                       'State:',
                       style: TextStyle(
@@ -136,7 +133,7 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
                         fontSize: 16.0,
                       ),
                     ),
-                    const SizedBox(height: 18.0),
+                    const SizedBox(height: 19.0),
                     const Text(
                       'Address:',
                       style: TextStyle(
@@ -150,7 +147,7 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
                         fontSize: 16.0,
                       ),
                     ),
-                    const SizedBox(height: 18.0),
+                    const SizedBox(height: 19.0),
                     const Text(
                       'Preferred Appointment:',
                       style: TextStyle(
@@ -164,7 +161,7 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
                         fontSize: 16.0,
                       ),
                     ),
-                    const SizedBox(height: 18.0),
+                    const SizedBox(height: 19.0),
                     const Text(
                       'Alternative Appointment:',
                       style: TextStyle(
@@ -178,7 +175,7 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
                         fontSize: 16.0,
                       ),
                     ),
-                    const SizedBox(height: 18.0),
+                    const SizedBox(height: 19.0),
                     const Text(
                       'Description:',
                       style: TextStyle(
@@ -196,14 +193,14 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
                     Text(
                       'TOTAL: RM $price',
                       style: const TextStyle(
-                        fontSize: 18.0,
+                        fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 28),
             ],
           );
         },

@@ -136,8 +136,6 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
                   setState(() {
                     _activeStepIndex += 1;
                   });
-                } else {
-                  print('Submited');
                 }
               } else {
                 showDialogBox(context, "Empty field found",
@@ -175,19 +173,11 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: (isLastStep)
-                          ? () => widget.serviceController.makePayment()
+                          ? () => widget.serviceController.submitRequest()
                           : controlDetails.onStepContinue,
-                      /*() {
-                        if (isLastStep) {
-                          widget.serviceController.makePayment();
-                        } else {
-                          controlDetails.onStepContinue;
-                        }
-                      },*/
                       style: btnStyle,
-                      child: (isLastStep)
-                          ? const Text('Submit')
-                          : const Text('Next'),
+                      child:
+                          (isLastStep) ? const Text('Pay') : const Text('Next'),
                     ),
                   ),
                 ],

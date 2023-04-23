@@ -142,9 +142,8 @@ class ServiceController extends ControllerMVC {
     return _payment.setBuildContext(context);
   }
 
-  Future<void> makePayment() {
-    String priceStr = _servicePrice.toString();
-    print("Price to be paid: $priceStr");
-    return _payment.makePayment(priceStr);
+  void submitRequest() {
+    int priceInCent = _servicePrice * 100;
+    _service.processServiceRequest(priceInCent);
   }
 }
