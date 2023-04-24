@@ -1,35 +1,62 @@
-import 'package:better_home/technician.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
-import 'package:map/models/location.dart';
+import 'package:map/models/distance_calculator.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:service/models/service_request_form_provider.dart';
 
 class TechnicianAssigner extends ModelMVC {
-  late Location _location;
+  late DistanceCalculator _disCal;
   BuildContext? _context;
-  List<Map<String, double>> coordinates = [];
-  List<Map<String, dynamic>> techniciansMap = [];
+  GeoPoint? _serviceLocation;
+  GeoPoint? _nearestTechnicianLocation;
+  String? _nearestTechnicianID;
+  List<Map<String, dynamic>> _techniciansMap = [];
+
+  GeoPoint? get serviceLocation => _serviceLocation;
+  GeoPoint? get nearestTechnicianLocation => _nearestTechnicianLocation;
+  String? get nearestTechnicianID => _nearestTechnicianID;
 
   TechnicianAssigner(BuildContext context) {
     _context = context;
-    _location = Location();
+    _disCal = DistanceCalculator();
   }
 
-  void pickSuitableTechnician() {
+  Future<void> pickSuitableTechnician() async {
     Database firestore = Database();
     final provider =
         Provider.of<ServiceRequestFormProvider>(_context!, listen: false);
-    techniciansMap = firestore.getLocationOfAvailableTechnician(
+    _techniciansMap = await firestore.getLocationOfAvailableTechnician(
         provider.serviceCategory!, provider.city!);
-    print("Technicians to be chosen 2: $techniciansMap");
-    retrieveLocations();
+    convertServiceLocationToGeoPoint(provider.lat!, provider.lng!);
+    print("Technicians to be chosen from: $_techniciansMap");
+    final technicianLocations = retrieveTechnicianLocations();
+    if (_techniciansMap.length > 1) {
+      _nearestTechnicianLocation = _disCal.getNearestTechnicianLocation(
+          technicianLocations, _serviceLocation!);
+    } else {
+      _nearestTechnicianLocation = technicianLocations.first;
+    }
+
+    _nearestTechnicianID = getNearestTechnicianID();
+    print("Nearest technician ID: $_nearestTechnicianID");
   }
 
-  void retrieveLocations() {
-    List<dynamic> locations =
-        techniciansMap.map((technician) => technician['location']).toList();
-    print("Locations: $locations");
+  List<GeoPoint> retrieveTechnicianLocations() {
+    return _techniciansMap
+        .map((technician) => technician['location'] as GeoPoint)
+        .toList();
+  }
+
+  void convertServiceLocationToGeoPoint(double lat, double lng) {
+    LatLng location = LatLng(lat, lng);
+    _serviceLocation = GeoPoint(location.latitude, location.longitude);
+  }
+
+  String getNearestTechnicianID() {
+    return _techniciansMap.firstWhere(
+        (data) => data['location'] == _nearestTechnicianLocation)['id'];
   }
 }

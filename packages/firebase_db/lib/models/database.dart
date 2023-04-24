@@ -150,26 +150,47 @@ class Database extends ChangeNotifier {
     }
   }
 
-  List<Map<String, dynamic>> getLocationOfAvailableTechnician(
-      String serviceCategory, String city) {
+  Future<List<Map<String, dynamic>>> getLocationOfAvailableTechnician(
+      String serviceCategory, String city) async {
     print("Overlapped Technician IDs: $overlappedTechnicianIDs");
 
     List<Map<String, dynamic>> techniciansData = [];
     CollectionReference techniciansCollection =
         _firebaseFirestore.collection('technicians');
 
-    techniciansCollection
-        .where("specialization", arrayContains: serviceCategory)
-        .where("city", isEqualTo: city)
-        .where(FieldPath.documentId, whereNotIn: overlappedTechnicianIDs)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      for (var doc in querySnapshot.docs) {
-        final technicianData = {'id': doc.id, 'location': doc.get('location')};
-        techniciansData.add(technicianData);
-      }
-    });
-    print("Technicians to be chosen: $techniciansData");
+    if (overlappedTechnicianIDs.isNotEmpty) {
+      await techniciansCollection
+          .where("specialization", arrayContains: serviceCategory)
+          .where("city", isEqualTo: city)
+          .where(FieldPath.documentId, whereNotIn: overlappedTechnicianIDs)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          final technicianData = {
+            'id': doc.id,
+            'location': doc.get('location')
+          };
+          techniciansData.add(technicianData);
+        }
+      });
+    } else {
+      await techniciansCollection
+          .where("specialization", arrayContains: serviceCategory)
+          .where("city", isEqualTo: city)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          final technicianData = {
+            'id': doc.id,
+            'location': doc.get('location')
+          };
+          print("A data exist");
+          techniciansData.add(technicianData);
+        }
+      });
+    }
+    print("City: $city");
+    print("Specialization: $serviceCategory");
     return techniciansData;
   }
 }

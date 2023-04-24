@@ -32,6 +32,7 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
   @override
   initState() {
     super.initState();
+    widget.serviceController.passBuildContext(context);
   }
 
   List<Step> stepList() => [
@@ -71,10 +72,6 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
   Widget build(BuildContext context) {
     final provider = Provider.of<ServiceRequestFormProvider>(context);
     Size size = MediaQuery.of(context).size;
-
-    setState(() {
-      widget.serviceController.passBuildContext(context);
-    });
 
     final ButtonStyle btnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(

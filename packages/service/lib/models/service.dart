@@ -27,8 +27,8 @@ class Service extends ModelMVC {
   }
 
   void processServiceRequest(int price) async {
-    await _payment.makePayment(price);
-    // calculate shortest distance using Map
+    //await _payment.makePayment(price);
+    //await _payment.displayPaymentSheet();
     print("DONE PAYMENT, going to technician assign");
     _techAssigner = TechnicianAssigner(_payment.context!);
     _techAssigner.pickSuitableTechnician();
