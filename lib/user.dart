@@ -56,7 +56,8 @@ abstract class User extends ModelMVC {
             Customer customer = Customer();
             customer.login(context, phoneNumber);
           } else if (userType == "customer" && purpose == "register") {
-            final fp = Provider.of<RegistrationFormProvider>(context);
+            final fp =
+                Provider.of<RegistrationFormProvider>(context, listen: false);
             Customer customer = Customer(
                 phone: fp.phone!.trim(),
                 name: fp.name!.trim(),

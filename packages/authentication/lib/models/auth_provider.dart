@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:better_home/utils.dart';
 
 class AuthProvider extends ChangeNotifier {
-  Map<String, dynamic>? _userData;
   int? _forceResendingToken;
   bool _isCustomerSignedIn = false;
   bool _isTechnicianSignedIn = false;
@@ -19,7 +18,6 @@ class AuthProvider extends ChangeNotifier {
   bool get isCustomerSignedIn => _isCustomerSignedIn;
   bool get isTechnicianSignedIn => _isTechnicianSignedIn;
   bool get isLoading => _isLoading;
-  Map<String, dynamic> get userData => _userData!;
 
   AuthProvider() {
     checkCustomerSignIn();
@@ -81,7 +79,7 @@ class AuthProvider extends ChangeNotifier {
                   userType: userType,
                   purpose: purpose,
                   phoneNumber: phoneNumber,
-                  onResendPressed: () => resendOTP(),
+                  onResendPressed: () => resendOTP(phoneNumber),
                 ),
               ),
             );
@@ -121,11 +119,10 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> resendOTP() async {
+  Future<bool> resendOTP(String phoneNumber) async {
     try {
-      String? phoneNumber = _firebaseAuth.currentUser?.phoneNumber;
       await _firebaseAuth.verifyPhoneNumber(
-          phoneNumber: phoneNumber!,
+          phoneNumber: phoneNumber,
           forceResendingToken: _forceResendingToken!,
           verificationCompleted:
               (PhoneAuthCredential phoneAuthCredential) async {
@@ -151,11 +148,13 @@ class AuthProvider extends ChangeNotifier {
     await sp.setString(dataName, jsonEncode(userData));
   }
 
-  Future getUserDataFromSP(String dataName) async {
+  Future<String> getUserDataFromSP(String dataName) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     final userDataJson = sp.getString(dataName);
-    _userData = jsonDecode(userDataJson!);
     notifyListeners();
+    final userData = jsonDecode(userDataJson!);
+
+    return userData['id'];
   }
 
   Future userSignOut() async {

@@ -34,13 +34,12 @@ class Technician extends User {
       required PlatformFile this.pickedFile})
       : super(phone: phone, name: name, email: email);
 
-  retrieveLoginData(String phoneNumber) async {
+  Future<void> retrieveLoginData(String phoneNumber) async {
     final technicianDoc =
         await Database.getTechnicianByPhoneNumber(phoneNumber);
 
     if (technicianDoc.exists) {
       _id = technicianDoc.id;
-      phone = technicianDoc['phoneNumber'];
     }
   }
 
@@ -94,18 +93,22 @@ class Technician extends User {
   }
 
   @override
-  void login(BuildContext context, String phoneNumber) {
-    retrieveLoginData(phoneNumber);
+  Future<void> login(BuildContext context, String phoneNumber) async {
+    await retrieveLoginData(phoneNumber);
 
     Map<String, dynamic> technicianData = {
       'id': _id,
-      'phoneNumber': phone,
     };
-    final ap = Provider.of<AuthProvider>(context, listen: false);
-    ap.storeUserDataToSP(technicianData, "session_data");
-    ap.setTechnicianSignIn();
 
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const TechnicianHomeScreen()));
+    if (context.mounted) {
+      final ap = Provider.of<AuthProvider>(context, listen: false);
+      ap.storeUserDataToSP(technicianData, "session_data");
+      ap.setTechnicianSignIn();
+
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const TechnicianHomeScreen()));
+    }
   }
 }

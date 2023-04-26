@@ -2,7 +2,6 @@ import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/customer_home_screen.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
 import 'package:service/models/payment.dart';
 import 'package:service/models/service.dart';

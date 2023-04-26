@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:path/path.dart' as path;
 import 'dart:core';
 
 class Database extends ChangeNotifier {
@@ -31,11 +34,12 @@ class Database extends ChangeNotifier {
   }
 
   Future<void> addCustomerData(Map<String, dynamic> customerData) async {
-    await _firebaseFirestore
-        .collection('customers')
-        .add(customerData)
-        .then((value) => print('Customer added'))
-        .catchError((error) => print('Failed to add customer: $error'));
+    try {
+      await _firebaseFirestore.collection('customers').add(customerData);
+    } catch (e) {
+      throw PlatformException(
+          code: 'add-customer-failed', message: e.toString());
+    }
   }
 
   static Future<DocumentSnapshot<Map<String, dynamic>>>
@@ -60,7 +64,8 @@ class Database extends ChangeNotifier {
         uploadFile(documentReference.id, pickedFile);
       }
     } catch (e) {
-      print('Failed to add technician: $e');
+      throw PlatformException(
+          code: 'add-technician-failed', message: e.toString());
     }
   }
 
@@ -184,7 +189,6 @@ class Database extends ChangeNotifier {
             'id': doc.id,
             'location': doc.get('location')
           };
-          print("A data exist");
           techniciansData.add(technicianData);
         }
       });
@@ -192,5 +196,60 @@ class Database extends ChangeNotifier {
     print("City: $city");
     print("Specialization: $serviceCategory");
     return techniciansData;
+  }
+
+  Future<void> storeServiceRequest(
+      Map<String, dynamic> data, List<XFile>? imgFiles) async {
+    try {
+      final CollectionReference servicesRef =
+          _firebaseFirestore.collection('services');
+      final DocumentReference serviceDocRef = await servicesRef.add(data);
+
+      final List<String>? downloadUrls = imgFiles != null
+          ? await uploadServiceImages(serviceDocRef, imgFiles)
+          : null;
+      if (downloadUrls != null) {
+        await serviceDocRef.update({'images': downloadUrls});
+      }
+    } catch (e) {
+      throw PlatformException(
+          code: 'add-service-request-failed', message: e.toString());
+    }
+  }
+
+  Future<List<String>> uploadServiceImages(
+      DocumentReference serviceDocRef, List<XFile> imgFiles) async {
+    final List<String> downloadUrls = [];
+    try {
+      // Upload each image to Cloud Storage, add its download URL to the "images" array in the "services"
+      await Future.wait(
+        imgFiles.map(
+          (XFile imgFile) async {
+            // Generate a unique ID for the image
+            final String imgId =
+                DateTime.now().microsecondsSinceEpoch.toString();
+            final String extension = path.extension(imgFile.path);
+            final String imgPath =
+                'services/${serviceDocRef.id}/$imgId$extension';
+
+            final Reference storageRef = _firebaseStorage.ref().child(imgPath);
+            final TaskSnapshot taskSnapshot = await storageRef.putFile(
+              File(imgFile.path),
+              SettableMetadata(
+                contentType: 'image/${extension.substring(1)}',
+              ),
+            );
+
+            final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+            downloadUrls.add(downloadUrl);
+          },
+        ),
+      );
+
+      return downloadUrls;
+    } catch (e) {
+      throw PlatformException(
+          code: 'upload-image-failed', message: e.toString());
+    }
   }
 }

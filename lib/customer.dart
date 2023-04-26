@@ -8,22 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service/controllers/customer_controller.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:service/models/handle_services_json.dart';
-import 'package:service/models/service.dart';
+import 'package:service/models/service_request_manager.dart';
 
 class Customer extends User {
   String? _id;
-  //late Service service;
 
   Customer({String? phone, String? name, String? email})
       : super(phone: phone, name: name, email: email);
 
-  retrieveLoginData(String phoneNumber) async {
+  Future<void> retrieveLoginData(String phoneNumber) async {
     final customerDoc = await Database.getCustomerByPhoneNumber(phoneNumber);
-
     if (customerDoc.exists) {
       _id = customerDoc.id;
-      phone = customerDoc['phoneNumber'];
     }
   }
 
@@ -81,23 +77,25 @@ class Customer extends User {
   }
 
   @override
-  void login(BuildContext context, String phoneNumber) {
-    retrieveLoginData(phoneNumber);
+  Future<void> login(BuildContext context, String phoneNumber) async {
+    await retrieveLoginData(phoneNumber);
 
     Map<String, dynamic> customerData = {
       'id': _id,
-      'phoneNumber': phone,
     };
-    final ap = Provider.of<AuthProvider>(context, listen: false);
-    ap.storeUserDataToSP(customerData, "session_data");
-    ap.setCustomerSignIn();
 
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CustomerHomeScreen(
-                  loginCon: LoginController("customer"),
-                  cusCon: CustomerController(),
-                )));
+    if (context.mounted) {
+      final ap = Provider.of<AuthProvider>(context, listen: false);
+      ap.storeUserDataToSP(customerData, "session_data");
+      ap.setCustomerSignIn();
+
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CustomerHomeScreen(
+                    loginCon: LoginController("customer"),
+                    cusCon: CustomerController(),
+                  )));
+    }
   }
 }

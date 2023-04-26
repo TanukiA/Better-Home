@@ -16,7 +16,6 @@ class TechnicianAssigner extends ModelMVC {
   List<Map<String, dynamic>> _techniciansMap = [];
 
   GeoPoint? get serviceLocation => _serviceLocation;
-  GeoPoint? get nearestTechnicianLocation => _nearestTechnicianLocation;
   String? get nearestTechnicianID => _nearestTechnicianID;
 
   TechnicianAssigner(BuildContext context) {
@@ -33,7 +32,7 @@ class TechnicianAssigner extends ModelMVC {
     convertServiceLocationToGeoPoint(provider.lat!, provider.lng!);
     print("Technicians to be chosen from: $_techniciansMap");
     final technicianLocations = retrieveTechnicianLocations();
-    if (_techniciansMap.length > 1) {
+    if (technicianLocations.length > 1) {
       _nearestTechnicianLocation = _disCal.getNearestTechnicianLocation(
           technicianLocations, _serviceLocation!);
     } else {

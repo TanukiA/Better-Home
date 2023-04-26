@@ -83,7 +83,8 @@ class RegistrationController extends ControllerMVC {
 
   void saveCustomerDataToProvider(
       BuildContext context, String phoneNumber, String name, String email) {
-    final provider = Provider.of<RegistrationFormProvider>(context);
+    final provider =
+        Provider.of<RegistrationFormProvider>(context, listen: false);
     provider.savePhone = phoneNumber;
     provider.saveName = name;
     provider.saveEmail = email;
