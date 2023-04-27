@@ -2,6 +2,8 @@ import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/customer_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:service/controllers/customer_controller.dart';
+import 'package:service/controllers/service_controller.dart';
+import 'package:service/views/customer_service_screen.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   const MyBottomNavigationBar({
@@ -39,8 +41,20 @@ class MyBottomNavigationBar extends StatelessWidget {
           ),
           label: '',
         ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.build, color: Colors.black, size: 30),
+        BottomNavigationBarItem(
+          icon: GestureDetector(
+            child: const Icon(Icons.build, color: Colors.black, size: 30),
+            onTap: () {
+              if (userType == "customer") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CustomerServiceScreen(),
+                  ),
+                );
+              } else {}
+            },
+          ),
           label: '',
         ),
         const BottomNavigationBarItem(

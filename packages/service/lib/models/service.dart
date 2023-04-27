@@ -18,11 +18,14 @@ class Service extends ModelMVC {
   late Payment _payment;
   late TechnicianAssigner _techAssigner;
   Map<String, dynamic>? _serviceRequestData;
+  List<QueryDocumentSnapshot> _servicesDoc = [];
   static bool paymentSuccess = false;
 
   Service() {
     _payment = Payment();
   }
+
+  List<QueryDocumentSnapshot> get servicesDoc => _servicesDoc;
 
   Future<int> loadServicePrice(String serviceTitle, String variation) async {
     final jsonString =
@@ -49,7 +52,7 @@ class Service extends ModelMVC {
       final ap = Provider.of<AuthProvider>(Payment.context!, listen: false);
       final provider = Provider.of<ServiceRequestFormProvider>(Payment.context!,
           listen: false);
-      String id = await ap.getUserDataFromSP("session_data");
+      String id = await ap.getUserIDFromSP("session_data");
       final servicePrice = price / 100;
 
       _serviceRequestData = {
@@ -72,13 +75,13 @@ class Service extends ModelMVC {
         'assignedDate': provider.preferredDate,
         'assignedTime': provider.preferredTimeSlot,
       };
-      saveServiceRequest(provider.imgFiles!);
+      saveServiceRequest(provider.imgFiles);
     }
   }
 
-  Future<void> saveServiceRequest(List<XFile>? imgFiles) async {
+  void saveServiceRequest(List<XFile>? imgFiles) {
     Database firestore = Database();
-    await firestore.storeServiceRequest(_serviceRequestData!, imgFiles);
+    firestore.storeServiceRequest(_serviceRequestData!, imgFiles);
     showDialog(
       context: Payment.context!,
       builder: (BuildContext context) {
@@ -113,5 +116,14 @@ class Service extends ModelMVC {
 
   static void updatePaymentSuccess(bool newValue) {
     paymentSuccess = newValue;
+  }
+
+  Future<List<QueryDocumentSnapshot<Object?>>> retrieveActiveServicesData(
+      BuildContext context) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String id = await ap.getUserIDFromSP("session_data");
+    Database firestore = Database();
+    _servicesDoc = await firestore.readActiveServices(id);
+    return servicesDoc;
   }
 }

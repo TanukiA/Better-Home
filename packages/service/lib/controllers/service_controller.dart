@@ -1,5 +1,6 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/customer_home_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:service/controllers/customer_controller.dart';
@@ -7,6 +8,8 @@ import 'package:service/models/payment.dart';
 import 'package:service/models/service.dart';
 import 'package:service/models/service_request_form_provider.dart';
 import 'package:firebase_db/models/database.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/standalone.dart' as tz;
 import 'package:intl/intl.dart';
 
 class ServiceController extends ControllerMVC {
@@ -144,5 +147,29 @@ class ServiceController extends ControllerMVC {
   void submitRequest() {
     int priceInCent = _servicePrice * 100;
     _service.processServiceRequest(priceInCent);
+  }
+
+  Future<List<QueryDocumentSnapshot<Object?>>> retrieveActiveServicesData(
+      BuildContext context) {
+    return _service.retrieveActiveServicesData(context);
+  }
+
+  String formatToLocalDate(Timestamp timestamp) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime dateTime = tz.TZDateTime.from(timestamp.toDate(), location);
+    return DateFormat('yyyy-MM-dd').format(dateTime);
+  }
+
+  String formatToLocalDateTime(Timestamp timestamp) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime dateTime = tz.TZDateTime.from(timestamp.toDate(), location);
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+  }
+
+  Future<List<Widget>> retrieveServiceImages(QueryDocumentSnapshot serviceDoc) {
+    Database db = Database();
+    return db.downloadServiceImages(serviceDoc);
   }
 }

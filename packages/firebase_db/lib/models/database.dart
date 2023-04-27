@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'dart:core';
+import 'package:photo_view/photo_view.dart';
 
 class Database extends ChangeNotifier {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
@@ -40,17 +41,6 @@ class Database extends ChangeNotifier {
       throw PlatformException(
           code: 'add-customer-failed', message: e.toString());
     }
-  }
-
-  static Future<DocumentSnapshot<Map<String, dynamic>>>
-      getCustomerByPhoneNumber(String phoneNumber) async {
-    final customersRef = FirebaseFirestore.instance.collection('customers');
-    final querySnapshot = await customersRef
-        .where('phoneNumber', isEqualTo: phoneNumber)
-        .limit(1)
-        .get();
-    final documentSnapshot = querySnapshot.docs.first;
-    return documentSnapshot;
   }
 
   Future<void> addTechnicianData(
@@ -87,6 +77,17 @@ class Database extends ChangeNotifier {
       getTechnicianByPhoneNumber(String phoneNumber) async {
     final techniciansRef = FirebaseFirestore.instance.collection('technicians');
     final querySnapshot = await techniciansRef
+        .where('phoneNumber', isEqualTo: phoneNumber)
+        .limit(1)
+        .get();
+    final documentSnapshot = querySnapshot.docs.first;
+    return documentSnapshot;
+  }
+
+  static Future<DocumentSnapshot<Map<String, dynamic>>>
+      getCustomerByPhoneNumber(String phoneNumber) async {
+    final customersRef = FirebaseFirestore.instance.collection('customers');
+    final querySnapshot = await customersRef
         .where('phoneNumber', isEqualTo: phoneNumber)
         .limit(1)
         .get();
@@ -251,5 +252,41 @@ class Database extends ChangeNotifier {
       throw PlatformException(
           code: 'upload-image-failed', message: e.toString());
     }
+  }
+
+  Future<List<QueryDocumentSnapshot>> readActiveServices(String id) async {
+    QuerySnapshot querySnapshot = await _firebaseFirestore
+        .collection('services')
+        .where('customerID', isEqualTo: id)
+        .where('serviceStatus',
+            whereIn: ['Assigning', 'Confirmed', 'In Progress']).get();
+    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+    return documents;
+  }
+
+  Future<List<Widget>> downloadServiceImages(
+      QueryDocumentSnapshot serviceDoc) async {
+    List<String> imageRefs =
+        (serviceDoc.data() as Map<String, dynamic>)['images'].cast<String>();
+
+    if (imageRefs.isNotEmpty) {
+      // Download the images from Cloud Storage and store them in a list of PhotoView
+      List<Future<Widget>> imageFutures = imageRefs.map((imageRef) async {
+        return SizedBox(
+          width: 300.0,
+          height: 250.0,
+          child: PhotoView(
+            imageProvider: NetworkImage(imageRef),
+            minScale: PhotoViewComputedScale.contained,
+            maxScale: PhotoViewComputedScale.covered * 2.5,
+          ),
+        );
+      }).toList();
+
+      Iterable<Future<Widget>> imageIterable = imageFutures;
+      List<Widget> images = await Future.wait(imageIterable);
+      return images;
+    }
+    return [];
   }
 }

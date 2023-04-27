@@ -142,13 +142,12 @@ class AuthProvider extends ChangeNotifier {
     return true;
   }
 
-  Future storeUserDataToSP(
-      Map<String, dynamic> userData, String dataName) async {
+  Future storeUserIDToSP(Map<String, dynamic> userData, String dataName) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setString(dataName, jsonEncode(userData));
   }
 
-  Future<String> getUserDataFromSP(String dataName) async {
+  Future<String> getUserIDFromSP(String dataName) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     final userDataJson = sp.getString(dataName);
     notifyListeners();

@@ -34,15 +34,6 @@ class Technician extends User {
       required PlatformFile this.pickedFile})
       : super(phone: phone, name: name, email: email);
 
-  Future<void> retrieveLoginData(String phoneNumber) async {
-    final technicianDoc =
-        await Database.getTechnicianByPhoneNumber(phoneNumber);
-
-    if (technicianDoc.exists) {
-      _id = technicianDoc.id;
-    }
-  }
-
   void mapRegisterData() {
     LatLng location = LatLng(lat!, lng!);
     GeoPoint geoPoint = GeoPoint(location.latitude, location.longitude);
@@ -102,13 +93,23 @@ class Technician extends User {
 
     if (context.mounted) {
       final ap = Provider.of<AuthProvider>(context, listen: false);
-      ap.storeUserDataToSP(technicianData, "session_data");
+      ap.storeUserIDToSP(technicianData, "session_data");
       ap.setTechnicianSignIn();
 
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => const TechnicianHomeScreen()));
+    }
+  }
+
+  @override
+  Future<void> retrieveLoginData(String phoneNumber) async {
+    final technicianDoc =
+        await Database.getTechnicianByPhoneNumber(phoneNumber);
+
+    if (technicianDoc.exists) {
+      _id = technicianDoc.id;
     }
   }
 }

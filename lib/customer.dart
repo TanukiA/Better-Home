@@ -16,13 +16,6 @@ class Customer extends User {
   Customer({String? phone, String? name, String? email})
       : super(phone: phone, name: name, email: email);
 
-  Future<void> retrieveLoginData(String phoneNumber) async {
-    final customerDoc = await Database.getCustomerByPhoneNumber(phoneNumber);
-    if (customerDoc.exists) {
-      _id = customerDoc.id;
-    }
-  }
-
   Map<String, dynamic> mapRegisterData() {
     Map<String, dynamic> customerData = {
       'phoneNumber': phone,
@@ -86,7 +79,7 @@ class Customer extends User {
 
     if (context.mounted) {
       final ap = Provider.of<AuthProvider>(context, listen: false);
-      ap.storeUserDataToSP(customerData, "session_data");
+      ap.storeUserIDToSP(customerData, "session_data");
       ap.setCustomerSignIn();
 
       Navigator.pushReplacement(
@@ -96,6 +89,14 @@ class Customer extends User {
                     loginCon: LoginController("customer"),
                     cusCon: CustomerController(),
                   )));
+    }
+  }
+
+  @override
+  Future<void> retrieveLoginData(String phoneNumber) async {
+    final customerDoc = await Database.getCustomerByPhoneNumber(phoneNumber);
+    if (customerDoc.exists) {
+      _id = customerDoc.id;
     }
   }
 }

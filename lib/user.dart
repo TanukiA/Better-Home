@@ -115,4 +115,6 @@ abstract class User extends ModelMVC {
   }
 
   void login(BuildContext context, String phoneNumber);
+
+  Future<void> retrieveLoginData(String phoneNumber);
 }

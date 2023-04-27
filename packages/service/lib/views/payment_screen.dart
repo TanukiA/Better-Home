@@ -19,7 +19,6 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends StateMVC<PaymentScreen> {
-  late TextEditingController _descriptionController;
   late String preferredDate;
   late String alternativeDate;
   int price = 0;
@@ -31,7 +30,6 @@ class _PaymentScreenState extends StateMVC<PaymentScreen> {
 
   @override
   void dispose() {
-    _descriptionController.dispose();
     super.dispose();
   }
 
