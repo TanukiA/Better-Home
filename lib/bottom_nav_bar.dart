@@ -2,7 +2,6 @@ import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/customer_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:service/controllers/customer_controller.dart';
-import 'package:service/controllers/service_controller.dart';
 import 'package:service/views/customer_service_screen.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
@@ -51,7 +50,8 @@ class MyBottomNavigationBar extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CustomerServiceScreen(),
+                    builder: (context) =>
+                        const CustomerServiceScreen(initialIndex: 0),
                   ),
                 );
               } else {}

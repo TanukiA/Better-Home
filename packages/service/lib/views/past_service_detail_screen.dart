@@ -5,6 +5,7 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:service/views/service_review_dialog.dart';
 
 class PastServiceDetailScreen extends StatefulWidget {
   const PastServiceDetailScreen(
@@ -23,7 +24,6 @@ class _PastServiceDetailScreenState extends StateMVC<PastServiceDetailScreen> {
   String technicianName = "";
   double starQty = 0.0;
   String reviewText = "";
-  late final TextEditingController _rateController = TextEditingController();
   bool isLoading = true;
 
   @override
@@ -53,7 +53,6 @@ class _PastServiceDetailScreenState extends StateMVC<PastServiceDetailScreen> {
 
   @override
   void dispose() {
-    _rateController.dispose();
     super.dispose();
   }
 
@@ -105,7 +104,17 @@ class _PastServiceDetailScreenState extends StateMVC<PastServiceDetailScreen> {
                       "Completed") ...[
                     const SizedBox(height: 18),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return ServiceReviewDialog(
+                              controller: widget.controller,
+                              serviceDoc: widget.serviceDoc,
+                            );
+                          },
+                        );
+                      },
                       style: rateBtnStyle,
                       child: const Text('Rate'),
                     ),

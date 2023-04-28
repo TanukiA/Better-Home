@@ -147,10 +147,9 @@ class Service extends ModelMVC {
     return servicesDoc;
   }
 
-  Future<Map<String, dynamic>> retrieveServiceRating(
-      QueryDocumentSnapshot serviceDoc) async {
+  Future<Map<String, dynamic>> retrieveServiceRating(String id) async {
     Database firestore = Database();
-    final result = await firestore.readServiceRating(serviceDoc);
+    final result = await firestore.readServiceRating(id);
     return result;
   }
 
@@ -177,12 +176,9 @@ class Service extends ModelMVC {
       startTime.hour,
       startTime.minute,
     );
-    print("confirmedAppoint: $confirmedAppointment");
-    print("currentTime: $currentTime");
 
     final isAtLeast12HoursBefore =
-        currentTime.difference(confirmedAppointment).inHours.abs() >= 12;
-    print("isAtLeast12HoursBefore: $isAtLeast12HoursBefore");
+        confirmedAppointment.difference(currentTime).inHours.abs() >= 12;
 
     return isAtLeast12HoursBefore;
   }
@@ -195,7 +191,7 @@ class Service extends ModelMVC {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text("Cancel this service?"),
-            content: const Text("Your service will be removed permanently."),
+            content: const Text("You cannot undo after cancelling service."),
             actions: [
               TextButton(
                 child: const Text("No"),
@@ -211,7 +207,8 @@ class Service extends ModelMVC {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const CustomerServiceScreen(),
+                        builder: (context) =>
+                            const CustomerServiceScreen(initialIndex: 0),
                       ),
                     );
                   }
@@ -222,5 +219,12 @@ class Service extends ModelMVC {
         },
       );
     }
+  }
+
+  Future<void> saveNewReview(double starQty, String reviewText, String id,
+      String customerID, String technicianID) async {
+    Database firestore = Database();
+    await firestore.storeServiceReview(
+        starQty, reviewText, id, customerID, technicianID);
   }
 }

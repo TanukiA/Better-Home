@@ -6,7 +6,8 @@ import 'package:service/views/active_service_screen.dart';
 import 'package:service/views/past_service_screen.dart';
 
 class CustomerServiceScreen extends StatefulWidget {
-  const CustomerServiceScreen({Key? key}) : super(key: key);
+  const CustomerServiceScreen({Key? key, required this.initialIndex}) : super(key: key);
+  final int initialIndex;
 
   @override
   StateMVC<CustomerServiceScreen> createState() =>
@@ -15,15 +16,18 @@ class CustomerServiceScreen extends StatefulWidget {
 
 class _CustomerServiceScreenState extends StateMVC<CustomerServiceScreen> {
   int _currentIndex = 0;
+  int _initialIndex = 0;
 
   @override
   initState() {
+    _initialIndex = widget.initialIndex;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      initialIndex: _initialIndex,
       length: 2,
       child: Scaffold(
         backgroundColor: const Color(0xFFE8E5D4),

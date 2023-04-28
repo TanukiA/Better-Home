@@ -309,10 +309,9 @@ class Database extends ChangeNotifier {
     return documents;
   }
 
-  Future<Map<String, dynamic>> readServiceRating(
-      QueryDocumentSnapshot serviceDoc) async {
+  Future<Map<String, dynamic>> readServiceRating(String id) async {
     final ratingDocSnapshot =
-        await _firebaseFirestore.collection('ratings').doc(serviceDoc.id).get();
+        await _firebaseFirestore.collection('ratings').doc(id).get();
 
     if (!ratingDocSnapshot.exists) {
       return {'starQty': null, 'reviewText': null};
@@ -334,6 +333,26 @@ class Database extends ChangeNotifier {
     } catch (e) {
       throw PlatformException(
           code: 'cancel-service-failed', message: e.toString());
+    }
+  }
+
+  Future<void> storeServiceReview(double starQty, String reviewText, String id,
+      String customerID, String technicianID) async {
+    try {
+      // store review
+      await _firebaseFirestore.collection('ratings').doc(id).set({
+        'starQty': starQty,
+        'reviewText': reviewText,
+        'customerID': customerID,
+        'technicianID': technicianID,
+      });
+      // update service status to "Rated"
+      final servicesCollection = _firebaseFirestore.collection('services');
+      final serviceDoc = servicesCollection.doc(id);
+
+      await serviceDoc.update({'serviceStatus': 'Rated'});
+    } catch (e) {
+      throw PlatformException(code: 'add-review-failed', message: e.toString());
     }
   }
 }

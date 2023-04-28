@@ -185,7 +185,7 @@ class ServiceController extends ControllerMVC {
 
   Future<Map<String, dynamic>> retrieveServiceRating(
       QueryDocumentSnapshot serviceDoc) {
-    return _service.retrieveServiceRating(serviceDoc);
+    return _service.retrieveServiceRating(serviceDoc.id);
   }
 
   // Assigning - allow cancel
@@ -209,5 +209,15 @@ class ServiceController extends ControllerMVC {
             "Cancellation is allowed up until 12 hours before your appointment.");
       }
     }
+  }
+
+  Future<void> submitReview(double starQty, String reviewText,
+      QueryDocumentSnapshot serviceDoc) async {
+    String customerID =
+        (serviceDoc.data() as Map<String, dynamic>)["customerID"];
+    String technicianID =
+        (serviceDoc.data() as Map<String, dynamic>)["technicianID"];
+    await _service.saveNewReview(
+        starQty, reviewText, serviceDoc.id, customerID, technicianID);
   }
 }

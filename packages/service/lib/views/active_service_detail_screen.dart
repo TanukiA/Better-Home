@@ -21,7 +21,6 @@ class _ActiveServiceDetailScreenState
     extends StateMVC<ActiveServiceDetailScreen> {
   int _currentIndex = 0;
   String technicianName = "";
-  late final TextEditingController _cancelController = TextEditingController();
   bool isLoading = true;
 
   @override
@@ -40,7 +39,6 @@ class _ActiveServiceDetailScreenState
 
   @override
   void dispose() {
-    _cancelController.dispose();
     super.dispose();
   }
 
