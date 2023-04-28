@@ -3,30 +3,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:photo_view/photo_view.dart';
 
-class ActiveServiceDetailScreen extends StatefulWidget {
-  const ActiveServiceDetailScreen(
+class PastServiceDetailScreen extends StatefulWidget {
+  const PastServiceDetailScreen(
       {Key? key, required this.serviceDoc, required this.controller})
       : super(key: key);
   final QueryDocumentSnapshot serviceDoc;
   final ServiceController controller;
 
   @override
-  StateMVC<ActiveServiceDetailScreen> createState() =>
-      _ActiveServiceDetailScreenState();
+  StateMVC<PastServiceDetailScreen> createState() =>
+      _PastServiceDetailScreenState();
 }
 
-class _ActiveServiceDetailScreenState
-    extends StateMVC<ActiveServiceDetailScreen> {
+class _PastServiceDetailScreenState extends StateMVC<PastServiceDetailScreen> {
   int _currentIndex = 0;
   String technicianName = "";
-  late final TextEditingController _cancelController = TextEditingController();
+  double starQty = 0.0;
+  String reviewText = "";
+  late final TextEditingController _rateController = TextEditingController();
   bool isLoading = true;
 
   @override
   initState() {
     setTechnicianName();
+    setReview();
     super.initState();
   }
 
@@ -38,9 +41,19 @@ class _ActiveServiceDetailScreenState
     });
   }
 
+  Future<void> setReview() async {
+    Map<String, dynamic> reviewMap =
+        await widget.controller.retrieveServiceRating(widget.serviceDoc);
+    starQty = reviewMap['starQty'] ?? 0.0;
+    reviewText = reviewMap['reviewText'] ?? "";
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void dispose() {
-    _cancelController.dispose();
+    _rateController.dispose();
     super.dispose();
   }
 
@@ -48,28 +61,14 @@ class _ActiveServiceDetailScreenState
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    final ButtonStyle cancelBtnStyle = ElevatedButton.styleFrom(
+    final ButtonStyle rateBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(
         fontSize: 20,
         fontFamily: 'Roboto',
       ),
-      backgroundColor: const Color.fromRGBO(46, 125, 45, 1),
-      foregroundColor: Colors.white,
-      fixedSize: Size(size.width * 0.65, 55),
-      elevation: 3,
-    );
-
-    final ButtonStyle messageBtnStyle = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(
-        fontSize: 14,
-        fontFamily: 'Roboto',
-      ),
       backgroundColor: Colors.black,
       foregroundColor: Colors.white,
-      fixedSize: Size(size.width * 0.3, 45),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
-      ),
+      fixedSize: Size(size.width * 0.55, 55),
       elevation: 3,
     );
 
@@ -101,51 +100,17 @@ class _ActiveServiceDetailScreenState
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(height: 18),
-                  ElevatedButton(
-                    onPressed: () {
-                      widget.controller
-                          .handleCancelService(widget.serviceDoc, context);
-                    },
-                    style: cancelBtnStyle,
-                    child: const Text('Cancel Service'),
-                  ),
-                  const SizedBox(height: 18),
                   if ((widget.serviceDoc.data()
-                          as Map<String, dynamic>)["serviceStatus"] !=
-                      "Assigning") ...[
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(14.0),
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 232, 232, 232),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Technician: ',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          Text(
-                            technicianName,
-                            style: const TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 18.0),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: messageBtnStyle,
-                            child: const Text('Message'),
-                          ),
-                        ],
-                      ),
+                          as Map<String, dynamic>)["serviceStatus"] ==
+                      "Completed") ...[
+                    const SizedBox(height: 18),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: rateBtnStyle,
+                      child: const Text('Rate'),
                     ),
                   ],
+                  const SizedBox(height: 18),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20.0),
@@ -196,10 +161,10 @@ class _ActiveServiceDetailScreenState
                         const SizedBox(height: 19.0),
                         if ((widget.serviceDoc.data()
                                     as Map<String, dynamic>)["serviceStatus"] ==
-                                "Confirmed" ||
+                                "Completed" ||
                             (widget.serviceDoc.data()
                                     as Map<String, dynamic>)["serviceStatus"] ==
-                                "In Progress") ...[
+                                "Rated") ...[
                           const Text(
                             'Confirmed Appointment:',
                             style: TextStyle(
@@ -209,6 +174,20 @@ class _ActiveServiceDetailScreenState
                           const SizedBox(height: 5.0),
                           Text(
                             "${widget.controller.formatToLocalDate((widget.serviceDoc.data() as Map<String, dynamic>)["confirmedDate"])}, ${(widget.serviceDoc.data() as Map<String, dynamic>)["confirmedTime"]}",
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          const SizedBox(height: 19.0),
+                          const Text(
+                            'Technician:',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          const SizedBox(height: 5.0),
+                          Text(
+                            technicianName,
                             style: const TextStyle(
                               fontSize: 16.0,
                             ),
@@ -334,6 +313,55 @@ class _ActiveServiceDetailScreenState
                         }
                       }),
                   const SizedBox(height: 15),
+                  if ((widget.serviceDoc.data()
+                          as Map<String, dynamic>)["serviceStatus"] ==
+                      "Rated") ...[
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14.0),
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 232, 232, 232),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Review:",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          RatingBar.builder(
+                            initialRating: starQty,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (rating) {},
+                            ignoreGestures: true,
+                          ),
+                          const SizedBox(height: 15),
+                          Text(
+                            reviewText,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                  ],
                 ],
               ),
             ),

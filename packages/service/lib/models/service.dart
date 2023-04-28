@@ -13,6 +13,10 @@ import 'package:service/models/payment.dart';
 import 'package:service/models/service_request_form_provider.dart';
 import 'package:service/models/technician_assigner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'package:service/views/customer_service_screen.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
+import 'package:timezone/timezone.dart' as tz;
 
 class Service extends ModelMVC {
   late Payment _payment;
@@ -125,5 +129,98 @@ class Service extends ModelMVC {
     Database firestore = Database();
     _servicesDoc = await firestore.readActiveServices(id);
     return servicesDoc;
+  }
+
+  Future<String> retrieveTechnicianName(
+      QueryDocumentSnapshot serviceDoc) async {
+    Database firestore = Database();
+    String technicianName = await firestore.readTechnicianName(serviceDoc);
+    return technicianName;
+  }
+
+  Future<List<QueryDocumentSnapshot<Object?>>> retrievePastServicesData(
+      BuildContext context) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String id = await ap.getUserIDFromSP("session_data");
+    Database firestore = Database();
+    _servicesDoc = await firestore.readPastServices(id);
+    return servicesDoc;
+  }
+
+  Future<Map<String, dynamic>> retrieveServiceRating(
+      QueryDocumentSnapshot serviceDoc) async {
+    Database firestore = Database();
+    final result = await firestore.readServiceRating(serviceDoc);
+    return result;
+  }
+
+  bool validTimeToCancel(QueryDocumentSnapshot serviceDoc) {
+    final confirmedDate =
+        (serviceDoc.data() as Map<String, dynamic>)["confirmedDate"];
+    final confirmedTime =
+        (serviceDoc.data() as Map<String, dynamic>)["confirmedTime"];
+    tzdata.initializeTimeZones();
+    final location = tz.getLocation('Asia/Kuala_Lumpur');
+    final currentTime = tz.TZDateTime.now(location);
+
+    final startTimeStr = confirmedTime.split(" ")[0];
+    final startTime = DateFormat('h:mma').parse(startTimeStr);
+
+    final newConfirmedDate = DateTime.fromMillisecondsSinceEpoch(
+        confirmedDate.millisecondsSinceEpoch);
+
+    // Create a new DateTime object with the values from confirmedDate and the starting time of confirmedTime
+    final confirmedAppointment = DateTime(
+      newConfirmedDate.year,
+      newConfirmedDate.month,
+      newConfirmedDate.day,
+      startTime.hour,
+      startTime.minute,
+    );
+    print("confirmedAppoint: $confirmedAppointment");
+    print("currentTime: $currentTime");
+
+    final isAtLeast12HoursBefore =
+        currentTime.difference(confirmedAppointment).inHours.abs() >= 12;
+    print("isAtLeast12HoursBefore: $isAtLeast12HoursBefore");
+
+    return isAtLeast12HoursBefore;
+  }
+
+  void cancelService(String serviceID, BuildContext context) {
+    Database firestore = Database();
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Cancel this service?"),
+            content: const Text("Your service will be removed permanently."),
+            actions: [
+              TextButton(
+                child: const Text("No"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              ElevatedButton(
+                child: const Text("Yes"),
+                onPressed: () async {
+                  await firestore.updateServiceCancelled(serviceID);
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CustomerServiceScreen(),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }

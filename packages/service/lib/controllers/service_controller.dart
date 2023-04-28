@@ -1,5 +1,6 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/customer_home_screen.dart';
+import 'package:better_home/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
@@ -171,5 +172,42 @@ class ServiceController extends ControllerMVC {
   Future<List<Widget>> retrieveServiceImages(QueryDocumentSnapshot serviceDoc) {
     Database db = Database();
     return db.downloadServiceImages(serviceDoc);
+  }
+
+  Future<String> retrieveTechnicianName(QueryDocumentSnapshot serviceDoc) {
+    return _service.retrieveTechnicianName(serviceDoc);
+  }
+
+  Future<List<QueryDocumentSnapshot<Object?>>> retrievePastServicesData(
+      BuildContext context) {
+    return _service.retrievePastServicesData(context);
+  }
+
+  Future<Map<String, dynamic>> retrieveServiceRating(
+      QueryDocumentSnapshot serviceDoc) {
+    return _service.retrieveServiceRating(serviceDoc);
+  }
+
+  // Assigning - allow cancel
+  // In Progress - reject cancel
+  // Confirmed - if current time is at least 12 hours before appointment time, allow cancel
+  void handleCancelService(
+      QueryDocumentSnapshot serviceDoc, BuildContext context) {
+    if ((serviceDoc.data() as Map<String, dynamic>)["serviceStatus"] ==
+        "Assigning") {
+      _service.cancelService(serviceDoc.id, context);
+    } else if ((serviceDoc.data() as Map<String, dynamic>)["serviceStatus"] ==
+        "In Progress") {
+      showDialogBox(
+          context, "You can't cancel", "The service is already in progress.");
+    } else if ((serviceDoc.data() as Map<String, dynamic>)["serviceStatus"] ==
+        "Confirmed") {
+      if (_service.validTimeToCancel(serviceDoc)) {
+        _service.cancelService(serviceDoc.id, context);
+      } else {
+        showDialogBox(context, "You can't cancel",
+            "Cancellation is allowed up until 12 hours before your appointment.");
+      }
+    }
   }
 }

@@ -28,15 +28,17 @@ class MyBottomNavigationBar extends StatelessWidget {
           icon: GestureDetector(
             child: const Icon(Icons.home, color: Colors.black, size: 33),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CustomerHomeScreen(
-                    loginCon: LoginController(userType),
-                    cusCon: CustomerController(),
+              if (userType == "customer") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CustomerHomeScreen(
+                      loginCon: LoginController(userType),
+                      cusCon: CustomerController(),
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {}
             },
           ),
           label: '',

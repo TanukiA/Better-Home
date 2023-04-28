@@ -289,4 +289,51 @@ class Database extends ChangeNotifier {
     }
     return [];
   }
+
+  Future<String> readTechnicianName(QueryDocumentSnapshot serviceDoc) async {
+    final CollectionReference techniciansRef =
+        _firebaseFirestore.collection('technicians');
+    final String technicianID = serviceDoc['technicianID'];
+    final DocumentSnapshot technicianDoc =
+        await techniciansRef.doc(technicianID).get();
+    return technicianDoc.get('name');
+  }
+
+  Future<List<QueryDocumentSnapshot>> readPastServices(String id) async {
+    QuerySnapshot querySnapshot = await _firebaseFirestore
+        .collection('services')
+        .where('customerID', isEqualTo: id)
+        .where('serviceStatus',
+            whereIn: ['Completed', 'Rated', 'Cancelled', 'Refunded']).get();
+    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+    return documents;
+  }
+
+  Future<Map<String, dynamic>> readServiceRating(
+      QueryDocumentSnapshot serviceDoc) async {
+    final ratingDocSnapshot =
+        await _firebaseFirestore.collection('ratings').doc(serviceDoc.id).get();
+
+    if (!ratingDocSnapshot.exists) {
+      return {'starQty': null, 'reviewText': null};
+    }
+
+    final ratingDoc = ratingDocSnapshot.data();
+    final starQty = ratingDoc!['starQty']?.toDouble() ?? 0.0;
+    final reviewText = ratingDoc['reviewText'] ?? '';
+
+    return {'starQty': starQty, 'reviewText': reviewText};
+  }
+
+  Future<void> updateServiceCancelled(String serviceID) async {
+    try {
+      final servicesCollection = _firebaseFirestore.collection('services');
+      final serviceDoc = servicesCollection.doc(serviceID);
+
+      await serviceDoc.update({'serviceStatus': 'Cancelled'});
+    } catch (e) {
+      throw PlatformException(
+          code: 'cancel-service-failed', message: e.toString());
+    }
+  }
 }
