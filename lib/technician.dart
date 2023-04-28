@@ -9,6 +9,7 @@ import 'package:authentication/models/auth_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:service/controllers/technician_controller.dart';
 
 class Technician extends User {
   String? _id;
@@ -83,6 +84,21 @@ class Technician extends User {
     );
   }
 
+  Future<List<QueryDocumentSnapshot>> readAssignedServices(
+      BuildContext context) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String id = await ap.getUserIDFromSP("session_data");
+    Database firestore = Database();
+    return await firestore.readAssignedServices(id);
+  }
+
+  void acceptRequest(
+      QueryDocumentSnapshot serviceDoc, DateTime startTime, DateTime endTime) {
+    Database firestore = Database();
+    firestore.updateAcceptRequest(serviceDoc);
+    firestore.storeWorkSchedule(serviceDoc, startTime, endTime);
+  }
+
   @override
   Future<void> login(BuildContext context, String phoneNumber) async {
     await retrieveLoginData(phoneNumber);
@@ -99,7 +115,10 @@ class Technician extends User {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => const TechnicianHomeScreen()));
+              builder: (context) => TechnicianHomeScreen(
+                    loginCon: LoginController("technician"),
+                    techCon: TechnicianController(),
+                  )));
     }
   }
 

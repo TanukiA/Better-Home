@@ -355,4 +355,25 @@ class Database extends ChangeNotifier {
       throw PlatformException(code: 'add-review-failed', message: e.toString());
     }
   }
+
+  Future<List<QueryDocumentSnapshot<Object?>>> readAssignedServices(
+      String id) async {
+    QuerySnapshot querySnapshot = await _firebaseFirestore
+        .collection('services')
+        .where('technicianID', isEqualTo: id)
+        .where('serviceStatus', isEqualTo: 'Assigning')
+        .get();
+
+    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+    return documents;
+  }
+
+  Future<String> readCustomerName(QueryDocumentSnapshot serviceDoc) async {
+    final CollectionReference customersRef =
+        _firebaseFirestore.collection('customers');
+    final String customerID = serviceDoc['customerID'];
+    final DocumentSnapshot customerDoc =
+        await customersRef.doc(customerID).get();
+    return customerDoc.get('name');
+  }
 }

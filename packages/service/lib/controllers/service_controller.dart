@@ -220,4 +220,8 @@ class ServiceController extends ControllerMVC {
     await _service.saveNewReview(
         starQty, reviewText, serviceDoc.id, customerID, technicianID);
   }
+
+  Future<String> retrieveCustomerName(QueryDocumentSnapshot serviceDoc) {
+    return _service.retrieveCustomerName(serviceDoc);
+  }
 }

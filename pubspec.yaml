@@ -55,3 +55,4 @@ flutter:
     - assets/roof_repair_img.jpg
     - assets/serviceDescription.json
     - assets/serviceVariations.json
+    - assets/accept_tasks_img.svg

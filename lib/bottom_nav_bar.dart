@@ -1,8 +1,11 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/customer_home_screen.dart';
+import 'package:authentication/views/technician_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:service/controllers/customer_controller.dart';
+import 'package:service/controllers/technician_controller.dart';
 import 'package:service/views/customer_service_screen.dart';
+import 'package:service/views/technician_service_screen.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   const MyBottomNavigationBar({
@@ -37,7 +40,17 @@ class MyBottomNavigationBar extends StatelessWidget {
                     ),
                   ),
                 );
-              } else {}
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TechnicianHomeScreen(
+                      loginCon: LoginController(userType),
+                      techCon: TechnicianController(),
+                    ),
+                  ),
+                );
+              }
             },
           ),
           label: '',
@@ -54,7 +67,14 @@ class MyBottomNavigationBar extends StatelessWidget {
                         const CustomerServiceScreen(initialIndex: 0),
                   ),
                 );
-              } else {}
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TechnicianServiceScreen(),
+                  ),
+                );
+              }
             },
           ),
           label: '',

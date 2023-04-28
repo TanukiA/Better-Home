@@ -227,4 +227,10 @@ class Service extends ModelMVC {
     await firestore.storeServiceReview(
         starQty, reviewText, id, customerID, technicianID);
   }
+
+  Future<String> retrieveCustomerName(QueryDocumentSnapshot serviceDoc) async {
+    Database firestore = Database();
+    String customerName = await firestore.readCustomerName(serviceDoc);
+    return customerName;
+  }
 }
