@@ -1,3 +1,5 @@
+import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/views/technician_home_screen.dart';
 import 'package:better_home/bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -241,7 +243,8 @@ class _AssignedServiceScreenState extends StateMVC<AssignedServiceScreen> {
                           size: 62,
                         ),
                         onPressed: () {
-                          widget.techCon.acceptIconPressed(widget.serviceDoc);
+                          widget.techCon
+                              .acceptIconPressed(widget.serviceDoc, context);
                         },
                       ),
                       const SizedBox(width: 80),
@@ -252,7 +255,17 @@ class _AssignedServiceScreenState extends StateMVC<AssignedServiceScreen> {
                           size: 62,
                         ),
                         onPressed: () {
-                          // Function to reject service request
+                          widget.techCon
+                              .rejectIconPressed(widget.serviceDoc, context);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TechnicianHomeScreen(
+                                loginCon: LoginController("technician"),
+                                techCon: TechnicianController(),
+                              ),
+                            ),
+                          );
                         },
                       ),
                       const SizedBox(width: 30),

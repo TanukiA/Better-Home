@@ -32,6 +32,8 @@ class TechnicianAssigner extends ModelMVC {
     convertServiceLocationToGeoPoint(provider.lat!, provider.lng!);
     print("Technicians to be chosen from: $_techniciansMap");
     final technicianLocations = retrieveTechnicianLocations();
+    // if there is more than one technician's location, pick the nearest technician
+    // is there is one technician's location  only, directly assign him
     if (technicianLocations.length > 1) {
       _nearestTechnicianLocation = _disCal.getNearestTechnicianLocation(
           technicianLocations, _serviceLocation!);
@@ -57,5 +59,29 @@ class TechnicianAssigner extends ModelMVC {
   String getNearestTechnicianID() {
     return _techniciansMap.firstWhere(
         (data) => data['location'] == _nearestTechnicianLocation)['id'];
+  }
+
+  Future<String?> pickReassignTechnician(
+      String serviceCategory, String city, GeoPoint serviceLocation) async {
+    Database firestore = Database();
+    _techniciansMap =
+        await firestore.getLocationOfAvailableTechnician(serviceCategory, city);
+
+    final technicianLocations = retrieveTechnicianLocations();
+
+    if (technicianLocations.length > 1) {
+      _nearestTechnicianLocation = _disCal.getNearestTechnicianLocation(
+          technicianLocations, serviceLocation);
+      _nearestTechnicianID = getNearestTechnicianID();
+
+      return nearestTechnicianID;
+    } else if (technicianLocations.length == 1) {
+      _nearestTechnicianLocation = technicianLocations.first;
+      _nearestTechnicianID = getNearestTechnicianID();
+
+      return nearestTechnicianID;
+    }
+
+    return null;
   }
 }

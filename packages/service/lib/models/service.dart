@@ -233,4 +233,29 @@ class Service extends ModelMVC {
     String customerName = await firestore.readCustomerName(serviceDoc);
     return customerName;
   }
+
+  Future<String?> processTechnicianReassign(
+      BuildContext context,
+      String serviceCategory,
+      String city,
+      GeoPoint location,
+      String technicianID,
+      DateTime date,
+      DateTime timeSlotStart,
+      DateTime timeSlotEnd) async {
+    print("Done 2");
+    Database firestore = Database();
+    await firestore.filterTechnicianByAvailability(
+        serviceCategory, city, date, timeSlotStart, timeSlotEnd, technicianID);
+    print("Done 3");
+    String? nearestTechnicianID;
+
+    if (context.mounted) {
+      _techAssigner = TechnicianAssigner(context);
+      nearestTechnicianID = await _techAssigner.pickReassignTechnician(
+          serviceCategory, city, location);
+    }
+    print("Done 4");
+    return nearestTechnicianID;
+  }
 }

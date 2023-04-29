@@ -12,7 +12,7 @@ import 'package:photo_view/photo_view.dart';
 class Database extends ChangeNotifier {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
-  static List<String> overlappedTechnicianIDs = [];
+  static List<String> unavailableTechnicianIDs = [];
 
   Future<bool> checkAccountExistence(
       String phoneNumber, String collectionName) async {
@@ -113,6 +113,7 @@ class Database extends ChangeNotifier {
       DateTime timeSlotStart,
       DateTime timeSlotEnd,
       int matchedQty) async {
+    unavailableTechnicianIDs = [];
     final techniciansQuerySnapshot = await _firebaseFirestore
         .collection("technicians")
         .where("specialization", arrayContains: serviceCategory)
@@ -134,8 +135,12 @@ class Database extends ChangeNotifier {
         final workDate = DateTime(temp.year, temp.month, temp.day);
 
         if (date == workDate) {
-          DateTime startTime = workScheduleDoc.get("startTime").toDate();
-          DateTime endTime = workScheduleDoc.get("endTime").toDate();
+          DateTime startTime =
+              workScheduleDoc.get("startTime").toDate().toLocal;
+          DateTime endTime = workScheduleDoc.get("endTime").toDate().toLocal;
+          print("date: $workDate");
+          print("startTime: $startTime");
+          print("endTime: $endTime");
           // Check if the preferred time slot overlaps with the start and end time
           // Increment number of overlapped technician, and store the document ID to be used later for filtering out
           if ((timeSlotStart.isAfter(startTime) &&
@@ -143,7 +148,7 @@ class Database extends ChangeNotifier {
               (timeSlotEnd.isAfter(startTime) &&
                   timeSlotEnd.isBefore(endTime))) {
             countOverlap++;
-            overlappedTechnicianIDs.add(technicianDoc.id);
+            unavailableTechnicianIDs.add(technicianDoc.id);
             break;
           }
         }
@@ -158,17 +163,17 @@ class Database extends ChangeNotifier {
 
   Future<List<Map<String, dynamic>>> getLocationOfAvailableTechnician(
       String serviceCategory, String city) async {
-    print("Overlapped Technician IDs: $overlappedTechnicianIDs");
+    print("Overlapped Technician IDs: $unavailableTechnicianIDs");
 
     List<Map<String, dynamic>> techniciansData = [];
     CollectionReference techniciansCollection =
         _firebaseFirestore.collection('technicians');
 
-    if (overlappedTechnicianIDs.isNotEmpty) {
+    if (unavailableTechnicianIDs.isNotEmpty) {
       await techniciansCollection
           .where("specialization", arrayContains: serviceCategory)
           .where("city", isEqualTo: city)
-          .where(FieldPath.documentId, whereNotIn: overlappedTechnicianIDs)
+          .where(FieldPath.documentId, whereNotIn: unavailableTechnicianIDs)
           .get()
           .then((QuerySnapshot querySnapshot) {
         for (var doc in querySnapshot.docs) {
@@ -314,11 +319,11 @@ class Database extends ChangeNotifier {
         await _firebaseFirestore.collection('ratings').doc(id).get();
 
     if (!ratingDocSnapshot.exists) {
-      return {'starQty': null, 'reviewText': null};
+      return {'starQty': 0.0, 'reviewText': ''};
     }
 
     final ratingDoc = ratingDocSnapshot.data();
-    final starQty = ratingDoc!['starQty']?.toDouble() ?? 0.0;
+    final starQty = ratingDoc!['starQty']?.toDouble();
     final reviewText = ratingDoc['reviewText'] ?? '';
 
     return {'starQty': starQty, 'reviewText': reviewText};
@@ -375,5 +380,112 @@ class Database extends ChangeNotifier {
     final DocumentSnapshot customerDoc =
         await customersRef.doc(customerID).get();
     return customerDoc.get('name');
+  }
+
+  Future<void> updateAcceptRequest(String id) async {
+    try {
+      // Update service status to "Confirmed"
+      final servicesCollection = _firebaseFirestore.collection('services');
+      final serviceDoc = servicesCollection.doc(id);
+      await serviceDoc.update({'serviceStatus': 'Confirmed'});
+
+      // Change assignedDate and assignedTime to confirmedDate and confrimedTime
+      DocumentSnapshot doc =
+          await _firebaseFirestore.collection('services').doc(id).get();
+      Timestamp assignedDate = doc.get('assignedDate') as Timestamp;
+      String assignedTime = doc.get('assignedTime') as String;
+      await serviceDoc.update({
+        'confirmedDate': assignedDate,
+        'confirmedTime': assignedTime,
+      });
+
+      await serviceDoc.update({
+        'assignedDate': FieldValue.delete(),
+        'assignedTime': FieldValue.delete(),
+      });
+    } catch (e) {
+      throw PlatformException(
+          code: 'accept-request-failed', message: e.toString());
+    }
+  }
+
+  Future<void> addWorkSchedule(String id, DateTime startTime, DateTime endTime,
+      String technicianID) async {
+    try {
+      final docRef = _firebaseFirestore
+          .collection('technicians')
+          .doc(technicianID)
+          .collection('work_schedules')
+          .doc(id);
+
+      await docRef.set({
+        'startTime': startTime,
+        'endTime': endTime,
+      });
+    } catch (e) {
+      throw Exception('add-work-schedule-failed: ${e.toString()}');
+    }
+  }
+
+  Future<void> filterTechnicianByAvailability(
+      String serviceCategory,
+      String city,
+      DateTime date,
+      DateTime timeSlotStart,
+      DateTime timeSlotEnd,
+      String technicianID) async {
+    unavailableTechnicianIDs = [];
+    unavailableTechnicianIDs.add(technicianID);
+    final techniciansQuerySnapshot = await _firebaseFirestore
+        .collection("technicians")
+        .where("specialization", arrayContains: serviceCategory)
+        .where("city", isEqualTo: city)
+        .get();
+
+    for (final technicianDoc in techniciansQuerySnapshot.docs) {
+      final workSchedulesCollection =
+          technicianDoc.reference.collection("work_schedules");
+      final workSchedulesQuerySnapshot = await workSchedulesCollection.get();
+
+      if (workSchedulesQuerySnapshot.docs.isEmpty) {
+        continue;
+      }
+
+      for (final workScheduleDoc in workSchedulesQuerySnapshot.docs) {
+        final temp = workScheduleDoc.get("startTime").toDate().toLocal();
+        final workDate = DateTime(temp.year, temp.month, temp.day);
+
+        if (date == workDate) {
+          DateTime startTime =
+              workScheduleDoc.get("startTime").toDate().toLocal();
+          DateTime endTime = workScheduleDoc.get("endTime").toDate().toLocal;
+          // Check if the preferred time slot overlaps with the start and end time
+          // Increment number of overlapped technician, and store the document ID to be used later for filtering out
+          if ((timeSlotStart.isAfter(startTime) &&
+                  timeSlotStart.isBefore(endTime)) ||
+              (timeSlotEnd.isAfter(startTime) &&
+                  timeSlotEnd.isBefore(endTime))) {
+            unavailableTechnicianIDs.add(technicianDoc.id);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> updateTechnicianReassigned(String serviceID, String technicianID,
+      DateTime newDate, String newTime) async {
+    try {
+      final servicesCollection = _firebaseFirestore.collection('services');
+      final serviceDoc = servicesCollection.doc(serviceID);
+
+      await serviceDoc.update({
+        'technicianID': technicianID,
+        'assignedDate': newDate,
+        'assignedTime': newTime,
+      });
+    } catch (e) {
+      throw PlatformException(code: 'reassign-failed', message: e.toString());
+    }
   }
 }

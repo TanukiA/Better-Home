@@ -92,11 +92,11 @@ class Technician extends User {
     return await firestore.readAssignedServices(id);
   }
 
-  void acceptRequest(
-      QueryDocumentSnapshot serviceDoc, DateTime startTime, DateTime endTime) {
+  Future<void> acceptRequest(String id, DateTime startTime, DateTime endTime,
+      String technicianID) async {
     Database firestore = Database();
-    firestore.updateAcceptRequest(serviceDoc);
-    firestore.storeWorkSchedule(serviceDoc, startTime, endTime);
+    await firestore.updateAcceptRequest(id);
+    await firestore.addWorkSchedule(id, startTime, endTime, technicianID);
   }
 
   @override
