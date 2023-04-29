@@ -75,7 +75,9 @@ class _ServiceReviewDialogState extends StateMVC<ServiceReviewDialog> {
             onPressed: () async {
               await widget.controller.submitReview(
                   _starQty, _reviewController.text, widget.serviceDoc);
+
               if (mounted) {
+                Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(

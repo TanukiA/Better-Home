@@ -3,10 +3,11 @@ import 'package:better_home/bottom_nav_bar.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
 import 'package:service/views/active_service_screen.dart';
-import 'package:service/views/past_service_screen.dart';
+import 'package:service/views/customer_past_service_screen.dart';
 
 class CustomerServiceScreen extends StatefulWidget {
-  const CustomerServiceScreen({Key? key, required this.initialIndex}) : super(key: key);
+  const CustomerServiceScreen({Key? key, required this.initialIndex})
+      : super(key: key);
   final int initialIndex;
 
   @override
@@ -61,7 +62,7 @@ class _CustomerServiceScreenState extends StateMVC<CustomerServiceScreen> {
         body: TabBarView(
           children: [
             ActiveServiceScreen(controller: ServiceController()),
-            PastServiceScreen(controller: ServiceController()),
+            CustomerPastServiceScreen(controller: ServiceController()),
           ],
         ),
         bottomNavigationBar: MyBottomNavigationBar(

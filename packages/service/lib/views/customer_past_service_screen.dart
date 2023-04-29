@@ -4,16 +4,18 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
 import 'package:service/views/past_service_detail_screen.dart';
 
-class PastServiceScreen extends StatefulWidget {
-  const PastServiceScreen({Key? key, required this.controller})
+class CustomerPastServiceScreen extends StatefulWidget {
+  const CustomerPastServiceScreen({Key? key, required this.controller})
       : super(key: key);
   final ServiceController controller;
 
   @override
-  StateMVC<PastServiceScreen> createState() => _PastServiceScreenState();
+  StateMVC<CustomerPastServiceScreen> createState() =>
+      _CustomerPastServiceScreenState();
 }
 
-class _PastServiceScreenState extends StateMVC<PastServiceScreen> {
+class _CustomerPastServiceScreenState
+    extends StateMVC<CustomerPastServiceScreen> {
   List<QueryDocumentSnapshot> servicesDoc = [];
   bool isLoading = true;
   String selectedServiceStatus = "All service status";
@@ -32,7 +34,8 @@ class _PastServiceScreenState extends StateMVC<PastServiceScreen> {
   }
 
   void getServicesData() async {
-    servicesDoc = await widget.controller.retrievePastServicesData(context);
+    servicesDoc =
+        await widget.controller.retrievePastServicesData(context, 'customerID');
     setState(() {
       isLoading = false;
     });

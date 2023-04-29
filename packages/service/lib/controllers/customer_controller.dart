@@ -9,7 +9,6 @@ import 'package:service/views/service_category_screen.dart';
 import 'package:service/views/service_descript_screen.dart';
 import 'package:service/views/service_request_form.dart';
 import 'package:firebase_db/models/database.dart';
-import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CustomerController extends ControllerMVC {
@@ -126,17 +125,17 @@ class CustomerController extends ControllerMVC {
 
       return result;
     } else {
-      List<String> timeStartStr = ['10:00AM', '1:00PM', '3:00PM', '5:00PM'];
-      List<String> timeEndStr = ['12:00PM', '3:00PM', '5:00PM', '7:00PM'];
-      final timeFormat = DateFormat('h:mma');
-      final timeStartList = timeStartStr
-          .map((timeString) => timeFormat.parse(timeString))
-          .toList();
-      final timeEndList =
-          timeEndStr.map((timeString) => timeFormat.parse(timeString)).toList();
+      final newDate = DateTime(date.year, date.month, date.day);
+
+      List<String> timeSlotList = [
+        '10:00AM - 12:00PM',
+        '1:00PM - 3:00PM',
+        '3:00PM - 5:00PM',
+        '5:00PM - 7:00PM'
+      ];
 
       return _cus.retrieveTechnicianAvailability(
-          serviceCategory, city, date, matchedQty, timeStartList, timeEndList);
+          serviceCategory, city, newDate, matchedQty, timeSlotList);
     }
   }
 

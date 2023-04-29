@@ -39,14 +39,13 @@ class Customer extends User {
       String city,
       DateTime date,
       int matchedQty,
-      List<DateTime> timeStartList,
-      List<DateTime> timeEndList) async {
+      List<String> timeSlotList) async {
     List<bool> availResult = [false, false, false, false];
 
     Database firestore = Database();
-    for (int i = 0; i < timeStartList.length; i++) {
-      bool avail = await firestore.checkTechnicianAvailability(serviceCategory,
-          city, date, timeStartList[i], timeEndList[i], matchedQty);
+    for (int i = 0; i < timeSlotList.length; i++) {
+      bool avail = await firestore.checkTechnicianAvailability(
+          serviceCategory, city, date, timeSlotList[i], matchedQty);
 
       availResult[i] = avail;
     }

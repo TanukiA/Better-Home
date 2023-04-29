@@ -139,11 +139,11 @@ class Service extends ModelMVC {
   }
 
   Future<List<QueryDocumentSnapshot<Object?>>> retrievePastServicesData(
-      BuildContext context) async {
+      BuildContext context, String idType) async {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String id = await ap.getUserIDFromSP("session_data");
     Database firestore = Database();
-    _servicesDoc = await firestore.readPastServices(id);
+    _servicesDoc = await firestore.readPastServices(id, idType);
     return servicesDoc;
   }
 
@@ -241,12 +241,11 @@ class Service extends ModelMVC {
       GeoPoint location,
       String technicianID,
       DateTime date,
-      DateTime timeSlotStart,
-      DateTime timeSlotEnd) async {
+      String timeSlot) async {
     print("Done 2");
     Database firestore = Database();
     await firestore.filterTechnicianByAvailability(
-        serviceCategory, city, date, timeSlotStart, timeSlotEnd, technicianID);
+        serviceCategory, city, date, timeSlot, technicianID);
     print("Done 3");
     String? nearestTechnicianID;
 
@@ -254,8 +253,24 @@ class Service extends ModelMVC {
       _techAssigner = TechnicianAssigner(context);
       nearestTechnicianID = await _techAssigner.pickReassignTechnician(
           serviceCategory, city, location);
+      print("Done 4");
+      print("NearestTechnicianID: $nearestTechnicianID");
     }
-    print("Done 4");
+
     return nearestTechnicianID;
+  }
+
+  Future<List<QueryDocumentSnapshot<Object?>>> retrieveWorkScheduleData(
+      BuildContext context) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String id = await ap.getUserIDFromSP("session_data");
+    Database firestore = Database();
+    _servicesDoc = await firestore.readWorkData(id);
+    return servicesDoc;
+  }
+
+  Future<void> saveNewStatus(String id, String newStatus) async {
+    Database firestore = Database();
+    await firestore.updateServiceStatus(id, newStatus);
   }
 }

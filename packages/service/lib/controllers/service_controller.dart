@@ -169,6 +169,13 @@ class ServiceController extends ControllerMVC {
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
   }
 
+  DateTime dateInDateTime(Timestamp timestamp) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime dateTime = tz.TZDateTime.from(timestamp.toDate(), location);
+    return dateTime;
+  }
+
   Future<List<Widget>> retrieveServiceImages(QueryDocumentSnapshot serviceDoc) {
     Database db = Database();
     return db.downloadServiceImages(serviceDoc);
@@ -179,8 +186,8 @@ class ServiceController extends ControllerMVC {
   }
 
   Future<List<QueryDocumentSnapshot<Object?>>> retrievePastServicesData(
-      BuildContext context) {
-    return _service.retrievePastServicesData(context);
+      BuildContext context, String idType) {
+    return _service.retrievePastServicesData(context, idType);
   }
 
   Future<Map<String, dynamic>> retrieveServiceRating(
@@ -223,5 +230,14 @@ class ServiceController extends ControllerMVC {
 
   Future<String> retrieveCustomerName(QueryDocumentSnapshot serviceDoc) {
     return _service.retrieveCustomerName(serviceDoc);
+  }
+
+  Future<List<QueryDocumentSnapshot<Object?>>> retrieveWorkScheduleData(
+      BuildContext context) {
+    return _service.retrieveWorkScheduleData(context);
+  }
+
+  Future<void> handleServiceStatusUpdate(String id, String newStatus) async {
+    return _service.saveNewStatus(id, newStatus);
   }
 }

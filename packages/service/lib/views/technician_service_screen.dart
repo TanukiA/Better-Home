@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:better_home/bottom_nav_bar.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
-import 'package:service/views/active_service_screen.dart';
-import 'package:service/views/past_service_screen.dart';
+import 'package:service/views/technician_past_service_screen.dart';
+import 'package:service/views/work_schedules_screen.dart';
 
 class TechnicianServiceScreen extends StatefulWidget {
   const TechnicianServiceScreen({Key? key}) : super(key: key);
@@ -57,8 +57,8 @@ class _TechnicianServiceScreenState extends StateMVC<TechnicianServiceScreen> {
         ),
         body: TabBarView(
           children: [
-            ActiveServiceScreen(controller: ServiceController()),
-            PastServiceScreen(controller: ServiceController()),
+            WorkScheduleScreen(controller: ServiceController()),
+            TechnicianPastServiceScreen(controller: ServiceController()),
           ],
         ),
         bottomNavigationBar: MyBottomNavigationBar(

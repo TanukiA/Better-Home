@@ -1,7 +1,6 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/technician_home_screen.dart';
 import 'package:better_home/technician.dart';
-import 'package:better_home/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_db/models/database.dart';
 import 'package:flutter/material.dart';
@@ -43,24 +42,18 @@ class TechnicianController extends ControllerMVC {
   Future<void> acceptIconPressed(
       QueryDocumentSnapshot serviceDoc, BuildContext context) async {
     String id = serviceDoc.id;
-    Timestamp date =
-        (serviceDoc.data() as Map<String, dynamic>)["assignedDate"];
-    String timeSlot =
+    final temp = (serviceDoc.data() as Map<String, dynamic>)["assignedDate"]
+        .toDate()
+        .toLocal();
+    final appointmentDate = DateTime(temp.year, temp.month, temp.day);
+    String appointmentTime =
         (serviceDoc.data() as Map<String, dynamic>)["assignedTime"];
-
-    final timeFormat = DateFormat('h:mma');
-    final start = timeFormat.parse(timeSlot.split(' - ')[0]);
-    final end = timeFormat.parse(timeSlot.split(' - ')[1]);
-
-    final startTime = DateTime(date.toDate().year, date.toDate().month,
-        date.toDate().day, start.hour, start.minute);
-    final endTime = DateTime(date.toDate().year, date.toDate().month,
-        date.toDate().day, end.hour, end.minute);
 
     final technicianID =
         (serviceDoc.data() as Map<String, dynamic>)["technicianID"];
 
-    await _tech.acceptRequest(id, startTime, endTime, technicianID);
+    await _tech.acceptRequest(
+        id, appointmentDate, appointmentTime, technicianID);
     if (context.mounted) {
       showDialog(
         context: context,
@@ -107,14 +100,10 @@ class TechnicianController extends ControllerMVC {
 
     final preferredDate = preferredDateTmpStp.toDate().toLocal();
     final alternativeDate = alternativeDateTmpStp.toDate().toLocal();
-
-    List<String> timeParts1 = preferredTime.split(' - ');
-    List<String> timeParts2 = alternativeTime.split(' - ');
-    final timeFormat = DateFormat('h:mma');
-    DateTime preferredStartTime = timeFormat.parse(timeParts1[0]);
-    DateTime preferredEndTime = timeFormat.parse(timeParts1[1]);
-    DateTime alternativeStartTime = timeFormat.parse(timeParts2[0]);
-    DateTime alternativeEndTime = timeFormat.parse(timeParts2[1]);
+    final newPreferredDate =
+        DateTime(preferredDate.year, preferredDate.month, preferredDate.day);
+    final newAlternativeDate = DateTime(
+        alternativeDate.year, alternativeDate.month, alternativeDate.day);
 
     final serviceName =
         (serviceDoc.data() as Map<String, dynamic>)["serviceName"];
@@ -134,9 +123,8 @@ class TechnicianController extends ControllerMVC {
         city,
         location,
         technicianID,
-        preferredDate,
-        preferredStartTime,
-        preferredEndTime);
+        newPreferredDate,
+        preferredTime);
     print("Done 5");
     // If not found, look for technician using alternative appointment
     if (technicianFromPreferred == null || technicianFromPreferred == "") {
@@ -148,9 +136,8 @@ class TechnicianController extends ControllerMVC {
             city,
             location,
             technicianID,
-            alternativeDate,
-            alternativeStartTime,
-            alternativeEndTime);
+            newAlternativeDate,
+            alternativeTime);
 
         if (technicianFromAlternative == null ||
             technicianFromAlternative == "") {
@@ -166,13 +153,13 @@ class TechnicianController extends ControllerMVC {
       // Update assignedDate and assignedTime using preferredAppointment
       print("Done 9");
       firestore.updateTechnicianReassigned(
-          serviceDoc.id, technicianID, preferredDate, preferredTime);
+          serviceDoc.id, technicianID, newPreferredDate, preferredTime);
     } else if (technicianFromAlternative != null) {
       print("Done 10");
       // Assign new technician to replace current one
       // Update assignedDate and assignedTime using alternativeAppointment
       firestore.updateTechnicianReassigned(
-          serviceDoc.id, technicianID, alternativeDate, alternativeTime);
+          serviceDoc.id, technicianID, newAlternativeDate, alternativeTime);
     }
 
     print("Done 11");

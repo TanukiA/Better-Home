@@ -2,24 +2,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
-import 'package:service/views/work_schedules_detail_screen.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:service/views/past_service_detail_screen.dart';
 
-class WorkScheduleScreen extends StatefulWidget {
-  const WorkScheduleScreen({Key? key, required this.controller})
+class TechnicianPastServiceScreen extends StatefulWidget {
+  const TechnicianPastServiceScreen({Key? key, required this.controller})
       : super(key: key);
   final ServiceController controller;
 
   @override
-  StateMVC<WorkScheduleScreen> createState() => _WorkScheduleScreenState();
+  StateMVC<TechnicianPastServiceScreen> createState() =>
+      _TechnicianPastServiceScreenState();
 }
 
-class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime _selectedDay = DateTime.now();
-  DateTime _focusedDay = DateTime.now();
+class _TechnicianPastServiceScreenState
+    extends StateMVC<TechnicianPastServiceScreen> {
   List<QueryDocumentSnapshot> servicesDoc = [];
   bool isLoading = true;
+  String selectedServiceStatus = "All service status";
+  final List<String> serviceStatusOptions = [
+    "All service status",
+    "Completed",
+    "Rated",
+    "Cancelled",
+    "Refunded",
+  ];
 
   @override
   initState() {
@@ -28,7 +34,8 @@ class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
   }
 
   void getServicesData() async {
-    servicesDoc = await widget.controller.retrieveWorkScheduleData(context);
+    servicesDoc = await widget.controller
+        .retrievePastServicesData(context, 'technicianID');
     setState(() {
       isLoading = false;
     });
@@ -36,52 +43,65 @@ class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          color: Colors.white,
-          child: TableCalendar(
-            firstDay: DateTime.utc(2023, 1, 1),
-            lastDay: DateTime.utc(2030, 12, 31),
-            focusedDay: _focusedDay,
-            calendarFormat: _calendarFormat,
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-            },
-            onFormatChanged: (format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            },
-          ),
-        ),
-        Expanded(
-          child: isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: Color.fromARGB(255, 51, 119, 54),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: servicesDoc.length,
-                  itemBuilder: (context, index) {
-                    final serviceDoc = servicesDoc[index];
-                    var confirmedDate = widget.controller.dateInDateTime(
-                        (serviceDoc.data()
-                            as Map<String, dynamic>)["confirmedDate"]);
-                    if (isSameDay(confirmedDate, _selectedDay)) {
+    return servicesDoc.isEmpty && isLoading == false
+        ? const Center(
+            child: Text(
+            'No past services available',
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ))
+        : Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 20, bottom: 10),
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: DropdownButton<String>(
+                  value: selectedServiceStatus,
+                  items: serviceStatusOptions
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedServiceStatus = newValue!;
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                    itemCount: servicesDoc.length,
+                    itemBuilder: (context, index) {
+                      final serviceDoc = servicesDoc[index];
+                      String serviceStatus = (serviceDoc.data()
+                          as Map<String, dynamic>)["serviceStatus"];
+
+                      if (selectedServiceStatus != "All service status" &&
+                          selectedServiceStatus != serviceStatus) {
+                        return const SizedBox.shrink();
+                      }
+
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => WorkSchedulesDetailScreen(
+                              builder: (context) => PastServiceDetailScreen(
                                 serviceDoc: serviceDoc,
                                 controller: widget.controller,
                               ),
@@ -116,8 +136,7 @@ class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
                               ),
                               const SizedBox(height: 15),
                               Text(
-                                (serviceDoc.data()
-                                    as Map<String, dynamic>)["serviceStatus"],
+                                serviceStatus,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: Color(0xFFAD07B8),
@@ -129,8 +148,14 @@ class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
                                   const Icon(Icons.access_time,
                                       color: Colors.black),
                                   const SizedBox(width: 10),
-                                  Text(
-                                      "${(serviceDoc.data() as Map<String, dynamic>)["confirmedTime"]}"),
+                                  Text(((serviceDoc.data() as Map<String,
+                                                  dynamic>)["confirmedTime"] !=
+                                              null &&
+                                          (serviceDoc.data() as Map<String,
+                                                  dynamic>)["confirmedTime"] !=
+                                              "")
+                                      ? "${(serviceDoc.data() as Map<String, dynamic>)["confirmedTime"]}"
+                                      : "${(serviceDoc.data() as Map<String, dynamic>)["assignedTime"]}"),
                                 ],
                               ),
                               const SizedBox(height: 5),
@@ -152,25 +177,15 @@ class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
                           ),
                         ),
                       );
-                    } else {
-                      return Center(
-                        child: Column(
-                          children: const [
-                            SizedBox(height: 30),
-                            Text(
-                              'No appointment(s) on this day',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
+                    }),
+              ),
+              if (isLoading)
+                const Center(
+                  child: CircularProgressIndicator(
+                    color: Color.fromARGB(255, 51, 119, 54),
+                  ),
                 ),
-        ),
-      ],
-    );
+            ],
+          );
   }
 }
