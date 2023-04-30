@@ -5,7 +5,7 @@ import 'package:better_home/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:firebase_db/models/database.dart';
+import 'package:firebase_data/models/database.dart';
 import 'package:provider/provider.dart';
 import 'package:better_home/utils.dart';
 

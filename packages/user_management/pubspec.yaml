@@ -1,5 +1,5 @@
-name: firebase_db
-description: Firebase Database package used for managing user data and notification.
+name: user_management
+description: User management package used to manage user profile and messaging functionalities.
 
 publish_to: 'none' 
 version: 1.0.0+1
@@ -13,19 +13,20 @@ dependencies:
 
   better_home: 
     path: ../../
+  map:
+    path: ../map
+  firebase_data:
+    path: ../firebase_data
   authentication:
     path: ../authentication
     
   cupertino_icons: ^1.0.2
   firebase_core: ^2.7.0
   mvc_pattern: ^8.12.0
-  file_picker: ^5.2.5
-  image_picker: ^0.8.7+4
-  firebase_storage: ^11.0.14
+  provider: ^6.0.5
   cloud_firestore: ^4.4.4
-  path: 1.8.2
   shared_preferences: ^2.0.18
-  photo_view: ^0.14.0
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:

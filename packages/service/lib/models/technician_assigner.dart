@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_db/models/database.dart';
+import 'package:firebase_data/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:map/models/distance_calculator.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';

@@ -8,7 +8,7 @@ import 'package:service/models/service_request_form_provider.dart';
 import 'package:service/views/service_category_screen.dart';
 import 'package:service/views/service_descript_screen.dart';
 import 'package:service/views/service_request_form.dart';
-import 'package:firebase_db/models/database.dart';
+import 'package:firebase_data/models/database.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CustomerController extends ControllerMVC {

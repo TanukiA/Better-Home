@@ -13,8 +13,8 @@ dependencies:
 
   better_home: 
     path: ../../
-  firebase_db:
-    path: ../firebase_db
+  firebase_data:
+    path: ../firebase_data
   map:
     path: ../map
   service:

@@ -2,7 +2,7 @@ import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/views/technician_home_screen.dart';
 import 'package:better_home/technician.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_db/models/database.dart';
+import 'package:firebase_data/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:file_picker/file_picker.dart';

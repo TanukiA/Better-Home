@@ -1,0 +1,333 @@
+import 'package:better_home/bottom_nav_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:service/controllers/service_controller.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:photo_view/photo_view.dart';
+
+class TechnicianPastServiceDetailScreen extends StatefulWidget {
+  const TechnicianPastServiceDetailScreen(
+      {Key? key, required this.serviceDoc, required this.controller})
+      : super(key: key);
+  final QueryDocumentSnapshot serviceDoc;
+  final ServiceController controller;
+
+  @override
+  StateMVC<TechnicianPastServiceDetailScreen> createState() =>
+      _TechnicianPastServiceDetailScreenState();
+}
+
+class _TechnicianPastServiceDetailScreenState
+    extends StateMVC<TechnicianPastServiceDetailScreen> {
+  int _currentIndex = 0;
+  String customerName = "";
+  double starQty = 0.0;
+  String reviewText = "";
+  bool isLoading = true;
+
+  @override
+  initState() {
+    setTechnicianName();
+    setReview();
+    super.initState();
+  }
+
+  Future<void> setTechnicianName() async {
+    customerName =
+        await widget.controller.retrieveCustomerName(widget.serviceDoc);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> setReview() async {
+    Map<String, dynamic> reviewMap =
+        await widget.controller.retrieveServiceRating(widget.serviceDoc);
+    starQty = reviewMap['starQty'] ?? 0.0;
+    reviewText = reviewMap['reviewText'] ?? "";
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFE8E5D4),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "${(widget.serviceDoc.data() as Map<String, dynamic>)["serviceName"]}",
+          style: const TextStyle(
+            fontSize: 22,
+            fontFamily: 'Roboto',
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: const Color.fromRGBO(152, 161, 127, 1),
+        leading: const BackButton(
+          color: Colors.black,
+        ),
+        iconTheme: const IconThemeData(
+          size: 40,
+        ),
+      ),
+      body: isLoading == true
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: Color.fromARGB(255, 51, 119, 54),
+            ))
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "${(widget.serviceDoc.data() as Map<String, dynamic>)["serviceStatus"]}",
+                            style: const TextStyle(
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20.0),
+                        const Text(
+                          'Service Type:',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 5.0),
+                        Text(
+                          "${(widget.serviceDoc.data() as Map<String, dynamic>)["serviceName"]}",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 19.0),
+                        const Text(
+                          'Variation:',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 5.0),
+                        Text(
+                          "${(widget.serviceDoc.data() as Map<String, dynamic>)["serviceVariation"]}",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 19.0),
+                        if ((widget.serviceDoc.data()
+                                    as Map<String, dynamic>)["confirmedTime"] !=
+                                null &&
+                            (widget.serviceDoc.data()
+                                    as Map<String, dynamic>)["confirmedTime"] !=
+                                "") ...[
+                          const Text(
+                            'Confirmed Appointment:',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          const SizedBox(height: 5.0),
+                          Text(
+                            "${widget.controller.formatToLocalDate((widget.serviceDoc.data() as Map<String, dynamic>)["confirmedDate"])}, ${(widget.serviceDoc.data() as Map<String, dynamic>)["confirmedTime"]}",
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ] else ...[
+                          const Text(
+                            'Assgined Appointment:',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          const SizedBox(height: 5.0),
+                          Text(
+                            "${widget.controller.formatToLocalDate((widget.serviceDoc.data() as Map<String, dynamic>)["assignedDate"])}, ${(widget.serviceDoc.data() as Map<String, dynamic>)["assignedTime"]}",
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          const SizedBox(height: 19.0),
+                        ],
+                        const SizedBox(height: 19.0),
+                        const Text(
+                          'Customer:',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 5.0),
+                        Text(
+                          customerName,
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 19.0),
+                        const Text(
+                          'Property Type:',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 5.0),
+                        Text(
+                          "${(widget.serviceDoc.data() as Map<String, dynamic>)["propertyType"]}",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 19.0),
+                        const Text(
+                          'State:',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 5.0),
+                        Text(
+                          "${(widget.serviceDoc.data() as Map<String, dynamic>)["city"]}",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 19.0),
+                        const Text(
+                          'Address:',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 5.0),
+                        Text(
+                          "${(widget.serviceDoc.data() as Map<String, dynamic>)["address"]}",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 19.0),
+                        const Text(
+                          'Description:',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 5.0),
+                        Text(
+                          "${(widget.serviceDoc.data() as Map<String, dynamic>)["description"]}",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const SizedBox(height: 30.0),
+                        Text(
+                          '# Requested on ${widget.controller.formatToLocalDateTime((widget.serviceDoc.data() as Map<String, dynamic>)["dateTimeSubmitted"])}',
+                          style: const TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        const SizedBox(height: 15.0),
+                      ],
+                    ),
+                  ),
+                  FutureBuilder<List<Widget>>(
+                      future: widget.controller
+                          .retrieveServiceImages(widget.serviceDoc),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return SizedBox(
+                            width: 300.0,
+                            height: 250.0,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: snapshot.data!,
+                            ),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
+                  const SizedBox(height: 15),
+                  if ((widget.serviceDoc.data()
+                          as Map<String, dynamic>)["serviceStatus"] ==
+                      "Rated") ...[
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14.0),
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 232, 232, 232),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Review:",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          RatingBar.builder(
+                            initialRating: starQty,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (rating) {},
+                            ignoreGestures: true,
+                          ),
+                          const SizedBox(height: 15),
+                          Text(
+                            reviewText,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                  ],
+                ],
+              ),
+            ),
+      bottomNavigationBar: MyBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          userType: "technician"),
+    );
+  }
+}

@@ -15,8 +15,8 @@ dependencies:
     path: ../../
   map:
     path: ../map
-  firebase_db:
-    path: ../firebase_db
+  firebase_data:
+    path: ../firebase_data
   authentication:
     path: ../authentication
     

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
-import 'package:service/views/past_service_detail_screen.dart';
+import 'package:service/views/technician_past_service_detail_screen.dart';
 
 class TechnicianPastServiceScreen extends StatefulWidget {
   const TechnicianPastServiceScreen({Key? key, required this.controller})
@@ -101,7 +101,8 @@ class _TechnicianPastServiceScreenState
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => PastServiceDetailScreen(
+                              builder: (context) =>
+                                  TechnicianPastServiceDetailScreen(
                                 serviceDoc: serviceDoc,
                                 controller: widget.controller,
                               ),
@@ -145,7 +146,7 @@ class _TechnicianPastServiceScreenState
                               const SizedBox(height: 15),
                               Row(
                                 children: [
-                                  const Icon(Icons.access_time,
+                                  const Icon(Icons.calendar_today,
                                       color: Colors.black),
                                   const SizedBox(width: 10),
                                   Text(((serviceDoc.data() as Map<String,
@@ -154,8 +155,8 @@ class _TechnicianPastServiceScreenState
                                           (serviceDoc.data() as Map<String,
                                                   dynamic>)["confirmedTime"] !=
                                               "")
-                                      ? "${(serviceDoc.data() as Map<String, dynamic>)["confirmedTime"]}"
-                                      : "${(serviceDoc.data() as Map<String, dynamic>)["assignedTime"]}"),
+                                      ? "${widget.controller.formatToLocalDate((serviceDoc.data() as Map<String, dynamic>)["confirmedDate"])}, ${(serviceDoc.data() as Map<String, dynamic>)["confirmedTime"]}"
+                                      : "${widget.controller.formatToLocalDate((serviceDoc.data() as Map<String, dynamic>)["assignedDate"])}, ${(serviceDoc.data() as Map<String, dynamic>)["assignedTime"]}"),
                                 ],
                               ),
                               const SizedBox(height: 5),

@@ -8,7 +8,7 @@ import 'package:service/controllers/customer_controller.dart';
 import 'package:service/models/payment.dart';
 import 'package:service/models/service.dart';
 import 'package:service/models/service_request_form_provider.dart';
-import 'package:firebase_db/models/database.dart';
+import 'package:firebase_data/models/database.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/standalone.dart' as tz;
 import 'package:intl/intl.dart';

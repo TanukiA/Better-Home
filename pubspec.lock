@@ -224,10 +224,10 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
-  firebase_db:
+  firebase_data:
     dependency: "direct main"
     description:
-      path: "packages/firebase_db"
+      path: "packages/firebase_data"
       relative: true
     source: path
     version: "1.0.0+1"

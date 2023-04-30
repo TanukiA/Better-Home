@@ -15,8 +15,8 @@ dependencies:
   # personal packages
   authentication:
     path: ./packages/authentication
-  firebase_db:
-    path: ./packages/firebase_db
+  firebase_data:
+    path: ./packages/firebase_data
   service:
     path: ./packages/service
   map:
