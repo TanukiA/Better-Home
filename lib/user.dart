@@ -2,6 +2,7 @@ import 'package:authentication/models/registration_form_provider.dart';
 import 'package:authentication/views/first_screen.dart';
 import 'package:better_home/customer.dart';
 import 'package:better_home/technician.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_data/models/database.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ abstract class User extends ModelMVC {
   String? name;
   String? email;
   // Notification notification;
-  // Location address;
+  //Location address;
 
   User({required this.phone, required this.name, required this.email});
 
@@ -100,6 +101,15 @@ abstract class User extends ModelMVC {
             technician.goToLoginScreen(context);
           }
         });
+  }
+
+  Future<DocumentSnapshot> retrieveProfileData(
+      String userType, BuildContext context) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String id = await ap.getUserIDFromSP("session_data");
+    Database firestore = Database();
+    final profileDoc = await firestore.readProfileData(userType, id);
+    return profileDoc;
   }
 
   void logout(BuildContext context) {

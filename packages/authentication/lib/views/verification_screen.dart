@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class VerificationScreen extends StatefulWidget {
   const VerificationScreen(
@@ -17,7 +18,8 @@ class VerificationScreen extends StatefulWidget {
       required this.userType,
       required this.purpose,
       required this.phoneNumber,
-      required this.onResendPressed})
+      required this.onResendPressed,
+      this.currentUser})
       : super(key: key);
   final String verificationId;
   final LoginController loginCon;
@@ -26,22 +28,17 @@ class VerificationScreen extends StatefulWidget {
   final String purpose;
   final String phoneNumber;
   final Function onResendPressed;
+  final firebase_auth.User? currentUser;
 
   @override
   StateMVC<VerificationScreen> createState() => _VerificationScreenState();
 }
 
 class _VerificationScreenState extends StateMVC<VerificationScreen> {
-  late User _user;
   String? otpCode;
 
   @override
   void initState() {
-    if (widget.purpose == "login") {
-      _user = widget.loginCon.user;
-    } else {
-      _user = widget.registerCon.user;
-    }
     super.initState();
   }
 
@@ -175,7 +172,7 @@ class _VerificationScreenState extends StateMVC<VerificationScreen> {
                                       widget.userType,
                                       widget.purpose,
                                       widget.phoneNumber);
-                                } else {
+                                } else if (widget.purpose == "register") {
                                   widget.registerCon.verifyOTP(
                                       context,
                                       otpCode!,
@@ -183,7 +180,7 @@ class _VerificationScreenState extends StateMVC<VerificationScreen> {
                                       widget.userType,
                                       widget.purpose,
                                       widget.phoneNumber);
-                                }
+                                } else {}
                               } else {
                                 showSnackBar(
                                     context, "Please enter 6-digit code");

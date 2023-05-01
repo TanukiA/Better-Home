@@ -7,10 +7,14 @@ import 'package:google_api_headers/google_api_headers.dart';
 
 class SearchPlaceScreen extends StatefulWidget {
   const SearchPlaceScreen(
-      {Key? key, required this.controller, required this.purpose})
+      {Key? key,
+      required this.controller,
+      required this.purpose,
+      this.userType})
       : super(key: key);
   final LocationController controller;
   final String purpose;
+  final String? userType;
 
   @override
   StateMVC<SearchPlaceScreen> createState() => _SearchPlaceScreenState();
@@ -120,6 +124,9 @@ class _SearchPlaceScreenState extends StateMVC<SearchPlaceScreen> {
                 } else if (widget.purpose == "service") {
                   widget.controller
                       .handleConfirmButton2(context, selectedAddress, lat, lng);
+                } else {
+                  widget.controller.handleConfirmButton3(
+                      context, selectedAddress, lat, lng, widget.userType!);
                 }
               },
               style: confirmBtnStyle,

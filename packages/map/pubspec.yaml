@@ -19,6 +19,8 @@ dependencies:
     path: ../service
   better_home: 
     path: ../../  
+  user_management:
+    path: ../user_management
 
   cupertino_icons: ^1.0.2
   mvc_pattern: ^8.12.0

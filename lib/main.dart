@@ -1,6 +1,7 @@
 import 'package:authentication/models/registration_form_provider.dart';
 import 'package:authentication/views/first_screen.dart';
 import 'package:authentication/models/auth_provider.dart';
+import 'package:user_management/models/profile_edit_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +29,8 @@ class MyApp extends StatelessWidget {
             create: (_) => RegistrationFormProvider()),
         ChangeNotifierProvider<ServiceRequestFormProvider>(
             create: (_) => ServiceRequestFormProvider()),
+        ChangeNotifierProvider<ProfileEditProvider>(
+            create: (_) => ProfileEditProvider()),
       ],
       child: const MaterialApp(
         home: FirstScreen(),

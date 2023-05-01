@@ -57,6 +57,7 @@ class AuthProvider extends ChangeNotifier {
   void signInWithPhone(BuildContext context, String phoneNumber,
       String userType, String purpose) async {
     try {
+      User? currentUser = _firebaseAuth.currentUser;
       await _firebaseAuth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
           verificationCompleted:
@@ -80,6 +81,7 @@ class AuthProvider extends ChangeNotifier {
                   purpose: purpose,
                   phoneNumber: phoneNumber,
                   onResendPressed: () => resendOTP(phoneNumber),
+                  currentUser: currentUser,
                 ),
               ),
             );
@@ -140,6 +142,32 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
     return true;
+  }
+
+  void verifyPhoneNumberUpdate({
+    required BuildContext context,
+    required String verificationId,
+    required String userOTP,
+    required Function onSuccess,
+    required User currentUser,
+  }) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      PhoneAuthCredential creds = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: userOTP);
+
+      await currentUser.updatePhoneNumber(creds);
+
+      _isLoading = false;
+      notifyListeners();
+      onSuccess();
+    } on FirebaseAuthException catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      showSnackBar(context, "Invalid OTP. Please try again.");
+    }
   }
 
   Future storeUserIDToSP(Map<String, dynamic> userData, String dataName) async {

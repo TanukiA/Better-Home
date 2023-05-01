@@ -6,6 +6,8 @@ import 'package:service/controllers/customer_controller.dart';
 import 'package:service/controllers/technician_controller.dart';
 import 'package:service/views/customer_service_screen.dart';
 import 'package:service/views/technician_service_screen.dart';
+import 'package:user_management/controllers/user_controller.dart';
+import 'package:user_management/views/profile_screen.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   const MyBottomNavigationBar({
@@ -87,8 +89,22 @@ class MyBottomNavigationBar extends StatelessWidget {
           icon: Icon(Icons.notifications, color: Colors.black, size: 30),
           label: '',
         ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle_sharp, color: Colors.black, size: 33),
+        BottomNavigationBarItem(
+          icon: GestureDetector(
+            child: const Icon(Icons.account_circle_sharp,
+                color: Colors.black, size: 33),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileScreen(
+                    controller: UserController(userType),
+                    userType: userType,
+                  ),
+                ),
+              );
+            },
+          ),
           label: '',
         ),
       ],

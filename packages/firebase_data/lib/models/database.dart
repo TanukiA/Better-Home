@@ -487,4 +487,13 @@ class Database extends ChangeNotifier {
           code: 'update-status-failed', message: e.toString());
     }
   }
+
+  Future<DocumentSnapshot> readProfileData(String userType, String id) async {
+    DocumentSnapshot docSnapshot = await _firebaseFirestore
+        .collection(userType == "customer" ? "customers" : "technicians")
+        .doc(id)
+        .get();
+
+    return docSnapshot;
+  }
 }

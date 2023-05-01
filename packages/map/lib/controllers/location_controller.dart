@@ -10,6 +10,9 @@ import 'package:service/controllers/customer_controller.dart';
 import 'package:service/controllers/service_controller.dart';
 import 'package:service/models/service_request_form_provider.dart';
 import 'package:service/views/service_request_form.dart';
+import 'package:user_management/controllers/user_controller.dart';
+import 'package:user_management/models/profile_edit_provider.dart';
+import 'package:user_management/views/edit_profile_screen.dart';
 
 class LocationController extends ControllerMVC {
   late Location _map;
@@ -67,6 +70,32 @@ class LocationController extends ControllerMVC {
                   cusController: CustomerController(),
                   serviceController: ServiceController(),
                 )),
+      );
+    } else {
+      showSnackBar(context, 'Please select an address');
+    }
+  }
+
+  Future<void> handleConfirmButton3(
+      BuildContext context,
+      String? selectedAddress,
+      double? lat,
+      double? lng,
+      String userType) async {
+    if (selectedAddress != null && lat != null && lng != null) {
+      final provider = Provider.of<ProfileEditProvider>(context, listen: false);
+      provider.saveAddress = selectedAddress;
+      provider.saveLat = lat;
+      provider.saveLng = lng;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EditProfileScreen(
+            controller: UserController(userType),
+            userType: userType,
+          ),
+        ),
       );
     } else {
       showSnackBar(context, 'Please select an address');
