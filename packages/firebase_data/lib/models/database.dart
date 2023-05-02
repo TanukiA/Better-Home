@@ -496,4 +496,50 @@ class Database extends ChangeNotifier {
 
     return docSnapshot;
   }
+
+  Future<void> updateUserProfile(
+      String id,
+      String name,
+      String email,
+      String? city,
+      String? address,
+      GeoPoint? location,
+      String userType) async {
+    try {
+      final collectionName =
+          userType == 'customer' ? 'customers' : 'technicians';
+      final userCollection = _firebaseFirestore.collection(collectionName);
+      final userDoc = userCollection.doc(id);
+
+      if (userType == "customer") {
+        await userDoc.update({'name': name, 'email': email});
+      } else {
+        await userDoc.update({
+          'name': name,
+          'email': email,
+          'city': city,
+          'address': address,
+          'location': location
+        });
+      }
+    } catch (e) {
+      throw PlatformException(
+          code: 'update-profile-failed', message: e.toString());
+    }
+  }
+
+  Future<void> updatePhoneNumber(
+      String id, String phoneNumber, String userType) async {
+    try {
+      final collectionName =
+          userType == 'customer' ? 'customers' : 'technicians';
+      final userCollection = _firebaseFirestore.collection(collectionName);
+      final userDoc = userCollection.doc(id);
+
+      await userDoc.update({'phoneNumber': phoneNumber});
+    } catch (e) {
+      throw PlatformException(
+          code: 'update-phone-failed', message: e.toString());
+    }
+  }
 }

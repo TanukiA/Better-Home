@@ -1,32 +1,55 @@
-import 'package:better_home/bottom_nav_bar.dart';
+import 'package:authentication/models/phone_number_formatter.dart';
 import 'package:better_home/text_field_container.dart';
+import 'package:better_home/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:map/controllers/location_controller.dart';
-import 'package:map/views/search_place_screen.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 import 'package:user_management/controllers/user_controller.dart';
 import 'package:user_management/models/profile_edit_provider.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen(
+class EditPhoneScreen extends StatefulWidget {
+  const EditPhoneScreen(
       {Key? key, required this.controller, required this.userType})
       : super(key: key);
   final UserController controller;
   final String userType;
 
   @override
-  StateMVC<EditProfileScreen> createState() => _EditProfileScreenState();
+  StateMVC<EditPhoneScreen> createState() => _EditPhoneScreenState();
 }
 
-class _EditProfileScreenState extends StateMVC<EditProfileScreen> {
-  double containerHeight = 0;
+class _EditPhoneScreenState extends StateMVC<EditPhoneScreen> {
   final TextEditingController _phoneController = TextEditingController();
+  bool _isValid = false;
 
   @override
   initState() {
     super.initState();
+    _phoneController.addListener(() {
+      setState(() {
+        if (widget.controller.validPhoneFormat(_phoneController.text) == true &&
+            _phoneController.text.isNotEmpty) {
+          _isValid = true;
+        } else {
+          _isValid = false;
+        }
+      });
+    });
+  }
+
+  Future<void> checkUsedOrNot(String phoneInput) async {
+    if (await widget.controller.usedPhoneNumber(phoneInput, widget.userType)) {
+      if (mounted) {
+        showDialogBox(context, "Phone number in use",
+            "This phone number is already been used. Please try another.");
+      }
+    } else {
+      if (mounted) {
+        widget.controller.sendPhoneNumber(
+            context, _phoneController.text, widget.userType, "profile");
+      }
+    }
   }
 
   @override
@@ -38,14 +61,12 @@ class _EditProfileScreenState extends StateMVC<EditProfileScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    final provider = Provider.of<ProfileEditProvider>(context);
-
     final ButtonStyle updateBtnStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(
         fontSize: 20,
         fontFamily: 'Roboto',
       ),
-      backgroundColor: Colors.black,
+      disabledForegroundColor: Colors.white,
       foregroundColor: Colors.white,
       fixedSize: Size(size.width * 0.8, 55),
       shape: RoundedRectangleBorder(
@@ -53,6 +74,16 @@ class _EditProfileScreenState extends StateMVC<EditProfileScreen> {
       ),
       elevation: 3,
       shadowColor: Colors.grey[400],
+    );
+
+    MaterialStateProperty<Color?> backgroundColor =
+        MaterialStateProperty.resolveWith<Color?>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return Colors.grey;
+        }
+        return Colors.black;
+      },
     );
 
     return Scaffold(
@@ -75,11 +106,11 @@ class _EditProfileScreenState extends StateMVC<EditProfileScreen> {
           size: 40,
         ),
       ),
-      body: SingleChildScrollView(
+      body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 75.0),
             const Text(
               'Enter new phone number:',
               style: TextStyle(
@@ -90,22 +121,35 @@ class _EditProfileScreenState extends StateMVC<EditProfileScreen> {
             TextFieldContainer(
               child: TextFormField(
                 controller: _phoneController,
+                inputFormatters: [MalaysiaPhoneNumberFormatter(context)],
                 keyboardType: TextInputType.phone,
-                onChanged: (value) {
-                  provider.savePhone = value;
-                },
                 decoration: const InputDecoration(
                   hintText: 'New phone number',
                   border: InputBorder.none,
                 ),
               ),
             ),
-            const SizedBox(height: 40.0),
+            if (widget.controller.validPhoneFormat(_phoneController.text) ==
+                false)
+              SizedBox(
+                width: size.width * 0.65,
+                height: 15,
+                child: const Text(
+                  'Invalid phone number',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            const SizedBox(height: 50.0),
             ElevatedButton(
-              onPressed: () async {
-                // OTP
-              },
-              style: updateBtnStyle,
+              onPressed:
+                  _isValid ? () => checkUsedOrNot(_phoneController.text) : null,
+              style: updateBtnStyle.copyWith(
+                backgroundColor: backgroundColor,
+              ),
               child: const Text('Update phone number'),
             ),
           ],

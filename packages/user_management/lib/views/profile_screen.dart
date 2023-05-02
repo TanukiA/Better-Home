@@ -19,7 +19,7 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
   int _currentIndex = 0;
   bool isLoading = true;
   late Map<String, dynamic> profileData;
-  late String specializationStr;
+  String specializationStr = "";
   double containerHeight = 0;
 
   @override
@@ -37,8 +37,11 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
     final profileDoc =
         await widget.controller.retrieveProfileData(widget.userType, context);
     profileData = profileDoc.data() as Map<String, dynamic>;
-    List<dynamic> specialization = profileData["specialization"];
-    specializationStr = specialization.join(", ");
+    if (widget.userType == "technician") {
+      List<dynamic> specialization = profileData["specialization"];
+      specializationStr = specialization.join(", ");
+    }
+
     if (mounted) {
       widget.controller.saveProfileToProvider(
           context, profileData, widget.userType, specializationStr);
@@ -132,7 +135,7 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
                                 },
                                 child: const Icon(
                                   Icons.edit,
-                                  size: 35.0,
+                                  size: 37.0,
                                 ),
                               ),
                             ],
@@ -232,27 +235,36 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
                   Container(
                     width: size.width * 0.8,
                     padding: const EdgeInsets.all(20.0),
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 218, 218, 218),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Change phone number",
-                          style: TextStyle(
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        const SizedBox(width: 30.0),
-                        InkWell(
-                          onTap: () {
-                            // add function to run when icon is tapped
-                          },
-                          child: const Icon(Icons.arrow_forward),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 218, 218, 218),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 7,
+                          offset: const Offset(0, 3),
                         ),
                       ],
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        widget.controller
+                            .changePhoneNumber(context, widget.userType);
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                            "Change phone number",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          SizedBox(width: 30.0),
+                          Icon(Icons.arrow_forward),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20.0),

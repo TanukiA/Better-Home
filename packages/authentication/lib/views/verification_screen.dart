@@ -1,13 +1,13 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/controllers/registration_controller.dart';
 import 'package:authentication/models/auth_provider.dart';
-import 'package:better_home/user.dart';
 import 'package:better_home/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:user_management/controllers/user_controller.dart';
 
 class VerificationScreen extends StatefulWidget {
   const VerificationScreen(
@@ -19,11 +19,13 @@ class VerificationScreen extends StatefulWidget {
       required this.purpose,
       required this.phoneNumber,
       required this.onResendPressed,
-      this.currentUser})
+      this.currentUser,
+      this.userCon})
       : super(key: key);
   final String verificationId;
   final LoginController loginCon;
   final RegistrationController registerCon;
+  final UserController? userCon;
   final String userType;
   final String purpose;
   final String phoneNumber;
@@ -180,7 +182,16 @@ class _VerificationScreenState extends StateMVC<VerificationScreen> {
                                       widget.userType,
                                       widget.purpose,
                                       widget.phoneNumber);
-                                } else {}
+                                } else {
+                                  widget.userCon!.verifyPhoneNumberUpdate(
+                                      context,
+                                      otpCode!,
+                                      widget.verificationId,
+                                      widget.userType,
+                                      widget.purpose,
+                                      widget.phoneNumber,
+                                      widget.currentUser!);
+                                }
                               } else {
                                 showSnackBar(
                                     context, "Please enter 6-digit code");

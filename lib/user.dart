@@ -6,9 +6,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_data/models/database.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:user_management/controllers/user_controller.dart';
+import 'package:user_management/models/profile_edit_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:user_management/views/profile_screen.dart';
 
 abstract class User extends ModelMVC {
   String? phone;
@@ -110,6 +115,82 @@ abstract class User extends ModelMVC {
     Database firestore = Database();
     final profileDoc = await firestore.readProfileData(userType, id);
     return profileDoc;
+  }
+
+  Future<void> saveProfileData(BuildContext context, String userType,
+      ProfileEditProvider provider) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String id = await ap.getUserIDFromSP("session_data");
+    Database firestore = Database();
+
+    if (userType == "technician") {
+      LatLng location = LatLng(provider.lat!, provider.lng!);
+      GeoPoint geoPoint = GeoPoint(location.latitude, location.longitude);
+      await firestore.updateUserProfile(id, provider.name!, provider.email!,
+          provider.city, provider.address, geoPoint, userType);
+    } else {
+      await firestore.updateUserProfile(
+          id, provider.name!, provider.email!, "", "", null, userType);
+    }
+  }
+
+  Future<bool> usedPhoneNumber(String phone, String userType) async {
+    Database firestore = Database();
+    String collectionName = '$userType' 's';
+    final exist = await firestore.checkAccountExistence(phone, collectionName);
+    return exist;
+  }
+
+  void verifyPhoneNumberUpdate(
+      BuildContext context,
+      String userOTP,
+      String verificationId,
+      String userType,
+      String purpose,
+      String phoneNumber,
+      firebase_auth.User? currentUser) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    ap.verifyPhoneNumberUpdate(
+      context: context,
+      verificationId: verificationId,
+      userOTP: userOTP,
+      onSuccess: () async {
+        Database firestore = Database();
+        final ap = Provider.of<AuthProvider>(context, listen: false);
+        String id = await ap.getUserIDFromSP("session_data");
+        await firestore.updatePhoneNumber(id, phoneNumber, userType);
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Success"),
+                content: const Text(
+                    "Your phone number has been updated successfully."),
+                actions: [
+                  ElevatedButton(
+                    child: const Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileScreen(
+                            controller: UserController(userType),
+                            userType: userType,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      },
+      currentUser: currentUser!,
+    );
   }
 
   void logout(BuildContext context) {

@@ -1,4 +1,3 @@
-import 'package:better_home/bottom_nav_bar.dart';
 import 'package:better_home/text_field_container.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 import 'package:user_management/controllers/user_controller.dart';
 import 'package:user_management/models/profile_edit_provider.dart';
+import 'package:user_management/views/profile_screen.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen(
@@ -98,7 +98,8 @@ class _EditProfileScreenState extends StateMVC<EditProfileScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      // update
+                      widget.controller
+                          .handleSaveIcon(context, widget.userType, provider);
                     },
                     child: const Icon(
                       Icons.save,
@@ -276,8 +277,16 @@ class _EditProfileScreenState extends StateMVC<EditProfileScreen> {
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () async {
-                  Navigator.of(context).pop();
                   provider.clearFormInputs();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfileScreen(
+                        controller: UserController(widget.userType),
+                        userType: widget.userType,
+                      ),
+                    ),
+                  );
                 },
                 style: cancelBtnStyle,
                 child: const Text('Cancel'),

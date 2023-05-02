@@ -19,6 +19,8 @@ dependencies:
     path: ../map
   service:
     path: ../service
+  user_management:
+    path: ../user_management
     
   cupertino_icons: ^1.0.2
   firebase_core: ^2.7.0

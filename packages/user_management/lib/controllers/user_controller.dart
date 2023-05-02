@@ -1,13 +1,17 @@
 import 'package:better_home/customer.dart';
 import 'package:better_home/technician.dart';
 import 'package:better_home/user.dart';
+import 'package:better_home/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:user_management/views/edit_phone_screen.dart';
 import 'package:user_management/views/edit_profile_screen.dart';
 import 'package:user_management/models/profile_edit_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:user_management/views/profile_screen.dart';
 
 class UserController extends ControllerMVC {
   late User _user;
@@ -53,16 +57,72 @@ class UserController extends ControllerMVC {
       BuildContext context,
       Map<String, dynamic> profileData,
       String userType,
-      String specializationStr) {
+      String? specializationStr) {
     final provider = Provider.of<ProfileEditProvider>(context, listen: false);
     provider.saveName = profileData["name"];
     provider.saveEmail = profileData["email"];
     provider.savePhone = profileData["phoneNumber"];
     if (userType == "technician") {
-      provider.saveSpecs = specializationStr;
+      provider.saveSpecs = specializationStr!;
       provider.saveCity = profileData["city"];
       provider.saveAddress = profileData["address"];
+      final point = profileData["location"];
+      provider.saveLat = point.latitude;
+      provider.saveLng = point.longitude;
     }
+  }
+
+  Future<void> handleSaveIcon(BuildContext context, String userType,
+      ProfileEditProvider provider) async {
+    if (provider.name == "" ||
+        provider.email == "" ||
+        (userType == "technician" &&
+            (provider.city == "" ||
+                provider.address == "" ||
+                provider.lat == null ||
+                provider.lng == null))) {
+      showDialogBox(
+          context, "Empty field found", "Please fill up all the fields.");
+    } else {
+      await _user.saveProfileData(context, userType, provider);
+      provider.clearFormInputs();
+      if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileScreen(
+              controller: UserController(userType),
+              userType: userType,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  void changePhoneNumber(BuildContext context, String userType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditPhoneScreen(
+          controller: UserController(userType),
+          userType: userType,
+        ),
+      ),
+    );
+  }
+
+  bool validPhoneFormat(String phone) {
+    return User.validPhoneFormat(phone);
+  }
+
+  Future<bool> usedPhoneNumber(String phone, String userType) {
+    return _user.usedPhoneNumber(phone, userType);
+  }
+
+  void sendPhoneNumber(BuildContext context, String phoneInput, String userType,
+      String purpose) {
+    return _user.sendPhoneNumber(context, phoneInput, userType, purpose);
   }
 
   void verifyPhoneNumberUpdate(
@@ -71,9 +131,9 @@ class UserController extends ControllerMVC {
       String verificationId,
       String userType,
       String purpose,
-      String phoneNumber) {
-    /*
-    return _user.verifyPhoneNumberUpdate(
-        context, userOTP, verificationId, userType, purpose, phoneNumber);*/
+      String phoneNumber,
+      firebase_auth.User? currentUser) {
+    _user.verifyPhoneNumberUpdate(context, userOTP, verificationId, userType,
+        purpose, phoneNumber, currentUser!);
   }
 }
