@@ -1,5 +1,4 @@
 import 'package:better_home/bottom_nav_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:user_management/controllers/user_controller.dart';
@@ -107,7 +106,7 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
                     const SizedBox(height: 18),
                     ElevatedButton(
                       onPressed: () {
-                        // review
+                        // show review
                       },
                       style: reviewBtnStyle,
                       child: const Text('Your customer review'),

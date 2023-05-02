@@ -1,5 +1,4 @@
 import 'package:authentication/controllers/login_controller.dart';
-import 'package:better_home/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:service/controllers/service_controller.dart';

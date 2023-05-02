@@ -1,12 +1,9 @@
 import 'package:authentication/models/phone_number_formatter.dart';
 import 'package:better_home/text_field_container.dart';
 import 'package:better_home/utils.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:provider/provider.dart';
 import 'package:user_management/controllers/user_controller.dart';
-import 'package:user_management/models/profile_edit_provider.dart';
 
 class EditPhoneScreen extends StatefulWidget {
   const EditPhoneScreen(
