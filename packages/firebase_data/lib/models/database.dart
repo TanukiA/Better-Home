@@ -108,7 +108,7 @@ class Database extends ChangeNotifier {
   // Check technician's availability for one given time slot, return true/false represents available/not available
   Future<bool> checkTechnicianAvailability(String serviceCategory, String city,
       DateTime date, String timeSlot, int matchedQty) async {
-    unavailableTechnicianIDs = [];
+    unavailableTechnicianIDs.clear();
     final techniciansQuerySnapshot = await _firebaseFirestore
         .collection("technicians")
         .where("specialization", arrayContains: serviceCategory)
@@ -417,7 +417,7 @@ class Database extends ChangeNotifier {
 
   Future<void> filterTechnicianByAvailability(String serviceCategory,
       String city, DateTime date, String timeSlot, String technicianID) async {
-    unavailableTechnicianIDs = [];
+    unavailableTechnicianIDs.clear();
     unavailableTechnicianIDs.add(technicianID);
     final techniciansQuerySnapshot = await _firebaseFirestore
         .collection("technicians")
@@ -541,5 +541,36 @@ class Database extends ChangeNotifier {
       throw PlatformException(
           code: 'update-phone-failed', message: e.toString());
     }
+  }
+
+  Future<List<Map<String, dynamic>?>> readReviewsForTechnician(
+      String technicianID) async {
+    final QuerySnapshot<Map<String, dynamic>> servicesSnapshot =
+        await _firebaseFirestore
+            .collection('services')
+            .where('technicianID', isEqualTo: technicianID)
+            .where('serviceStatus', isEqualTo: "Rated")
+            .get();
+
+    if (servicesSnapshot.docs.isEmpty) {
+      return [];
+    }
+
+    final List<Map<String, dynamic>?> ratingsData = [];
+    for (final DocumentSnapshot<Map<String, dynamic>> serviceDoc
+        in servicesSnapshot.docs) {
+      final String serviceDocID = serviceDoc.id;
+      final DocumentSnapshot<Map<String, dynamic>> ratingsSnapshot =
+          await _firebaseFirestore
+              .collection('ratings')
+              .doc(serviceDocID)
+              .get();
+
+      if (ratingsSnapshot.exists) {
+        ratingsData.add(ratingsSnapshot.data());
+      }
+    }
+
+    return ratingsData;
   }
 }

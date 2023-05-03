@@ -7,11 +7,13 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:service/controllers/technician_controller.dart';
 import 'package:user_management/views/edit_phone_screen.dart';
 import 'package:user_management/views/edit_profile_screen.dart';
 import 'package:user_management/models/profile_edit_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:user_management/views/profile_screen.dart';
+import 'package:user_management/views/review_screen.dart';
 
 class UserController extends ControllerMVC {
   late User _user;
@@ -135,5 +137,16 @@ class UserController extends ControllerMVC {
       firebase_auth.User? currentUser) {
     _user.verifyPhoneNumberUpdate(context, userOTP, verificationId, userType,
         purpose, phoneNumber, currentUser!);
+  }
+
+  void pushToReviewScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReviewScreen(
+          controller: TechnicianController(),
+        ),
+      ),
+    );
   }
 }

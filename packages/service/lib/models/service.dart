@@ -251,11 +251,11 @@ class Service extends ModelMVC {
 
     if (context.mounted) {
       _techAssigner = TechnicianAssigner(context);
-      nearestTechnicianID = await _techAssigner.pickReassignTechnician(
-          serviceCategory, city, location);
-      print("Done 4");
-      print("NearestTechnicianID: $nearestTechnicianID");
     }
+    nearestTechnicianID = await _techAssigner.pickReassignTechnician(
+        serviceCategory, city, location);
+    print("Done 4");
+    print("NearestTechnicianID: $nearestTechnicianID");
 
     return nearestTechnicianID;
   }

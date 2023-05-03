@@ -10,8 +10,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:service/controllers/technician_controller.dart';
+import 'package:user_management/models/rating.dart';
 
 class Technician extends User {
+  late Rating _rating;
   String? _id;
   List<String>? specs;
   String? exp;
@@ -33,7 +35,8 @@ class Technician extends User {
       required double this.lat,
       required double this.lng,
       required PlatformFile this.pickedFile})
-      : super(phone: phone, name: name, email: email);
+      : _rating = Rating(),
+        super(phone: phone, name: name, email: email);
 
   void mapRegisterData() {
     LatLng location = LatLng(lat!, lng!);
@@ -98,6 +101,14 @@ class Technician extends User {
     await firestore.updateAcceptRequest(id);
     await firestore.addWorkSchedule(
         id, appointmentDate, appointmentTime, technicianID);
+  }
+
+  Future<List<Map<String, dynamic>?>> retrieveReviews(
+      BuildContext context) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String technicianID = await ap.getUserIDFromSP("session_data");
+    await _rating.getReviewsForTechnician(technicianID);
+    return _rating.reviewData;
   }
 
   @override

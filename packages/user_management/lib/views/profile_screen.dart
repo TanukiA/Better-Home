@@ -106,7 +106,7 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
                     const SizedBox(height: 18),
                     ElevatedButton(
                       onPressed: () {
-                        // show review
+                        widget.controller.pushToReviewScreen(context);
                       },
                       style: reviewBtnStyle,
                       child: const Text('Your customer review'),

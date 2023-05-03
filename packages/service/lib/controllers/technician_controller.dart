@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 
 class TechnicianController extends ControllerMVC {
   late Technician _tech;
+  late Service _service;
 
   Technician get cus => _tech;
 
@@ -25,6 +26,7 @@ class TechnicianController extends ControllerMVC {
         lng: 0.0,
         specs: [],
         pickedFile: PlatformFile(name: '', size: 0));
+    _service = Service();
   }
 
   Future<List<QueryDocumentSnapshot>> retrieveAssignedServices(
@@ -110,14 +112,13 @@ class TechnicianController extends ControllerMVC {
     String serviceCategory = serviceName.split(" - ")[0];
     final city = (serviceDoc.data() as Map<String, dynamic>)["city"];
     final location = (serviceDoc.data() as Map<String, dynamic>)["location"];
-    Service service = Service();
     Database firestore = Database();
 
     String? technicianFromPreferred;
     String? technicianFromAlternative;
     print("Done 1");
     // Look for technician using preferred appointment
-    technicianFromPreferred = await service.processTechnicianReassign(
+    technicianFromPreferred = await _service.processTechnicianReassign(
         context,
         serviceCategory,
         city,
@@ -130,7 +131,7 @@ class TechnicianController extends ControllerMVC {
     if (technicianFromPreferred == null || technicianFromPreferred == "") {
       print("Done 6");
       if (context.mounted) {
-        technicianFromAlternative = await service.processTechnicianReassign(
+        technicianFromAlternative = await _service.processTechnicianReassign(
             context,
             serviceCategory,
             city,
@@ -163,5 +164,10 @@ class TechnicianController extends ControllerMVC {
     }
 
     print("Done 11");
+  }
+
+  Future<List<Map<String, dynamic>?>> retrieveReviews(
+      BuildContext context) async {
+    return await _tech.retrieveReviews(context);
   }
 }
