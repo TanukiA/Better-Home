@@ -14,7 +14,7 @@ class ReviewScreen extends StatefulWidget {
 class _ReviewScreenState extends StateMVC<ReviewScreen> {
   bool isLoading = true;
   List<Map<String, dynamic>?> reviewsDoc = [];
-  double avgStarQty = 0;
+  double avgStarQty = 0.0;
 
   @override
   initState() {
@@ -24,7 +24,9 @@ class _ReviewScreenState extends StateMVC<ReviewScreen> {
 
   Future<void> setReviewData() async {
     reviewsDoc = await widget.controller.retrieveReviews(context);
-    print("review doc in screen: $reviewsDoc");
+    if (reviewsDoc.isNotEmpty) {
+      avgStarQty = widget.controller.retrieveAvgRating();
+    }
     setState(() {
       isLoading = false;
     });
@@ -64,21 +66,52 @@ class _ReviewScreenState extends StateMVC<ReviewScreen> {
               child: CircularProgressIndicator(
               color: Color.fromARGB(255, 51, 119, 54),
             ))
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  if (reviewsDoc.isEmpty && isLoading == false)
-                    const Center(
+          : reviewsDoc.isEmpty
+              ? Container(
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'No customer review yet',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      const Center(
                         child: Text(
-                      'No customer review yet',
-                      style: TextStyle(
-                        fontSize: 16,
+                          'Your Average Rating',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ))
-                  else
-                    SizedBox(
-                      height: size.height * 0.5,
-                      child: ListView.builder(
+                      const SizedBox(height: 10),
+                      Center(
+                        child: RatingBar.builder(
+                          initialRating: avgStarQty,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemPadding:
+                              const EdgeInsets.symmetric(vertical: 4.0),
+                          itemBuilder: (context, _) => const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          onRatingUpdate: (rating) {},
+                          ignoreGestures: true,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      SizedBox(
+                        height: size.height * 0.5,
+                        child: ListView.builder(
                           itemCount: reviewsDoc.length,
                           itemBuilder: (context, index) {
                             final reviewDoc = reviewsDoc[index];
@@ -124,15 +157,16 @@ class _ReviewScreenState extends StateMVC<ReviewScreen> {
                                       fontSize: 16.0,
                                     ),
                                   ),
-                                  const SizedBox(height: 15),
+                                  const SizedBox(height: 10),
                                 ],
                               ),
                             );
-                          }),
-                    ),
-                ],
-              ),
-            ),
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
     );
   }
 }

@@ -13,7 +13,7 @@ import 'package:service/controllers/technician_controller.dart';
 import 'package:user_management/models/rating.dart';
 
 class Technician extends User {
-  late Rating _rating;
+  final Rating _rating;
   String? _id;
   List<String>? specs;
   String? exp;
@@ -109,6 +109,10 @@ class Technician extends User {
     String technicianID = await ap.getUserIDFromSP("session_data");
     await _rating.getReviewsForTechnician(technicianID);
     return _rating.reviewData;
+  }
+
+  double retrieveAvgRating() {
+    return _rating.avgStarQty;
   }
 
   @override

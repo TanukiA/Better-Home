@@ -8,6 +8,8 @@ import 'package:service/views/customer_service_screen.dart';
 import 'package:service/views/technician_service_screen.dart';
 import 'package:user_management/controllers/user_controller.dart';
 import 'package:user_management/views/profile_screen.dart';
+import 'package:user_management/views/messaging_inbox_screen.dart';
+import 'package:user_management/views/messaging_list_screen.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   const MyBottomNavigationBar({
@@ -81,8 +83,18 @@ class MyBottomNavigationBar extends StatelessWidget {
           ),
           label: '',
         ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.message, color: Colors.black, size: 30),
+        BottomNavigationBarItem(
+          icon: GestureDetector(
+            child: const Icon(Icons.message, color: Colors.black, size: 30),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MessagingListScreen(),
+                ),
+              );
+            },
+          ),
           label: '',
         ),
         const BottomNavigationBarItem(

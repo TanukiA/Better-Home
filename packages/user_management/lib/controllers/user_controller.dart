@@ -124,7 +124,7 @@ class UserController extends ControllerMVC {
 
   void sendPhoneNumber(BuildContext context, String phoneInput, String userType,
       String purpose) {
-    return _user.sendPhoneNumber(context, phoneInput, userType, purpose);
+    return _user.sendPhoneNumber(context, phoneInput.trim(), userType, purpose);
   }
 
   void verifyPhoneNumberUpdate(

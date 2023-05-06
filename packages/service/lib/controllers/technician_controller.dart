@@ -170,4 +170,8 @@ class TechnicianController extends ControllerMVC {
       BuildContext context) async {
     return await _tech.retrieveReviews(context);
   }
+
+  double retrieveAvgRating() {
+    return _tech.retrieveAvgRating();
+  }
 }

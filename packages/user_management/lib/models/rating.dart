@@ -25,6 +25,5 @@ class Rating extends ModelMVC {
 
     final double sum = allStarQtys.reduce((a, b) => a + b);
     _avgStarQty = sum / allStarQtys.length;
-    print("Average star: $_avgStarQty");
   }
 }
