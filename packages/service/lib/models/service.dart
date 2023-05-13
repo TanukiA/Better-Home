@@ -46,6 +46,7 @@ class Service extends ModelMVC {
   }
 
   void processServiceRequest(int price) async {
+    paymentSuccess = false;
     await _payment.preparePayment(price);
     await _payment.makePayment();
 
@@ -266,6 +267,23 @@ class Service extends ModelMVC {
     String id = await ap.getUserIDFromSP("session_data");
     Database firestore = Database();
     _servicesDoc = await firestore.readWorkData(id);
+
+    _servicesDoc.sort((a, b) {
+      final String timeA = (a.data() as Map<String, dynamic>)['confirmedTime'];
+      final String timeB = (b.data() as Map<String, dynamic>)['confirmedTime'];
+      // Parse the time strings into DateTime objects
+      final DateTime dateTimeA =
+          DateFormat('h:mma').parse(timeA.split('-')[0].trim());
+      final DateTime dateTimeB =
+          DateFormat('h:mma').parse(timeB.split('-')[0].trim());
+
+      // Convert DateTime objects to a comparable format (24-hour format)
+      final String comparableTimeA = DateFormat('HH:mm').format(dateTimeA);
+      final String comparableTimeB = DateFormat('HH:mm').format(dateTimeB);
+
+      // Compare the comparable time strings
+      return comparableTimeA.compareTo(comparableTimeB);
+    });
     return servicesDoc;
   }
 

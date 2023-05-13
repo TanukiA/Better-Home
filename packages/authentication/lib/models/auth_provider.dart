@@ -170,7 +170,8 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future storeUserIDToSP(Map<String, dynamic> userData, String dataName) async {
+  Future storeUserDataToSP(
+      Map<String, dynamic> userData, String dataName) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setString(dataName, jsonEncode(userData));
   }
@@ -182,6 +183,15 @@ class AuthProvider extends ChangeNotifier {
     final userData = jsonDecode(userDataJson!);
 
     return userData['id'];
+  }
+
+  Future<String> getUserNameFromSP(String dataName) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    final userDataJson = sp.getString(dataName);
+    notifyListeners();
+    final userData = jsonDecode(userDataJson!);
+
+    return userData['name'];
   }
 
   Future userSignOut() async {

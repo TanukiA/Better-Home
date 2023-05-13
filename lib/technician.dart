@@ -121,11 +121,12 @@ class Technician extends User {
 
     Map<String, dynamic> technicianData = {
       'id': _id,
+      'name': name,
     };
 
     if (context.mounted) {
       final ap = Provider.of<AuthProvider>(context, listen: false);
-      ap.storeUserIDToSP(technicianData, "session_data");
+      ap.storeUserDataToSP(technicianData, "session_data");
       ap.setTechnicianSignIn();
 
       Navigator.pushReplacement(
@@ -145,6 +146,7 @@ class Technician extends User {
 
     if (technicianDoc.exists) {
       _id = technicianDoc.id;
+      name = technicianDoc.data()!['name'];
     }
   }
 }

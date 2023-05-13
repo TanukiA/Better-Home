@@ -12,6 +12,7 @@ import 'package:firebase_data/models/database.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/standalone.dart' as tz;
 import 'package:intl/intl.dart';
+import 'package:user_management/views/messaging_inbox_screen.dart';
 
 class ServiceController extends ControllerMVC {
   late Service _service;

@@ -4,6 +4,7 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
 import 'package:service/views/work_schedules_detail_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:user_management/controllers/messaging_controller.dart';
 
 class WorkScheduleScreen extends StatefulWidget {
   const WorkScheduleScreen({Key? key, required this.controller})
@@ -83,7 +84,8 @@ class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
                             MaterialPageRoute(
                               builder: (context) => WorkSchedulesDetailScreen(
                                 serviceDoc: serviceDoc,
-                                controller: widget.controller,
+                                serviceCon: widget.controller,
+                                msgCon: MessagingController(),
                               ),
                             ),
                           );

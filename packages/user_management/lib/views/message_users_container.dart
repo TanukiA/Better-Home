@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:user_management/controllers/messaging_controller.dart';
 import 'package:user_management/views/messaging_inbox_screen.dart';
+import 'package:user_management/models/message.dart';
 
 class MessageUsersContainer extends StatefulWidget {
   const MessageUsersContainer(
       {Key? key,
-      required this.text,
-      required this.secondaryText,
+      required this.name,
+      required this.messageText,
       required this.time,
-      required this.isMessageRead})
+      required this.isMessageRead,
+      required this.allMessages,
+      required this.controller,
+      required this.userType})
       : super(key: key);
-  final String text;
-  final String secondaryText;
+  final String name;
+  final String messageText;
   final String time;
   final bool isMessageRead;
+  final List<List<Message>> allMessages;
+  final MessagingController controller;
+  final String userType;
 
   @override
   StateMVC<MessageUsersContainer> createState() =>
@@ -25,9 +33,8 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const MessagingInboxScreen();
-        }));
+        widget.controller
+            .openInbox(context, widget.allMessages, widget.userType);
       },
       child: Container(
         padding:
@@ -44,12 +51,12 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.text),
+                          Text(widget.name),
                           const SizedBox(
                             height: 6,
                           ),
                           Text(
-                            widget.secondaryText,
+                            widget.messageText,
                             style: TextStyle(
                                 fontSize: 14, color: Colors.grey.shade500),
                           ),

@@ -8,8 +8,8 @@ import 'package:service/views/customer_service_screen.dart';
 import 'package:service/views/technician_service_screen.dart';
 import 'package:user_management/controllers/user_controller.dart';
 import 'package:user_management/views/profile_screen.dart';
-import 'package:user_management/views/messaging_inbox_screen.dart';
 import 'package:user_management/views/messaging_list_screen.dart';
+import 'package:user_management/controllers/messaging_controller.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   const MyBottomNavigationBar({
@@ -90,7 +90,10 @@ class MyBottomNavigationBar extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MessagingListScreen(),
+                  builder: (context) => MessagingListScreen(
+                    controller: MessagingController(),
+                    userType: userType,
+                  ),
                 ),
               );
             },

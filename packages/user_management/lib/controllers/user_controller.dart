@@ -64,6 +64,7 @@ class UserController extends ControllerMVC {
     provider.saveName = profileData["name"];
     provider.saveEmail = profileData["email"];
     provider.savePhone = profileData["phoneNumber"];
+
     if (userType == "technician") {
       provider.saveSpecs = specializationStr!;
       provider.saveCity = profileData["city"];

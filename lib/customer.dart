@@ -74,11 +74,12 @@ class Customer extends User {
 
     Map<String, dynamic> customerData = {
       'id': _id,
+      'name': name,
     };
 
     if (context.mounted) {
       final ap = Provider.of<AuthProvider>(context, listen: false);
-      ap.storeUserIDToSP(customerData, "session_data");
+      ap.storeUserDataToSP(customerData, "session_data");
       ap.setCustomerSignIn();
 
       Navigator.pushReplacement(
@@ -96,6 +97,7 @@ class Customer extends User {
     final customerDoc = await Database.getCustomerByPhoneNumber(phoneNumber);
     if (customerDoc.exists) {
       _id = customerDoc.id;
+      name = customerDoc.data()!['name'];
     }
   }
 }

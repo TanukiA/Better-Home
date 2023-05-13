@@ -105,6 +105,7 @@ class Database extends ChangeNotifier {
     return querySnapshot.size;
   }
 
+/*
   // Check technician's availability for one given time slot, return true/false represents available/not available
   Future<bool> checkTechnicianAvailability(String serviceCategory, String city,
       DateTime date, String timeSlot, int matchedQty) async {
@@ -141,6 +142,42 @@ class Database extends ChangeNotifier {
         }
       }
     }
+    if (countOverlap < matchedQty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+*/
+
+  Future<bool> checkTechnicianAvailability(String serviceCategory, String city,
+      DateTime date, String timeSlot, int matchedQty) async {
+    unavailableTechnicianIDs.clear();
+
+    final techniciansQuerySnapshot = await _firebaseFirestore
+        .collection("technicians")
+        .where("specialization", arrayContains: serviceCategory)
+        .where("city", isEqualTo: city)
+        .get();
+
+    int countOverlap = 0;
+
+    for (final technicianDoc in techniciansQuerySnapshot.docs) {
+      final workSchedulesCollection =
+          technicianDoc.reference.collection("work_schedules");
+
+      // Use a single query to filter work schedules based on date and time slot
+      final workSchedulesQuerySnapshot = await workSchedulesCollection
+          .where("appointmentDate", isEqualTo: Timestamp.fromDate(date))
+          .where("appointmentTime", isEqualTo: timeSlot)
+          .get();
+
+      if (workSchedulesQuerySnapshot.docs.isNotEmpty) {
+        countOverlap++;
+        unavailableTechnicianIDs.add(technicianDoc.id);
+      }
+    }
+
     if (countOverlap < matchedQty) {
       return true;
     } else {
@@ -251,7 +288,10 @@ class Database extends ChangeNotifier {
         .collection('services')
         .where('customerID', isEqualTo: id)
         .where('serviceStatus',
-            whereIn: ['Assigning', 'Confirmed', 'In Progress']).get();
+            whereIn: ['Assigning', 'Confirmed', 'In Progress'])
+        .orderBy('dateTimeSubmitted', descending: true)
+        .get();
+
     List<QueryDocumentSnapshot> documents = querySnapshot.docs;
     return documents;
   }
@@ -297,7 +337,10 @@ class Database extends ChangeNotifier {
         .collection('services')
         .where(idType, isEqualTo: id)
         .where('serviceStatus',
-            whereIn: ['Completed', 'Rated', 'Cancelled', 'Refunded']).get();
+            whereIn: ['Completed', 'Rated', 'Cancelled', 'Refunded'])
+        .orderBy('dateTimeSubmitted', descending: true)
+        .get();
+
     List<QueryDocumentSnapshot> documents = querySnapshot.docs;
     return documents;
   }
@@ -355,6 +398,7 @@ class Database extends ChangeNotifier {
         .collection('services')
         .where('technicianID', isEqualTo: id)
         .where('serviceStatus', isEqualTo: 'Assigning')
+        .orderBy('dateTimeSubmitted', descending: false)
         .get();
 
     List<QueryDocumentSnapshot> documents = querySnapshot.docs;

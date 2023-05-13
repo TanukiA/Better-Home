@@ -1,6 +1,7 @@
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:user_management/models/message_manager.dart';
+import 'package:user_management/controllers/messaging_controller.dart';
+import 'package:user_management/models/message.dart';
 import 'package:user_management/views/chat_bubble.dart';
 
 enum MessageType {
@@ -9,98 +10,56 @@ enum MessageType {
 }
 
 class MessagingInboxScreen extends StatefulWidget {
-  const MessagingInboxScreen({Key? key}) : super(key: key);
+  const MessagingInboxScreen({
+    Key? key,
+    required this.controller,
+    required this.messages,
+    required this.messagePersonName,
+    required this.messagePersonID,
+    required this.userType,
+    required this.currentID,
+  }) : super(key: key);
+  final MessagingController controller;
+  final List<Message> messages;
+  final String messagePersonID;
+  final String messagePersonName;
+  final String userType;
+  final String currentID;
 
   @override
   StateMVC<MessagingInboxScreen> createState() => _MessagingInboxScreenState();
 }
 
 class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
-  List<MessagingManager> chatMessage = [
-    MessagingManager(message: "Hi John", type: MessageType.receiver),
-    MessagingManager(
-        message: "Hope you are doin good", type: MessageType.receiver),
-    MessagingManager(
-        message: "Hello Jane, I'm good what about you",
-        type: MessageType.sender),
-    MessagingManager(
-        message: "I'm fine, Working from home", type: MessageType.receiver),
-    MessagingManager(
-        message: "Oh! Nice. Same here man", type: MessageType.sender),
-  ];
-/*
-  void showModal() {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            height: MediaQuery.of(context).size.height / 2,
-            color: const Color(0xff737373),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    topLeft: Radius.circular(20)),
-              ),
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Center(
-                    child: Container(
-                      height: 4,
-                      width: 50,
-                      color: Colors.grey.shade200,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ListView.builder(
-                    itemCount: menuItems.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        child: ListTile(
-                          leading: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: menuItems[index].color.shade50,
-                            ),
-                            height: 50,
-                            width: 50,
-                            child: Icon(
-                              menuItems[index].icons,
-                              size: 20,
-                              color: menuItems[index].color.shade400,
-                            ),
-                          ),
-                          title: Text(menuItems[index].text),
-                        ),
-                      );
-                    },
-                  )
-                ],
-              ),
-            ),
-          );
-        });
+  final TextEditingController _messageController = TextEditingController();
+
+  void addMessageToConversation(Message message) {
+    setState(() {
+      widget.messages.add(message);
+    });
   }
-*/
+
+  @override
+  initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFE8E5D4),
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          'Message',
-          style: TextStyle(
-            fontSize: 25,
+        title: Text(
+          widget.messagePersonName,
+          style: const TextStyle(
+            fontSize: 22,
             fontFamily: 'Roboto',
             color: Colors.white,
           ),
@@ -116,13 +75,19 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
       body: Stack(
         children: <Widget>[
           ListView.builder(
-            itemCount: chatMessage.length,
+            itemCount: widget.messages.length,
             shrinkWrap: true,
             padding: const EdgeInsets.only(top: 10, bottom: 10),
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
+              final message = widget.messages[index];
+              final messageType = message.senderID == widget.messagePersonID
+                  ? MessageType.receiver
+                  : MessageType.sender;
+
               return ChatBubble(
-                chatMessage: chatMessage[index],
+                message: message,
+                type: messageType,
               );
             },
           ),
@@ -135,27 +100,12 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
               color: Colors.white,
               child: Row(
                 children: <Widget>[
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.blueGrey,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 21,
-                      ),
-                    ),
-                  ),
                   const SizedBox(
-                    width: 16,
+                    width: 10,
                   ),
                   Expanded(
                     child: TextField(
+                      controller: _messageController,
                       decoration: InputDecoration(
                           hintText: "Type message...",
                           hintStyle: TextStyle(color: Colors.grey.shade500),
@@ -171,7 +121,23 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
             child: Container(
               padding: const EdgeInsets.only(right: 25, bottom: 15),
               child: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  widget.controller.sendMessage(
+                      context,
+                      widget.messagePersonID,
+                      widget.messagePersonName,
+                      _messageController.text,
+                      widget.userType);
+
+                  addMessageToConversation(Message(
+                    dateTimeStr: DateTime.now().toIso8601String(),
+                    senderID: widget.currentID,
+                    receiverID: widget.messagePersonID,
+                    receiverName: widget.messagePersonName,
+                    messageText: _messageController.text,
+                  ));
+                  _messageController.clear();
+                },
                 backgroundColor: const Color.fromRGBO(46, 125, 45, 1),
                 elevation: 0,
                 child: const Icon(
