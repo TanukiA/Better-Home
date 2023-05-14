@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:user_management/controllers/messaging_controller.dart';
-import 'package:user_management/views/messaging_inbox_screen.dart';
 import 'package:user_management/models/message.dart';
 
 class MessageUsersContainer extends StatefulWidget {
-  const MessageUsersContainer(
-      {Key? key,
-      required this.name,
-      required this.messageText,
-      required this.time,
-      required this.isMessageRead,
-      required this.allMessages,
-      required this.controller,
-      required this.userType})
-      : super(key: key);
+  const MessageUsersContainer({
+    Key? key,
+    required this.name,
+    required this.messageText,
+    required this.time,
+    required this.isMessageRead,
+    required this.messages,
+    required this.controller,
+    required this.userType,
+  }) : super(key: key);
   final String name;
   final String messageText;
   final String time;
   final bool isMessageRead;
-  final List<List<Message>> allMessages;
+  final List<Message> messages;
   final MessagingController controller;
   final String userType;
 
@@ -29,12 +28,37 @@ class MessageUsersContainer extends StatefulWidget {
 }
 
 class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
+  String messagePersonID = "";
+  String messagePersonName = "";
+  String currentID = "";
+
+  @override
+  initState() {
+    print("isMessageRead: ${widget.isMessageRead}");
+    setTechnicianAndCustomerInfo();
+    super.initState();
+  }
+
+  Future<void> setTechnicianAndCustomerInfo() async {
+    Map<String, String> userMap =
+        await widget.controller.retrieveMessagingUser(context, widget.messages);
+    currentID = userMap['currentID'] ?? '';
+    messagePersonID = userMap['messagePersonID'] ?? '';
+    messagePersonName = userMap['messagePersonName'] ?? '';
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        widget.controller
-            .openInbox(context, widget.allMessages, widget.userType);
+        widget.controller.openInbox(context, widget.messages, widget.userType,
+            messagePersonID, messagePersonName, currentID);
       },
       child: Container(
         padding:
@@ -62,7 +86,9 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            widget.name,
+                            widget.name != messagePersonName
+                                ? 'You'
+                                : widget.name,
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(
@@ -86,8 +112,8 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
               style: TextStyle(
                   fontSize: 14,
                   color: widget.isMessageRead
-                      ? Colors.pink
-                      : const Color.fromARGB(255, 115, 115, 115)),
+                      ? const Color.fromARGB(255, 115, 115, 115)
+                      : const Color.fromARGB(255, 171, 19, 75)),
             ),
           ],
         ),

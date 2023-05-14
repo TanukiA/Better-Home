@@ -29,7 +29,7 @@ class MessagingController extends ControllerMVC {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String currentID = await ap.getUserIDFromSP("session_data");
     List<Message> singleUserMessages = await _msg.retrieveSingleUserMessages(
-        messagePersonID, userType, messagePersonName, currentID);
+        messagePersonID, userType, currentID);
 
     if (context.mounted) {
       Navigator.push(
@@ -48,16 +48,50 @@ class MessagingController extends ControllerMVC {
     }
   }
 
-  void openInbox(
-      BuildContext context, List<List<Message>> allMessages, String userType) {
-    /*
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const MessagingInboxScreen(),
-      ),
-    );
-    */
+  Future<void> openInbox(
+      BuildContext context,
+      List<Message> messages,
+      String userType,
+      String messagePersonID,
+      String messagePersonName,
+      String currentID) async {
+    if (context.mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MessagingInboxScreen(
+            controller: MessagingController(),
+            messages: messages,
+            messagePersonID: messagePersonID,
+            messagePersonName: messagePersonName,
+            userType: userType,
+            currentID: currentID,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<Map<String, String>> retrieveMessagingUser(
+      BuildContext context, List<Message> messages) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String currentID = await ap.getUserIDFromSP("session_data");
+    String messagePersonID;
+    String messagePersonName;
+
+    if (messages[0].senderID == currentID) {
+      messagePersonID = messages[0].receiverID!;
+      messagePersonName = messages[0].receiverName!;
+    } else {
+      messagePersonID = messages[0].senderID!;
+      messagePersonName = messages[0].senderName!;
+    }
+
+    return {
+      'currentID': currentID,
+      'messagePersonID': messagePersonID,
+      'messagePersonName': messagePersonName,
+    };
   }
 
   void sendMessage(BuildContext context, String receiverID, String receiverName,

@@ -4,13 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:user_management/controllers/messaging_controller.dart';
 
 class ActiveServiceDetailScreen extends StatefulWidget {
   const ActiveServiceDetailScreen(
-      {Key? key, required this.serviceDoc, required this.controller})
+      {Key? key,
+      required this.serviceDoc,
+      required this.serviceCon,
+      required this.msgCon})
       : super(key: key);
   final QueryDocumentSnapshot serviceDoc;
-  final ServiceController controller;
+  final ServiceController serviceCon;
+  final MessagingController msgCon;
 
   @override
   StateMVC<ActiveServiceDetailScreen> createState() =>
@@ -31,7 +36,7 @@ class _ActiveServiceDetailScreenState
 
   Future<void> setTechnicianName() async {
     technicianName =
-        await widget.controller.retrieveTechnicianName(widget.serviceDoc);
+        await widget.serviceCon.retrieveTechnicianName(widget.serviceDoc);
     setState(() {
       isLoading = false;
     });
@@ -102,7 +107,7 @@ class _ActiveServiceDetailScreenState
                   const SizedBox(height: 18),
                   ElevatedButton(
                     onPressed: () {
-                      widget.controller
+                      widget.serviceCon
                           .handleCancelService(widget.serviceDoc, context);
                     },
                     style: cancelBtnStyle,
@@ -136,7 +141,14 @@ class _ActiveServiceDetailScreenState
                           ),
                           const SizedBox(width: 18.0),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              widget.msgCon.messageBtnTapped(
+                                  context,
+                                  (widget.serviceDoc.data()
+                                      as Map<String, dynamic>)["technicianID"],
+                                  "customer",
+                                  technicianName);
+                            },
                             style: messageBtnStyle,
                             child: const Text('Message'),
                           ),
@@ -206,7 +218,7 @@ class _ActiveServiceDetailScreenState
                           ),
                           const SizedBox(height: 5.0),
                           Text(
-                            "${widget.controller.formatToLocalDate((widget.serviceDoc.data() as Map<String, dynamic>)["confirmedDate"])}, ${(widget.serviceDoc.data() as Map<String, dynamic>)["confirmedTime"]}",
+                            "${widget.serviceCon.formatToLocalDate((widget.serviceDoc.data() as Map<String, dynamic>)["confirmedDate"])}, ${(widget.serviceDoc.data() as Map<String, dynamic>)["confirmedTime"]}",
                             style: const TextStyle(
                               fontSize: 16.0,
                             ),
@@ -220,7 +232,7 @@ class _ActiveServiceDetailScreenState
                           ),
                           const SizedBox(height: 5.0),
                           Text(
-                            "${widget.controller.formatToLocalDate((widget.serviceDoc.data() as Map<String, dynamic>)["preferredDate"])}, ${(widget.serviceDoc.data() as Map<String, dynamic>)["preferredTime"]}",
+                            "${widget.serviceCon.formatToLocalDate((widget.serviceDoc.data() as Map<String, dynamic>)["preferredDate"])}, ${(widget.serviceDoc.data() as Map<String, dynamic>)["preferredTime"]}",
                             style: const TextStyle(
                               fontSize: 16.0,
                             ),
@@ -234,7 +246,7 @@ class _ActiveServiceDetailScreenState
                           ),
                           const SizedBox(height: 5.0),
                           Text(
-                            "${widget.controller.formatToLocalDate((widget.serviceDoc.data() as Map<String, dynamic>)["alternativeDate"])}, ${(widget.serviceDoc.data() as Map<String, dynamic>)["alternativeTime"]}",
+                            "${widget.serviceCon.formatToLocalDate((widget.serviceDoc.data() as Map<String, dynamic>)["alternativeDate"])}, ${(widget.serviceDoc.data() as Map<String, dynamic>)["alternativeTime"]}",
                             style: const TextStyle(
                               fontSize: 16.0,
                             ),
@@ -298,7 +310,7 @@ class _ActiveServiceDetailScreenState
                         ),
                         const SizedBox(height: 30.0),
                         Text(
-                          '# Requested on ${widget.controller.formatToLocalDateTime((widget.serviceDoc.data() as Map<String, dynamic>)["dateTimeSubmitted"])}',
+                          '# Requested on ${widget.serviceCon.formatToLocalDateTime((widget.serviceDoc.data() as Map<String, dynamic>)["dateTimeSubmitted"])}',
                           style: const TextStyle(
                             fontSize: 14.0,
                           ),
@@ -315,7 +327,7 @@ class _ActiveServiceDetailScreenState
                     ),
                   ),
                   FutureBuilder<List<Widget>>(
-                      future: widget.controller
+                      future: widget.serviceCon
                           .retrieveServiceImages(widget.serviceDoc),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {

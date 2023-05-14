@@ -57,8 +57,8 @@ class Message extends ModelMVC {
     return allUserMessages;
   }
 
-  Future<List<Message>> retrieveSingleUserMessages(String messagePersonID,
-      String userType, String messagePersonName, String currentID) async {
+  Future<List<Message>> retrieveSingleUserMessages(
+      String messagePersonID, String userType, String currentID) async {
     MessageDB msgDB = MessageDB();
     List<Message> singleUserMessages;
     if (userType == "customer") {

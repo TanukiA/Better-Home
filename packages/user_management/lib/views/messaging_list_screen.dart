@@ -1,9 +1,9 @@
+import 'package:better_home/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:user_management/controllers/messaging_controller.dart';
 import 'package:user_management/models/message.dart';
 import 'package:user_management/views/message_users_container.dart';
-import 'package:intl/intl.dart';
 
 class MessagingListScreen extends StatefulWidget {
   const MessagingListScreen(
@@ -18,6 +18,7 @@ class MessagingListScreen extends StatefulWidget {
 }
 
 class _MessagingListScreenState extends StateMVC<MessagingListScreen> {
+  int _currentIndex = 0;
   late List<List<Message>> allMessages;
   List<Message> messageUserList = [];
   bool isLoading = true;
@@ -31,7 +32,7 @@ class _MessagingListScreenState extends StateMVC<MessagingListScreen> {
   void setMessagingList() async {
     allMessages = await widget.controller
         .retrieveAllUserMessages(widget.userType, context);
-    print("allMessages: $allMessages");
+
     if (allMessages.isNotEmpty) {
       for (int i = 0; i < allMessages.length; i++) {
         List<Message> messages = allMessages[i];
@@ -122,7 +123,7 @@ class _MessagingListScreenState extends StateMVC<MessagingListScreen> {
                             messageText: messageUserList[index].messageText!,
                             time: time,
                             isMessageRead: messageUserList[index].readStatus!,
-                            allMessages: allMessages,
+                            messages: allMessages[index],
                             controller: widget.controller,
                             userType: widget.userType,
                           );
@@ -131,6 +132,14 @@ class _MessagingListScreenState extends StateMVC<MessagingListScreen> {
                     ],
                   ),
                 ),
+      bottomNavigationBar: MyBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          userType: widget.userType),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
 import 'package:service/views/active_service_detail_screen.dart';
+import 'package:user_management/controllers/messaging_controller.dart';
 
 class ActiveServiceScreen extends StatefulWidget {
   const ActiveServiceScreen({Key? key, required this.controller})
@@ -57,7 +58,8 @@ class _ActiveServiceScreenState extends StateMVC<ActiveServiceScreen> {
                       MaterialPageRoute(
                         builder: (context) => ActiveServiceDetailScreen(
                           serviceDoc: serviceDoc,
-                          controller: widget.controller,
+                          msgCon: MessagingController(),
+                          serviceCon: widget.controller,
                         ),
                       ),
                     );

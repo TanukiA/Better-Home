@@ -117,9 +117,7 @@ class CustomerController extends ControllerMVC {
     Database firestore = Database();
     int matchedQty =
         await firestore.getTechnicianQtyMatched(serviceCategory, city);
-    print("serviceCategory: $serviceCategory");
-    print("city: $city");
-    print("matchedQty: $matchedQty");
+
     if (matchedQty == 0) {
       Future<List<bool>> result = Future.value([false, false, false, false]);
 
