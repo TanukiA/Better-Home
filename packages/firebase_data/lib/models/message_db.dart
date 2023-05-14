@@ -124,14 +124,12 @@ class MessageDB extends ChangeNotifier {
 
   Future<List<Message>> getMessagesFromConnection(
       String connectionID, DatabaseReference messagesRef) async {
-    print("ConnectionID: $connectionID");
     Query collectionRef =
         messagesRef.child(connectionID).orderByChild('dateTime');
     DatabaseEvent collectionSnapshot = await collectionRef.once();
-    print("CollectionSnapshot: $collectionSnapshot");
     Map<dynamic, dynamic>? collectionValues =
         collectionSnapshot.snapshot.value as Map<dynamic, dynamic>?;
-    print("CollectionValues: $collectionValues");
+
     if (collectionValues == null) {
       return [];
     }
@@ -142,10 +140,9 @@ class MessageDB extends ChangeNotifier {
         DateTime dateTime = DateTime.parse(value['dateTime']);
         Message message = Message(
           dateTime: dateTime,
-          dateTimeStr: value['dateTime'],
-          senderID: value['senderID'],
+          senderID: value['senderId'],
           senderName: value['senderName'],
-          receiverID: value['receiverID'],
+          receiverID: value['receiverId'],
           receiverName: value['receiverName'],
           messageText: value['messageText'],
           readStatus: value['readStatus'],

@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 class Message extends ModelMVC {
   String? messageID;
   DateTime? dateTime;
-  String? dateTimeStr;
   String? senderID;
   String? receiverID;
   String? senderName;
@@ -18,7 +17,6 @@ class Message extends ModelMVC {
   Message({
     this.messageID,
     this.dateTime,
-    this.dateTimeStr,
     this.senderID,
     this.receiverID,
     this.senderName,

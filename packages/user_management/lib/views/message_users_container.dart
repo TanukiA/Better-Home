@@ -39,6 +39,17 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
       child: Container(
         padding:
             const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.grey,
+              blurRadius: 3,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
         child: Row(
           children: <Widget>[
             Expanded(
@@ -46,19 +57,22 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
                 children: <Widget>[
                   Expanded(
                     child: Container(
-                      color: Colors.transparent,
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(18),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.name),
+                          Text(
+                            widget.name,
+                            style: const TextStyle(fontSize: 16),
+                          ),
                           const SizedBox(
                             height: 6,
                           ),
                           Text(
                             widget.messageText,
-                            style: TextStyle(
-                                fontSize: 14, color: Colors.grey.shade500),
+                            style: const TextStyle(
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 115, 115, 115)),
                           ),
                         ],
                       ),
@@ -70,10 +84,10 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
             Text(
               widget.time,
               style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   color: widget.isMessageRead
                       ? Colors.pink
-                      : Colors.grey.shade500),
+                      : const Color.fromARGB(255, 115, 115, 115)),
             ),
           ],
         ),

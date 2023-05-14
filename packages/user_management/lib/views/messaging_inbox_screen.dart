@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:user_management/controllers/messaging_controller.dart';
 import 'package:user_management/models/message.dart';
 import 'package:user_management/views/chat_bubble.dart';
+import 'package:intl/intl.dart';
 
 enum MessageType {
   sender,
@@ -85,9 +86,63 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
                   ? MessageType.receiver
                   : MessageType.sender;
 
-              return ChatBubble(
-                message: message,
-                type: messageType,
+              // Check if the current message is the first one of the day
+              bool isFirstMessageOfDay = false;
+              if (index == 0) {
+                isFirstMessageOfDay = true;
+              } else {
+                final previousMessage = widget.messages[index - 1];
+                final currentDate =
+                    widget.controller.formatToLocalDate(message.dateTime!);
+                final previousDate = widget.controller
+                    .formatToLocalDate(previousMessage.dateTime!);
+                isFirstMessageOfDay = currentDate != previousDate;
+              }
+
+              // Check if the previous message exists and has a different date
+              bool isPreviousDateDifferent = false;
+              if (index > 0) {
+                final previousMessage = widget.messages[index - 1];
+                final currentDate =
+                    widget.controller.formatToLocalDate(message.dateTime!);
+                final previousDate = widget.controller
+                    .formatToLocalDate(previousMessage.dateTime!);
+                isPreviousDateDifferent = currentDate != previousDate;
+              }
+
+              return Column(
+                children: [
+                  if (isFirstMessageOfDay || isPreviousDateDifferent)
+                    Center(
+                      child: Text(
+                        widget.controller.isDateToday(message.dateTime!)
+                            ? 'Today'
+                            : widget.controller
+                                .formatToLocalDate(message.dateTime!),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 115, 115, 115),
+                            fontSize: 16),
+                      ),
+                    ),
+                  ChatBubble(
+                    message: message,
+                    type: messageType,
+                  ),
+                  Align(
+                    alignment: messageType == MessageType.sender
+                        ? Alignment.bottomRight
+                        : Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Text(
+                        widget.controller.formatToLocalTime(message.dateTime!),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 115, 115, 115),
+                            fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ],
               );
             },
           ),
@@ -122,21 +177,23 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
               padding: const EdgeInsets.only(right: 25, bottom: 15),
               child: FloatingActionButton(
                 onPressed: () {
-                  widget.controller.sendMessage(
-                      context,
-                      widget.messagePersonID,
-                      widget.messagePersonName,
-                      _messageController.text,
-                      widget.userType);
+                  if (_messageController.text.isNotEmpty) {
+                    widget.controller.sendMessage(
+                        context,
+                        widget.messagePersonID,
+                        widget.messagePersonName,
+                        _messageController.text,
+                        widget.userType);
 
-                  addMessageToConversation(Message(
-                    dateTimeStr: DateTime.now().toIso8601String(),
-                    senderID: widget.currentID,
-                    receiverID: widget.messagePersonID,
-                    receiverName: widget.messagePersonName,
-                    messageText: _messageController.text,
-                  ));
-                  _messageController.clear();
+                    addMessageToConversation(Message(
+                      dateTime: DateTime.now(),
+                      senderID: widget.currentID,
+                      receiverID: widget.messagePersonID,
+                      receiverName: widget.messagePersonName,
+                      messageText: _messageController.text,
+                    ));
+                    _messageController.clear();
+                  }
                 },
                 backgroundColor: const Color.fromRGBO(46, 125, 45, 1),
                 elevation: 0,

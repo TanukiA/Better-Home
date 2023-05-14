@@ -38,7 +38,7 @@ class TechnicianController extends ControllerMVC {
     tz.initializeTimeZones();
     tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
     tz.TZDateTime dateTime = tz.TZDateTime.from(timestamp.toDate(), location);
-    return DateFormat('yyyy-MM-dd').format(dateTime);
+    return DateFormat('dd-MM-yyyy').format(dateTime);
   }
 
   Future<void> acceptIconPressed(

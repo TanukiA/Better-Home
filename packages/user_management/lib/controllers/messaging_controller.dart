@@ -4,6 +4,9 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 import 'package:user_management/models/message.dart';
 import 'package:user_management/views/messaging_inbox_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class MessagingController extends ControllerMVC {
   late Message _msg;
@@ -61,5 +64,40 @@ class MessagingController extends ControllerMVC {
       String messageText, String userType) {
     _msg.sendNewMessage(
         context, receiverID, receiverName, messageText, userType);
+  }
+
+  bool isDateToday(DateTime date) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime timeZoneDate = tz.TZDateTime.from(date, location);
+
+    DateTime today = tz.TZDateTime.now(location);
+
+    String formattedTimeZoneDate =
+        DateFormat('dd-MM-yyyy').format(timeZoneDate);
+    String formattedToday = DateFormat('dd-MM-yyyy').format(today);
+
+    return formattedTimeZoneDate == formattedToday;
+  }
+
+  String formatToLocalDate(DateTime dateTime) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime timeZoneDate = tz.TZDateTime.from(dateTime, location);
+    return DateFormat('dd/MM/yyyy').format(timeZoneDate);
+  }
+
+  String formatToLocalTime(DateTime dateTime) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime timeZoneTime = tz.TZDateTime.from(dateTime, location);
+    return DateFormat('HH:mm').format(timeZoneTime);
+  }
+
+  DateTime formatToLocalDateTime(DateTime dateTime) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime timeZoneDateTime = tz.TZDateTime.from(dateTime, location);
+    return timeZoneDateTime;
   }
 }

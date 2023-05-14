@@ -43,11 +43,11 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
     _preferredDateController = TextEditingController(
         text: provider.preferredDate == null
             ? ""
-            : DateFormat('yyyy-MM-dd').format(provider.preferredDate!));
+            : DateFormat('dd-MM-yyyy').format(provider.preferredDate!));
     _alternativeDateController = TextEditingController(
         text: provider.alternativeDate == null
             ? ""
-            : DateFormat('yyyy-MM-dd').format(provider.alternativeDate!));
+            : DateFormat('dd-MM-yyyy').format(provider.alternativeDate!));
     provider.city != null
         ? _selectedCity = provider.city
         : _selectedCity = null;
@@ -214,7 +214,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
             GestureDetector(
               onTap: () async {
                 DateTime? initialDate = _preferredDateController.text.isNotEmpty
-                    ? DateFormat('yyyy-MM-dd')
+                    ? DateFormat('dd-MM-yyyy')
                         .parse(_preferredDateController.text)
                     : DateTime.now().add(const Duration(days: 1));
 
@@ -226,7 +226,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                 );
                 if (date != null) {
                   _preferredDateController.text =
-                      DateFormat('yyyy-MM-dd').format(date);
+                      DateFormat('dd-MM-yyyy').format(date);
                   provider.savePreferredDate = date;
                   setState(() {
                     handlePreferredDatePicked(provider);
@@ -253,7 +253,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                       onPressed: () async {
                         DateTime? initialDate =
                             _preferredDateController.text.isNotEmpty
-                                ? DateFormat('yyyy-MM-dd')
+                                ? DateFormat('dd-MM-yyyy')
                                     .parse(_preferredDateController.text)
                                 : DateTime.now().add(const Duration(days: 1));
 
@@ -266,7 +266,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                         );
                         if (date != null) {
                           _preferredDateController.text =
-                              DateFormat('yyyy-MM-dd').format(date);
+                              DateFormat('dd-MM-yyyy').format(date);
                           provider.savePreferredDate = date;
                           setState(() {
                             handlePreferredDatePicked(provider);
@@ -378,7 +378,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
               onTap: () async {
                 DateTime? initialDate =
                     _alternativeDateController.text.isNotEmpty
-                        ? DateFormat('yyyy-MM-dd')
+                        ? DateFormat('dd-MM-yyyy')
                             .parse(_alternativeDateController.text)
                         : DateTime.now().add(const Duration(days: 1));
 
@@ -390,7 +390,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                 );
                 if (date != null) {
                   _alternativeDateController.text =
-                      DateFormat('yyyy-MM-dd').format(date);
+                      DateFormat('dd-MM-yyyy').format(date);
                   provider.saveAlternativeDate = date;
                   setState(() {
                     handleAlternativeDatePicked(provider);
@@ -417,7 +417,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                       onPressed: () async {
                         DateTime? initialDate =
                             _alternativeDateController.text.isNotEmpty
-                                ? DateFormat('yyyy-MM-dd')
+                                ? DateFormat('dd-MM-yyyy')
                                     .parse(_alternativeDateController.text)
                                 : DateTime.now().add(const Duration(days: 1));
 
@@ -430,7 +430,7 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                         );
                         if (date != null) {
                           _alternativeDateController.text =
-                              DateFormat('yyyy-MM-dd').format(date);
+                              DateFormat('dd-MM-yyyy').format(date);
                           provider.saveAlternativeDate = date;
                           setState(() {
                             handleAlternativeDatePicked(provider);

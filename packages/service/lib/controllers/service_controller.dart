@@ -127,7 +127,7 @@ class ServiceController extends ControllerMVC {
 
   String formatDateOnly(DateTime? date) {
     if (date != null) {
-      return DateFormat('yyyy-MM-dd').format(date);
+      return DateFormat('dd-MM-yyyy').format(date);
     }
     return "";
   }
@@ -160,14 +160,14 @@ class ServiceController extends ControllerMVC {
     tz.initializeTimeZones();
     tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
     tz.TZDateTime dateTime = tz.TZDateTime.from(timestamp.toDate(), location);
-    return DateFormat('yyyy-MM-dd').format(dateTime);
+    return DateFormat('dd-MM-yyyy').format(dateTime);
   }
 
   String formatToLocalDateTime(Timestamp timestamp) {
     tz.initializeTimeZones();
     tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
     tz.TZDateTime dateTime = tz.TZDateTime.from(timestamp.toDate(), location);
-    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+    return DateFormat('dd-MM-yyyy HH:mm:ss').format(dateTime);
   }
 
   DateTime dateInDateTime(Timestamp timestamp) {

@@ -38,7 +38,6 @@ class _MessagingListScreenState extends StateMVC<MessagingListScreen> {
         Message latestMessage = messages.last;
         messageUserList.add(latestMessage);
       }
-      print("messageUserList: $messageUserList");
     }
     setState(() {
       isLoading = false;
@@ -98,12 +97,31 @@ class _MessagingListScreenState extends StateMVC<MessagingListScreen> {
                         padding: const EdgeInsets.only(top: 16),
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
+                          final DateTime messageDateTime = widget.controller
+                              .formatToLocalDateTime(
+                                  messageUserList[index].dateTime!);
+                          final DateTime now = DateTime.now();
+                          final currentDate =
+                              now.toUtc().add(const Duration(hours: 8));
+                          final bool isToday =
+                              messageDateTime.year == currentDate.year &&
+                                  messageDateTime.month == currentDate.month &&
+                                  messageDateTime.day == currentDate.day;
+
+                          String time = '';
+                          if (isToday) {
+                            time = widget.controller
+                                .formatToLocalTime(messageDateTime);
+                          } else {
+                            time = widget.controller
+                                .formatToLocalDate(messageDateTime);
+                          }
+
                           return MessageUsersContainer(
                             name: messageUserList[index].senderName!,
                             messageText: messageUserList[index].messageText!,
-                            time: messageUserList[index].dateTimeStr!,
-                            isMessageRead:
-                                (index == 0 || index == 3) ? true : false,
+                            time: time,
+                            isMessageRead: messageUserList[index].readStatus!,
                             allMessages: allMessages,
                             controller: widget.controller,
                             userType: widget.userType,
