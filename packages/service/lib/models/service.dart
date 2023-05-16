@@ -184,7 +184,8 @@ class Service extends ModelMVC {
     return isAtLeast12HoursBefore;
   }
 
-  void cancelService(String serviceID, BuildContext context) {
+  void cancelService(
+      String serviceID, BuildContext context, String technicianID) {
     Database firestore = Database();
     if (context.mounted) {
       showDialog(
@@ -203,7 +204,8 @@ class Service extends ModelMVC {
               ElevatedButton(
                 child: const Text("Yes"),
                 onPressed: () async {
-                  await firestore.updateServiceCancelled(serviceID);
+                  await firestore.updateServiceCancelled(
+                      serviceID, technicianID);
                   if (context.mounted) {
                     Navigator.push(
                       context,

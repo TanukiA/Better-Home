@@ -12,7 +12,6 @@ import 'package:firebase_data/models/database.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/standalone.dart' as tz;
 import 'package:intl/intl.dart';
-import 'package:user_management/views/messaging_inbox_screen.dart';
 
 class ServiceController extends ControllerMVC {
   late Service _service;
@@ -199,11 +198,11 @@ class ServiceController extends ControllerMVC {
   // Assigning - allow cancel
   // In Progress - reject cancel
   // Confirmed - if current time is at least 12 hours before appointment time, allow cancel
-  void handleCancelService(
-      QueryDocumentSnapshot serviceDoc, BuildContext context) {
+  void handleCancelService(QueryDocumentSnapshot serviceDoc,
+      BuildContext context, String technicianID) {
     if ((serviceDoc.data() as Map<String, dynamic>)["serviceStatus"] ==
         "Assigning") {
-      _service.cancelService(serviceDoc.id, context);
+      _service.cancelService(serviceDoc.id, context, technicianID);
     } else if ((serviceDoc.data() as Map<String, dynamic>)["serviceStatus"] ==
         "In Progress") {
       showDialogBox(
@@ -211,7 +210,7 @@ class ServiceController extends ControllerMVC {
     } else if ((serviceDoc.data() as Map<String, dynamic>)["serviceStatus"] ==
         "Confirmed") {
       if (_service.validTimeToCancel(serviceDoc)) {
-        _service.cancelService(serviceDoc.id, context);
+        _service.cancelService(serviceDoc.id, context, technicianID);
       } else {
         showDialogBox(context, "You can't cancel",
             "Cancellation is allowed up until 12 hours before your appointment.");

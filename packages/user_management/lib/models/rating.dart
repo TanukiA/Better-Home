@@ -11,7 +11,6 @@ class Rating extends ModelMVC {
   Future<void> getReviewsForTechnician(String technicianID) async {
     Database firestore = Database();
     _reviewData = await firestore.readReviewsForTechnician(technicianID);
-    print("Review Data: $_reviewData");
     if (reviewData.isNotEmpty) {
       calculateAvgRating();
     }

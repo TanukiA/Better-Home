@@ -19,6 +19,7 @@ class MessagingInboxScreen extends StatefulWidget {
     required this.messagePersonID,
     required this.userType,
     required this.currentID,
+    required this.fromWhere,
   }) : super(key: key);
   final MessagingController controller;
   final List<Message> messages;
@@ -26,6 +27,7 @@ class MessagingInboxScreen extends StatefulWidget {
   final String messagePersonName;
   final String userType;
   final String currentID;
+  final int fromWhere;
 
   @override
   StateMVC<MessagingInboxScreen> createState() => _MessagingInboxScreenState();
@@ -73,14 +75,18 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
             size: 40,
           ),
           onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => MessagingListScreen(
-                  controller: MessagingController(),
-                  userType: widget.userType,
+            if (widget.fromWhere == 0) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => MessagingListScreen(
+                    controller: MessagingController(),
+                    userType: widget.userType,
+                  ),
                 ),
-              ),
-            );
+              );
+            } else if (widget.fromWhere == 1) {
+              Navigator.of(context).pop();
+            }
           },
         ),
       ),

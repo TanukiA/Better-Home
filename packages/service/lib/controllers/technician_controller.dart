@@ -143,7 +143,7 @@ class TechnicianController extends ControllerMVC {
         if (technicianFromAlternative == null ||
             technicianFromAlternative == "") {
           // Cancel service if not found in alternative appointment
-          firestore.updateServiceCancelled(serviceDoc.id);
+          firestore.updateServiceStatus(serviceDoc.id, 'Cancelled');
           print("Done 7");
         }
       }

@@ -360,16 +360,26 @@ class Database extends ChangeNotifier {
     return {'starQty': starQty, 'reviewText': reviewText};
   }
 
-  Future<void> updateServiceCancelled(String serviceID) async {
-    try {
-      final servicesCollection = _firebaseFirestore.collection('services');
-      final serviceDoc = servicesCollection.doc(serviceID);
+  Future<void> updateServiceCancelled(
+      String serviceID, String technicianID) async {
+    final serviceDoc =
+        await _firebaseFirestore.collection('services').doc(serviceID).get();
 
-      await serviceDoc.update({'serviceStatus': 'Cancelled'});
-    } catch (e) {
-      throw PlatformException(
-          code: 'cancel-service-failed', message: e.toString());
+    final serviceStatus = serviceDoc.get('serviceStatus');
+    // If service is already confirmed, remove work schedule document of the confirmed technician first
+    // If service is not confirmed yet, only needs to change service status
+    if (serviceStatus == 'Confirmed') {
+      final technicianDoc = await _firebaseFirestore
+          .collection('technicians')
+          .doc(technicianID)
+          .get();
+
+      final workScheduleDoc =
+          technicianDoc.reference.collection('work_schedules').doc(serviceID);
+      await workScheduleDoc.delete();
     }
+
+    updateServiceStatus(serviceID, 'Cancelled');
   }
 
   Future<void> storeServiceReview(double starQty, String reviewText, String id,

@@ -107,8 +107,11 @@ class _ActiveServiceDetailScreenState
                   const SizedBox(height: 18),
                   ElevatedButton(
                     onPressed: () {
-                      widget.serviceCon
-                          .handleCancelService(widget.serviceDoc, context);
+                      widget.serviceCon.handleCancelService(
+                          widget.serviceDoc,
+                          context,
+                          (widget.serviceDoc.data()
+                              as Map<String, dynamic>)["technicianID"]);
                     },
                     style: cancelBtnStyle,
                     child: const Text('Cancel Service'),

@@ -119,7 +119,7 @@ class _ReviewScreenState extends StateMVC<ReviewScreen> {
                             return Container(
                               width: double.infinity,
                               margin: const EdgeInsets.fromLTRB(22, 10, 22, 10),
-                              padding: const EdgeInsets.all(22),
+                              padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(15),

@@ -42,6 +42,7 @@ class MessagingController extends ControllerMVC {
             messagePersonName: messagePersonName,
             userType: userType,
             currentID: currentID,
+            fromWhere: 1,
           ),
         ),
       );
@@ -66,6 +67,7 @@ class MessagingController extends ControllerMVC {
             messagePersonName: messagePersonName,
             userType: userType,
             currentID: currentID,
+            fromWhere: 0,
           ),
         ),
       );
