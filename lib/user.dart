@@ -19,7 +19,7 @@ abstract class User extends ModelMVC {
   String? phone;
   String? name;
   String? email;
-  // Notification notification;
+  //Notification notification;
 
   User({required this.phone, required this.name, required this.email});
 

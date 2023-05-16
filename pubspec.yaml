@@ -37,6 +37,7 @@ dependencies:
   http:
   firebase_database: ^10.1.1
   firebase_auth_mocks: ^0.11.0
+  firebase_messaging: ^14.6.0
 
 dev_dependencies:
   flutter_test:

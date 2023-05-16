@@ -5,6 +5,7 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 
 class Message extends ModelMVC {
+  //Notification notification;
   late MessageDB msgDB;
   String? connectionID;
   String? messageID;
