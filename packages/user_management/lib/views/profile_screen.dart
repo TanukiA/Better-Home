@@ -250,10 +250,10 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
                         widget.controller
                             .changePhoneNumber(context, widget.userType);
                       },
-                      child: Row(
+                      child: const Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             "Change phone number",
                             style: TextStyle(

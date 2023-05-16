@@ -1,9 +1,9 @@
-import 'package:better_home/bottom_nav_bar.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:user_management/controllers/messaging_controller.dart';
 import 'package:user_management/models/message.dart';
 import 'package:user_management/views/chat_bubble.dart';
+import 'package:user_management/views/messaging_list_screen.dart';
 
 enum MessageType {
   sender,
@@ -32,7 +32,6 @@ class MessagingInboxScreen extends StatefulWidget {
 }
 
 class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
-  int _currentIndex = 0;
   final TextEditingController _messageController = TextEditingController();
 
   void addMessageToConversation(Message message) {
@@ -67,11 +66,22 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
           ),
         ),
         backgroundColor: const Color.fromRGBO(152, 161, 127, 1),
-        leading: const BackButton(
-          color: Colors.black,
-        ),
-        iconTheme: const IconThemeData(
-          size: 40,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 40,
+          ),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => MessagingListScreen(
+                  controller: MessagingController(),
+                  userType: widget.userType,
+                ),
+              ),
+            );
+          },
         ),
       ),
       body: Stack(
@@ -207,14 +217,6 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
           )
         ],
       ),
-      bottomNavigationBar: MyBottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          userType: widget.userType),
     );
   }
 }

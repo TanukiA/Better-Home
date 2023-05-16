@@ -16,7 +16,7 @@ class MessageDB extends ChangeNotifier {
       String receiverName,
       String messageText) async {
     DatabaseReference messagesRef = _realtimeDB.ref().child('messages');
-    String? collectionID;
+    String? connectionID;
 
     // Check if the connection with matched technicianID and customerID already exists
     await messagesRef.once().then((DatabaseEvent snapshot) async {
@@ -26,7 +26,7 @@ class MessageDB extends ChangeNotifier {
         values.forEach((key, item) {
           if (item['technicianID'] == technicianID &&
               item['customerID'] == customerID) {
-            collectionID = key;
+            connectionID = key;
             return;
           }
         });
@@ -34,19 +34,19 @@ class MessageDB extends ChangeNotifier {
     });
 
     // Generate a new connectionID if it doesn't exist yet
-    if (collectionID == null) {
-      collectionID = messagesRef.push().key;
-      await messagesRef.child(collectionID!).set({
+    if (connectionID == null) {
+      connectionID = messagesRef.push().key;
+      await messagesRef.child(connectionID!).set({
         'technicianID': technicianID,
         'customerID': customerID,
       });
     }
 
-    String? messageID = messagesRef.child(collectionID!).push().key;
+    String? messageID = messagesRef.child(connectionID!).push().key;
 
     // Store new message
     await messagesRef
-        .child(collectionID!)
+        .child(connectionID!)
         .child(messageID!)
         .set(Message(
           dateTime: DateTime.now(),
@@ -139,6 +139,8 @@ class MessageDB extends ChangeNotifier {
       if (key != 'customerID' && key != 'technicianID') {
         DateTime dateTime = DateTime.parse(value['dateTime']);
         Message message = Message(
+          connectionID: connectionID,
+          messageID: key,
           dateTime: dateTime,
           senderID: value['senderId'],
           senderName: value['senderName'],
@@ -154,5 +156,28 @@ class MessageDB extends ChangeNotifier {
     messages.sort((a, b) => a.dateTime!.compareTo(b.dateTime!));
 
     return messages;
+  }
+
+  void updateReadStatus(String connectionID, String currentID) async {
+    DatabaseReference messagesRef = _realtimeDB.ref().child('messages');
+
+    messagesRef.child(connectionID).once().then((DatabaseEvent event) {
+      DataSnapshot snapshot = event.snapshot;
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> messagesData =
+            snapshot.value as Map<dynamic, dynamic>;
+
+        messagesData.forEach((key, value) {
+          if (key != 'customerID' && key != 'technicianID') {
+            if (value['receiverId'] == currentID) {
+              messagesRef.child(connectionID).child(key).update({
+                'readStatus': true,
+              });
+            }
+          }
+        });
+      }
+    });
   }
 }

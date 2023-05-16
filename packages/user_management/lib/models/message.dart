@@ -5,6 +5,8 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 
 class Message extends ModelMVC {
+  late MessageDB msgDB;
+  String? connectionID;
   String? messageID;
   DateTime? dateTime;
   String? senderID;
@@ -15,6 +17,7 @@ class Message extends ModelMVC {
   bool? readStatus;
 
   Message({
+    this.connectionID,
     this.messageID,
     this.dateTime,
     this.senderID,
@@ -23,9 +26,12 @@ class Message extends ModelMVC {
     this.receiverName,
     this.messageText,
     this.readStatus,
-  });
+  }) {
+    msgDB = MessageDB();
+  }
 
   Map<String, dynamic> toJson() => {
+        'connectionId': connectionID,
         'messageId': messageID,
         'dateTime': dateTime?.toIso8601String(),
         'senderId': senderID,
@@ -37,6 +43,7 @@ class Message extends ModelMVC {
       };
 
   factory Message.fromJson(Map<String, dynamic> json) => Message(
+        connectionID: json['connectionId'],
         messageID: json['messageId'],
         dateTime: DateTime.tryParse(json['dateTime']),
         senderID: json['senderId'],
@@ -51,7 +58,7 @@ class Message extends ModelMVC {
       String userType, BuildContext context) async {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String currentID = await ap.getUserIDFromSP("session_data");
-    MessageDB msgDB = MessageDB();
+
     List<List<Message>> allUserMessages =
         await msgDB.retrieveAllUserMessages(currentID, userType);
     return allUserMessages;
@@ -59,7 +66,6 @@ class Message extends ModelMVC {
 
   Future<List<Message>> retrieveSingleUserMessages(
       String messagePersonID, String userType, String currentID) async {
-    MessageDB msgDB = MessageDB();
     List<Message> singleUserMessages;
     if (userType == "customer") {
       singleUserMessages =
@@ -77,7 +83,6 @@ class Message extends ModelMVC {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String senderID = await ap.getUserIDFromSP("session_data");
     String senderName = await ap.getUserNameFromSP("session_data");
-    MessageDB msgDB = MessageDB();
 
     if (userType == "customer") {
       String customerID = senderID;
@@ -90,5 +95,12 @@ class Message extends ModelMVC {
       msgDB.storeNewMessage(customerID, technicianID, senderID, receiverID,
           senderName, receiverName, messageText);
     }
+  }
+
+  Future<void> changeReadStatus(
+      String connectionID, BuildContext context) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String currentID = await ap.getUserIDFromSP("session_data");
+    msgDB.updateReadStatus(connectionID, currentID);
   }
 }

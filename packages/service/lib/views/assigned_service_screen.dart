@@ -50,8 +50,6 @@ class _AssignedServiceScreenState extends StateMVC<AssignedServiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: const Color(0xFFE8E5D4),
       appBar: AppBar(

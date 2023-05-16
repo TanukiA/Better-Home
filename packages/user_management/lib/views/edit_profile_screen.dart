@@ -1,5 +1,4 @@
 import 'package:better_home/text_field_container.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:map/controllers/location_controller.dart';
 import 'package:map/views/search_place_screen.dart';

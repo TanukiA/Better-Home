@@ -34,7 +34,6 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
 
   @override
   initState() {
-    print("isMessageRead: ${widget.isMessageRead}");
     setTechnicianAndCustomerInfo();
     super.initState();
   }
@@ -59,12 +58,16 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
       onTap: () {
         widget.controller.openInbox(context, widget.messages, widget.userType,
             messagePersonID, messagePersonName, currentID);
+        // set message's read status to true
+        widget.controller.setRead(widget.messages[0].connectionID!, context);
       },
       child: Container(
         padding:
             const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: widget.isMessageRead
+              ? Colors.white
+              : const Color.fromARGB(255, 244, 252, 240),
           borderRadius: BorderRadius.circular(30),
           boxShadow: const [
             BoxShadow(
@@ -113,7 +116,7 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
                   fontSize: 14,
                   color: widget.isMessageRead
                       ? const Color.fromARGB(255, 115, 115, 115)
-                      : const Color.fromARGB(255, 171, 19, 75)),
+                      : const Color.fromARGB(255, 93, 176, 38)),
             ),
           ],
         ),

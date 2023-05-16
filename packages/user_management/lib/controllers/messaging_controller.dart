@@ -134,4 +134,8 @@ class MessagingController extends ControllerMVC {
     tz.TZDateTime timeZoneDateTime = tz.TZDateTime.from(dateTime, location);
     return timeZoneDateTime;
   }
+
+  void setRead(String connectionID, BuildContext context) {
+    _msg.changeReadStatus(connectionID, context);
+  }
 }
