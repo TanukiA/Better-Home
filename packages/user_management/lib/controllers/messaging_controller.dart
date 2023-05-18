@@ -1,4 +1,5 @@
 import 'package:authentication/models/auth_provider.dart';
+import 'package:firebase_data/controllers/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +37,8 @@ class MessagingController extends ControllerMVC {
         context,
         MaterialPageRoute(
           builder: (context) => MessagingInboxScreen(
-            controller: MessagingController(),
+            msgCon: MessagingController(),
+            notiCon: NotificationController(true, userType),
             messages: singleUserMessages,
             messagePersonID: messagePersonID,
             messagePersonName: messagePersonName,
@@ -61,7 +63,8 @@ class MessagingController extends ControllerMVC {
         context,
         MaterialPageRoute(
           builder: (context) => MessagingInboxScreen(
-            controller: MessagingController(),
+            msgCon: MessagingController(),
+            notiCon: NotificationController(true, userType),
             messages: messages,
             messagePersonID: messagePersonID,
             messagePersonName: messagePersonName,

@@ -1,3 +1,4 @@
+import 'package:firebase_data/controllers/notification_controller.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:user_management/controllers/messaging_controller.dart';
@@ -13,7 +14,8 @@ enum MessageType {
 class MessagingInboxScreen extends StatefulWidget {
   const MessagingInboxScreen({
     Key? key,
-    required this.controller,
+    required this.msgCon,
+    required this.notiCon,
     required this.messages,
     required this.messagePersonName,
     required this.messagePersonID,
@@ -21,7 +23,8 @@ class MessagingInboxScreen extends StatefulWidget {
     required this.currentID,
     required this.fromWhere,
   }) : super(key: key);
-  final MessagingController controller;
+  final MessagingController msgCon;
+  final NotificationController notiCon;
   final List<Message> messages;
   final String messagePersonID;
   final String messagePersonName;
@@ -110,9 +113,9 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
               } else {
                 final previousMessage = widget.messages[index - 1];
                 final currentDate =
-                    widget.controller.formatToLocalDate(message.dateTime!);
-                final previousDate = widget.controller
-                    .formatToLocalDate(previousMessage.dateTime!);
+                    widget.msgCon.formatToLocalDate(message.dateTime!);
+                final previousDate =
+                    widget.msgCon.formatToLocalDate(previousMessage.dateTime!);
                 isFirstMessageOfDay = currentDate != previousDate;
               }
 
@@ -121,9 +124,9 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
               if (index > 0) {
                 final previousMessage = widget.messages[index - 1];
                 final currentDate =
-                    widget.controller.formatToLocalDate(message.dateTime!);
-                final previousDate = widget.controller
-                    .formatToLocalDate(previousMessage.dateTime!);
+                    widget.msgCon.formatToLocalDate(message.dateTime!);
+                final previousDate =
+                    widget.msgCon.formatToLocalDate(previousMessage.dateTime!);
                 isPreviousDateDifferent = currentDate != previousDate;
               }
 
@@ -132,9 +135,9 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
                   if (isFirstMessageOfDay || isPreviousDateDifferent)
                     Center(
                       child: Text(
-                        widget.controller.isDateToday(message.dateTime!)
+                        widget.msgCon.isDateToday(message.dateTime!)
                             ? 'Today'
-                            : widget.controller
+                            : widget.msgCon
                                 .formatToLocalDate(message.dateTime!),
                         style: const TextStyle(
                             color: Color.fromARGB(255, 115, 115, 115),
@@ -152,7 +155,7 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 14),
                       child: Text(
-                        widget.controller.formatToLocalTime(message.dateTime!),
+                        widget.msgCon.formatToLocalTime(message.dateTime!),
                         style: const TextStyle(
                             color: Color.fromARGB(255, 115, 115, 115),
                             fontSize: 14),
@@ -195,7 +198,7 @@ class _MessagingInboxScreenState extends StateMVC<MessagingInboxScreen> {
               child: FloatingActionButton(
                 onPressed: () {
                   if (_messageController.text.isNotEmpty) {
-                    widget.controller.sendMessage(
+                    widget.msgCon.sendMessage(
                         context,
                         widget.messagePersonID,
                         widget.messagePersonName,

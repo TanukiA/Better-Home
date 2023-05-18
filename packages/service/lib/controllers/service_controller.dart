@@ -202,7 +202,7 @@ class ServiceController extends ControllerMVC {
       BuildContext context, String technicianID) {
     if ((serviceDoc.data() as Map<String, dynamic>)["serviceStatus"] ==
         "Assigning") {
-      _service.cancelService(serviceDoc.id, context, technicianID);
+      _service.cancelService(serviceDoc.id, context);
     } else if ((serviceDoc.data() as Map<String, dynamic>)["serviceStatus"] ==
         "In Progress") {
       showDialogBox(

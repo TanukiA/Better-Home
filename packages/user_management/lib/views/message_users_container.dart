@@ -65,7 +65,7 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
         padding:
             const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
         decoration: BoxDecoration(
-          color: widget.isMessageRead
+          color: widget.isMessageRead || widget.name != messagePersonName
               ? Colors.white
               : const Color.fromARGB(255, 244, 252, 240),
           borderRadius: BorderRadius.circular(30),
@@ -89,16 +89,16 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            widget.name != messagePersonName
-                                ? 'You'
-                                : widget.name,
+                            messagePersonName,
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(
                             height: 6,
                           ),
                           Text(
-                            widget.messageText,
+                            widget.name != messagePersonName
+                                ? "Me: ${widget.messageText}"
+                                : widget.messageText,
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 115, 115, 115)),
@@ -114,9 +114,10 @@ class _MessageUsersContainerState extends StateMVC<MessageUsersContainer> {
               widget.time,
               style: TextStyle(
                   fontSize: 14,
-                  color: widget.isMessageRead
-                      ? const Color.fromARGB(255, 115, 115, 115)
-                      : const Color.fromARGB(255, 93, 176, 38)),
+                  color:
+                      widget.isMessageRead || widget.name != messagePersonName
+                          ? const Color.fromARGB(255, 115, 115, 115)
+                          : const Color.fromARGB(255, 93, 176, 38)),
             ),
           ],
         ),

@@ -184,8 +184,8 @@ class Service extends ModelMVC {
     return isAtLeast12HoursBefore;
   }
 
-  void cancelService(
-      String serviceID, BuildContext context, String technicianID) {
+  void cancelService(String serviceID, BuildContext context,
+      [String technicianID = ""]) {
     Database firestore = Database();
     if (context.mounted) {
       showDialog(

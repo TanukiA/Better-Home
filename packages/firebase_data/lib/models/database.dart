@@ -360,8 +360,8 @@ class Database extends ChangeNotifier {
     return {'starQty': starQty, 'reviewText': reviewText};
   }
 
-  Future<void> updateServiceCancelled(
-      String serviceID, String technicianID) async {
+  Future<void> updateServiceCancelled(String serviceID,
+      [String technicianID = ""]) async {
     final serviceDoc =
         await _firebaseFirestore.collection('services').doc(serviceID).get();
 
