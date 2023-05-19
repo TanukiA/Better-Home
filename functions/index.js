@@ -24,7 +24,7 @@ exports.stripePayment = functions.https.onRequest(async (req, res)=>{
       )
 })
 
-exports.sendNotification = functions.database.ref('/messages/{connectionId}/{messageId}')
+exports.sendMessageNotification = functions.database.ref('/messages/{connectionId}/{messageId}')
   .onCreate(async (snapshot, context) => {
     const connectionId = context.params.connectionId;
     const messageId = context.params.messageId;

@@ -35,13 +35,4 @@ class NotificationController extends ControllerMVC {
       }
     }
   }
-/*
-  Future<void> sendMessageNotification(String receiverID, String messageText,
-      String userType, BuildContext context) async {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
-    String senderName = await ap.getUserNameFromSP("session_data");
-    _message.generateMessageNotification(
-        senderName, receiverID, messageText, userType);
-  }
-*/
 }

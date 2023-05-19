@@ -118,7 +118,6 @@ class Technician extends User {
   @override
   Future<void> login(BuildContext context, String phoneNumber) async {
     await retrieveLoginData(phoneNumber);
-
     Map<String, dynamic> technicianData = {
       'id': _id,
       'name': name,

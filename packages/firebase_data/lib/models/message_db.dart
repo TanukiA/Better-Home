@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_data/models/push_notification.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,22 +46,26 @@ class MessageDB extends ChangeNotifier {
     String? messageID = messagesRef.child(connectionID!).push().key;
 
     // Store new message
-    await messagesRef
-        .child(connectionID!)
-        .child(messageID!)
-        .set(Message(
-          dateTime: DateTime.now(),
-          senderID: senderID,
-          receiverID: receiverID,
-          senderName: senderName,
-          receiverName: receiverName,
-          messageText: messageText,
-          readStatus: false,
-        ).toJson())
-        .catchError((e) {
+    try {
+      await messagesRef.child(connectionID!).child(messageID!).set(Message(
+            dateTime: DateTime.now(),
+            senderID: senderID,
+            receiverID: receiverID,
+            senderName: senderName,
+            receiverName: receiverName,
+            messageText: messageText,
+            readStatus: false,
+          ).toJson());
+
+      print('Message stored successfully');
+
+      // Send push notification after storing the message
+      PushNotification pushNoti = PushNotification();
+      pushNoti.sendPushNotification(connectionID!, messageID);
+    } catch (e) {
       throw PlatformException(
           code: 'add-message-failed', message: e.toString());
-    });
+    }
   }
 
   Future<List<List<Message>>> retrieveAllUserMessages(

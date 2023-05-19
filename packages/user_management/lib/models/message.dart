@@ -6,7 +6,6 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 
 class Message extends ModelMVC {
-  late PushNotification pushNoti;
   late MessageDB msgDB;
   String? connectionID;
   String? messageID;
@@ -30,7 +29,6 @@ class Message extends ModelMVC {
     this.readStatus,
   }) {
     msgDB = MessageDB();
-    pushNoti = PushNotification();
   }
 
   Map<String, dynamic> toJson() => {
@@ -105,10 +103,5 @@ class Message extends ModelMVC {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String currentID = await ap.getUserIDFromSP("session_data");
     msgDB.updateReadStatus(connectionID, currentID);
-  }
-
-  void generateMessageNotification(String senderName, String receiverID,
-      String messageText, String userType) {
-    pushNoti.sendPushNotification();
   }
 }

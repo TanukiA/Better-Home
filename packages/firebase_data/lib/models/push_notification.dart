@@ -22,11 +22,13 @@ class PushNotification extends ModelMVC {
     );
   }
 
-  void sendPushNotification() async {
-    final sendNotification = _functions.httpsCallable('sendNotification');
+  void sendPushNotification(String connectionID, String messageID) async {
+    final sendNotification =
+        _functions.httpsCallable('sendMessageNotification');
 
     try {
-      await sendNotification.call();
+      await sendNotification
+          .call({'connectionId': connectionID, 'messageId': messageID});
       print('Push notification sent successfully');
     } catch (error) {
       print('Failed to send push notification: $error');
