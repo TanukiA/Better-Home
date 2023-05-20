@@ -34,16 +34,18 @@ class Database extends ChangeNotifier {
     return querySnapshot.docs.isNotEmpty;
   }
 
-  Future<void> addCustomerData(Map<String, dynamic> customerData) async {
+  Future<String> addCustomerData(Map<String, dynamic> customerData) async {
     try {
-      await _firebaseFirestore.collection('customers').add(customerData);
+      DocumentReference documentReference =
+          await _firebaseFirestore.collection('customers').add(customerData);
+      return documentReference.id;
     } catch (e) {
       throw PlatformException(
           code: 'add-customer-failed', message: e.toString());
     }
   }
 
-  Future<void> addTechnicianData(
+  Future<String> addTechnicianData(
       Map<String, dynamic> technicianData, PlatformFile pickedFile) async {
     try {
       DocumentReference documentReference = await _firebaseFirestore
@@ -53,9 +55,23 @@ class Database extends ChangeNotifier {
       if (pickedFile != PlatformFile(name: '', size: 0)) {
         uploadFile(documentReference.id, pickedFile);
       }
+
+      return documentReference.id;
     } catch (e) {
       throw PlatformException(
           code: 'add-technician-failed', message: e.toString());
+    }
+  }
+
+  Future<void> storeDeviceToken(String userID, String deviceToken) async {
+    try {
+      await _firebaseFirestore
+          .collection('user_tokens')
+          .doc(userID)
+          .set({'deviceToken': deviceToken});
+    } catch (e) {
+      throw PlatformException(
+          code: 'store-deviceToken-failed', message: e.toString());
     }
   }
 

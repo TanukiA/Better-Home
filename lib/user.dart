@@ -5,6 +5,7 @@ import 'package:better_home/technician.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_data/models/database.dart';
+import 'package:firebase_data/models/push_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -19,9 +20,13 @@ abstract class User extends ModelMVC {
   String? phone;
   String? name;
   String? email;
-  //Notification notification;
+  late PushNotification _pushNoti;
 
-  User({required this.phone, required this.name, required this.email});
+  User({required this.phone, required this.name, required this.email}) {
+    _pushNoti = PushNotification();
+  }
+
+  PushNotification get pushNoti => _pushNoti;
 
   static bool validPhoneFormat(String phone) {
     if ((phone.startsWith('+60') &&
@@ -68,9 +73,8 @@ abstract class User extends ModelMVC {
                 name: fp.name!.trim(),
                 email: fp.email!.trim());
             fp.clearFormInputs();
-            Map<String, dynamic> customerData = customer.mapRegisterData();
-            Database firestore = Database();
-            firestore.addCustomerData(customerData);
+            customer.mapRegisterData();
+            customer.saveCustomerData();
             customer.login(context, phoneNumber);
           } else if (userType == "technician" && purpose == "login") {
             Technician technician = Technician(
@@ -101,7 +105,7 @@ abstract class User extends ModelMVC {
             );
             fp.clearFormInputs();
             technician.mapRegisterData();
-            technician.saveTechnicianData(context);
+            technician.saveTechnicianData();
             technician.goToLoginScreen(context);
           }
         });

@@ -5,7 +5,6 @@ import 'package:better_home/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:provider/provider.dart';
 import 'package:user_management/models/message.dart';
 
 class NotificationController extends ControllerMVC {

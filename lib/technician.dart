@@ -14,7 +14,7 @@ import 'package:user_management/models/rating.dart';
 
 class Technician extends User {
   final Rating _rating;
-  String? _id;
+  String? id;
   List<String>? specs;
   String? exp;
   String? city;
@@ -55,9 +55,11 @@ class Technician extends User {
     };
   }
 
-  void saveTechnicianData(BuildContext context) {
+  Future<void> saveTechnicianData() async {
     Database firestore = Database();
-    firestore.addTechnicianData(technicianData!, pickedFile!);
+    id = await firestore.addTechnicianData(technicianData!, pickedFile!);
+    await pushNoti.obtainDeviceToken();
+    pushNoti.saveDeviceToken(id!);
   }
 
   void goToLoginScreen(BuildContext context) {
@@ -66,7 +68,8 @@ class Technician extends User {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Success"),
-          content: const Text("You have signed up successfully."),
+          content: const Text(
+              "You have signed up successfully. Kindly wait for approval."),
           actions: [
             ElevatedButton(
               child: const Text("OK"),
@@ -119,7 +122,7 @@ class Technician extends User {
   Future<void> login(BuildContext context, String phoneNumber) async {
     await retrieveLoginData(phoneNumber);
     Map<String, dynamic> technicianData = {
-      'id': _id,
+      'id': id,
       'name': name,
     };
 
@@ -144,7 +147,7 @@ class Technician extends User {
         await Database.getTechnicianByPhoneNumber(phoneNumber);
 
     if (technicianDoc.exists) {
-      _id = technicianDoc.id;
+      id = technicianDoc.id;
       name = technicianDoc.data()!['name'];
     }
   }

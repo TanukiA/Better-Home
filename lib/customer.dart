@@ -11,18 +11,25 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:service/models/service_request_manager.dart';
 
 class Customer extends User {
-  String? _id;
+  String? id;
+  Map<String, dynamic>? customerData;
 
   Customer({String? phone, String? name, String? email})
       : super(phone: phone, name: name, email: email);
 
-  Map<String, dynamic> mapRegisterData() {
-    Map<String, dynamic> customerData = {
+  void mapRegisterData() {
+    customerData = {
       'phoneNumber': phone,
       'name': name,
       'email': email,
     };
-    return customerData;
+  }
+
+  Future<void> saveCustomerData() async {
+    Database firestore = Database();
+    id = await firestore.addCustomerData(customerData!);
+    await pushNoti.obtainDeviceToken();
+    pushNoti.saveDeviceToken(id!);
   }
 
   Future<Map<String, dynamic>> loadServiceDescription(
@@ -73,7 +80,7 @@ class Customer extends User {
     await retrieveLoginData(phoneNumber);
 
     Map<String, dynamic> customerData = {
-      'id': _id,
+      'id': id,
       'name': name,
     };
 
@@ -96,7 +103,7 @@ class Customer extends User {
   Future<void> retrieveLoginData(String phoneNumber) async {
     final customerDoc = await Database.getCustomerByPhoneNumber(phoneNumber);
     if (customerDoc.exists) {
-      _id = customerDoc.id;
+      id = customerDoc.id;
       name = customerDoc.data()!['name'];
     }
   }

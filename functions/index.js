@@ -24,33 +24,33 @@ exports.stripePayment = functions.https.onRequest(async (req, res)=>{
       )
 })
 
-exports.sendMessageNotification = functions.database.ref('/messages/{connectionId}/{messageId}')
-  .onCreate(async (snapshot, context) => {
-    const connectionId = context.params.connectionId;
-    const messageId = context.params.messageId;
-    const message = snapshot.val();
+exports.sendMessageNotification = functions.https.onRequest(async (req, res) => {
 
-    const receiverId = message.receiverID;
+  const receiverId = req.query.receiverId;
+  const senderInfo = req.query.senderName + " sends a new message";
+  const messageText = req.query.messageText;
 
-    const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(receiverId).get();
-    if (!userTokenSnapshot.exists) {
-      console.log(`Device token not found for user ${receiverId}.`);
-      return;
-    }
+  const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(receiverId).get();
 
-    const receiverToken = userTokenSnapshot.data().deviceToken;
-    if (!receiverToken) {
-      console.log(`Device token not found for user ${receiverId}.`);
-      return;
-    }
+  const receiverToken = userTokenSnapshot.data().deviceToken;
+  if (!receiverToken) {
+    console.log(`Device token not found for user ${receiverId}.`);
+  }
 
-    const payload = {
+  const message = {
+    token: receiverToken,
+    notification: {
+      title: senderInfo,
+      body: messageText,
+    },
+    android: {
       notification: {
-        title: message.senderName,
-        body: message.messageText,
-        click_action: 'FLUTTER_NOTIFICATION_CLICK'
-      }
-    };
+        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+      },
+    },
+  };
+  console.log("Message: " + message.toString());
 
-    await admin.messaging().Messaging.send(receiverToken, payload);
-  });
+  await admin.messaging().send(message);
+   
+});
