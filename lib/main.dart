@@ -1,6 +1,7 @@
 import 'package:authentication/models/registration_form_provider.dart';
 import 'package:authentication/views/first_screen.dart';
 import 'package:authentication/models/auth_provider.dart';
+import 'package:firebase_data/models/push_notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:user_management/models/profile_edit_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,6 +19,8 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  PushNotification pushNoti = PushNotification();
+  await pushNoti.init();
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,

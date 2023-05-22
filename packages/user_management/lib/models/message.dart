@@ -1,6 +1,5 @@
 import 'package:authentication/models/auth_provider.dart';
 import 'package:firebase_data/models/message_db.dart';
-import 'package:firebase_data/models/push_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';

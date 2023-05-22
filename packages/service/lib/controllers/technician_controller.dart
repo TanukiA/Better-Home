@@ -118,15 +118,17 @@ class TechnicianController extends ControllerMVC {
     String? technicianFromAlternative;
     print("Done 1");
     // Look for technician using preferred appointment
-    technicianFromPreferred = await _service.processTechnicianReassign(
-        context,
-        serviceCategory,
-        city,
-        location,
-        technicianID,
-        newPreferredDate,
-        preferredTime);
-    print("Done 5");
+    if (context.mounted) {
+      technicianFromPreferred = await _service.processTechnicianReassign(
+          context,
+          serviceCategory,
+          city,
+          location,
+          technicianID,
+          newPreferredDate,
+          preferredTime);
+      print("Done 5");
+    }
     // If not found, look for technician using alternative appointment
     if (technicianFromPreferred == null || technicianFromPreferred == "") {
       print("Done 6");
@@ -139,13 +141,12 @@ class TechnicianController extends ControllerMVC {
             technicianID,
             newAlternativeDate,
             alternativeTime);
-
-        if (technicianFromAlternative == null ||
-            technicianFromAlternative == "") {
-          // Cancel service if not found in alternative appointment
-          firestore.updateServiceStatus(serviceDoc.id, 'Cancelled');
-          print("Done 7");
-        }
+      }
+      if (technicianFromAlternative == null ||
+          technicianFromAlternative == "") {
+        // Cancel service if not found in alternative appointment
+        firestore.updateServiceStatus(serviceDoc.id, 'Cancelled');
+        print("Done 7");
       }
     }
     print("Done 8");

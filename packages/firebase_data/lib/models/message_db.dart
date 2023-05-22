@@ -59,7 +59,7 @@ class MessageDB extends ChangeNotifier {
 
       // Send push notification after storing the message
       PushNotification pushNoti = PushNotification();
-      pushNoti.sendPushNotification(receiverID, senderName, messageText);
+      pushNoti.sendMessageNotification(receiverID, senderName, messageText);
     } catch (e) {
       throw PlatformException(
           code: 'add-message-failed', message: e.toString());

@@ -17,14 +17,15 @@ class FirstScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
-    /*
+/*
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       String id = await ap.getUserIDFromSP("session_data");
       PushNotification pushNoti = PushNotification();
       await pushNoti.obtainDeviceToken();
       pushNoti.saveDeviceToken(id);
+      print("Device Token: ${pushNoti.deviceToken}");
     });
-    */
+*/
     final ButtonStyle btnStyle = ElevatedButton.styleFrom(
         textStyle: const TextStyle(
           fontSize: 20,
