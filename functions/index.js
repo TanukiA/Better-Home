@@ -57,15 +57,10 @@ exports.sendMessageNotification = functions.https.onRequest(async (req, res) => 
 */
 exports.sendMessageNotification = functions.https.onRequest(async (req, res) => {
   try {
-    console.log("Received sendMessageNotification request.");
 
     const receiverId = req.query.receiverId;
     const senderInfo = req.query.senderName + " sends a new message";
     const messageText = req.query.messageText;
-
-    console.log("Receiver ID:", receiverId);
-    console.log("Sender Info:", senderInfo);
-    console.log("Message Text:", messageText);
 
     const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(receiverId).get();
 
@@ -75,13 +70,6 @@ exports.sendMessageNotification = functions.https.onRequest(async (req, res) => 
     }
 
     const receiverToken = userTokenSnapshot.data().deviceToken;
-
-    if (!receiverToken) {
-      console.log(`Empty device token found for user ${receiverId}.`);
-      return res.status(400).send('Empty device token');
-    }
-
-    console.log("Receiver Token:", receiverToken);
 
     const message = {
       token: receiverToken,
@@ -96,16 +84,10 @@ exports.sendMessageNotification = functions.https.onRequest(async (req, res) => 
       },
     };
 
-    console.log("Sending FCM message:", message);
-
     await admin.messaging().send(message);
 
-    console.log("FCM message sent successfully.");
-
-    return res.status(200).send('Notification sent successfully.');
-  } catch (error) {
-    console.error("An error occurred:", error);
-    return res.status(500).send('Error sending notification.');
+  } catch (e) {
+    console.error("An error occurred:", e);
   }
 });
 

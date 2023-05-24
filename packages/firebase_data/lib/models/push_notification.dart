@@ -1,6 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_data/models/database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -8,41 +9,50 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class PushNotification extends ModelMVC {
   final FirebaseMessaging _firebaseMsg = FirebaseMessaging.instance;
   final FirebaseFunctions _functions = FirebaseFunctions.instance;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   String? deviceToken;
 
   Future<void> init() async {
+    var initializationSettingsAndroid =
+        const AndroidInitializationSettings('ic_launcher');
+    var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
     await _firebaseMsg.requestPermission();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Push notification received by device");
       final notification = message.notification;
       final data = message.data;
+      print("The message data: $data");
       if (notification != null) {
         final title = notification.title ?? '';
         final body = notification.body ?? '';
         print("onMessage - Title: $title, Body: $body");
 
-        //displayNotification(notification, data);
+        displayNotification(data);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("Push notification received by device");
       final notification = message.notification;
       final data = message.data;
+      print("The message data: $data");
       if (notification != null) {
         final title = notification.title ?? '';
         final body = notification.body ?? '';
         print("onMessageOpenedApp - Title: $title, Body: $body");
 
-        //displayNotification(notification, data);
+        displayNotification(data);
       }
     });
   }
 
-  void displayNotification(
-      RemoteNotification? notification, Map<String, dynamic>? data) {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
-
+  void displayNotification(Map<String, dynamic> message) {
     // Create a custom notification using the notification data and data payload
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('betterHome_channel_id', 'betterHome',
@@ -50,8 +60,11 @@ class PushNotification extends ModelMVC {
     const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
 
-    flutterLocalNotificationsPlugin.show(0, notification?.title ?? '',
-        notification?.body ?? '', platformChannelSpecifics);
+    flutterLocalNotificationsPlugin.show(
+        0,
+        message['notification']['title'] as String,
+        message['notification']['body'] as String,
+        platformChannelSpecifics);
   }
 
   Future<void> obtainDeviceToken() async {
@@ -79,14 +92,13 @@ class PushNotification extends ModelMVC {
       final response = await http.post(uri);
 
       if (response.statusCode == 200) {
-        print('Push notification sent successfully');
-      } else {
         print('Response code: ${response.statusCode}');
         print('Response body: ${response.body}');
         print('Response headers: ${response.headers}');
       }
-    } catch (error) {
-      print('Failed to send push notification: $error');
+    } catch (e) {
+      throw PlatformException(
+          code: 'send-notification-failed', message: e.toString());
     }
   }
 

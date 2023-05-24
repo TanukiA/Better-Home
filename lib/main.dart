@@ -19,8 +19,7 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  PushNotification pushNoti = PushNotification();
-  await pushNoti.init();
+  await PushNotification().init();
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
