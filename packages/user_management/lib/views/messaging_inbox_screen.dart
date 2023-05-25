@@ -1,4 +1,4 @@
-import 'package:firebase_data/controllers/notification_controller.dart';
+import 'package:user_management/controllers/notification_controller.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:user_management/controllers/messaging_controller.dart';

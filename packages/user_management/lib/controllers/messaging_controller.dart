@@ -1,5 +1,5 @@
 import 'package:authentication/models/auth_provider.dart';
-import 'package:firebase_data/controllers/notification_controller.dart';
+import 'package:user_management/controllers/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';

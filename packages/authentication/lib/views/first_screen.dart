@@ -3,7 +3,6 @@ import 'package:authentication/models/auth_provider.dart';
 import 'package:authentication/views/customer_home_screen.dart';
 import 'package:authentication/views/login_screen.dart';
 import 'package:authentication/views/technician_home_screen.dart';
-import 'package:firebase_data/models/push_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -17,15 +16,7 @@ class FirstScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
-/*
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      String id = await ap.getUserIDFromSP("session_data");
-      PushNotification pushNoti = PushNotification();
-      await pushNoti.obtainDeviceToken();
-      pushNoti.saveDeviceToken(id);
-      print("Device Token: ${pushNoti.deviceToken}");
-    });
-*/
+
     final ButtonStyle btnStyle = ElevatedButton.styleFrom(
         textStyle: const TextStyle(
           fontSize: 20,
