@@ -53,9 +53,14 @@ class TechnicianController extends ControllerMVC {
 
     final technicianID =
         (serviceDoc.data() as Map<String, dynamic>)["technicianID"];
+    final customerID =
+        (serviceDoc.data() as Map<String, dynamic>)["customerID"];
+    final serviceName =
+        (serviceDoc.data() as Map<String, dynamic>)["serviceName"];
 
-    await _tech.acceptRequest(
-        id, appointmentDate, appointmentTime, technicianID);
+    await _tech.acceptRequest(id, appointmentDate, appointmentTime,
+        technicianID, customerID, serviceName, context);
+
     if (context.mounted) {
       showDialog(
         context: context,
@@ -145,7 +150,7 @@ class TechnicianController extends ControllerMVC {
       if (technicianFromAlternative == null ||
           technicianFromAlternative == "") {
         // Cancel service if not found in alternative appointment
-        firestore.updateServiceStatus(serviceDoc.id, 'Cancelled');
+        firestore.updateCancelledStatus(serviceDoc.id, false);
         print("Done 7");
       }
     }

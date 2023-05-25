@@ -5,7 +5,7 @@ import 'package:better_home/technician.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_data/models/database.dart';
-import 'package:firebase_data/models/push_notification.dart';
+import 'package:firebase_data/models/notification.dart' as app_noti;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -20,13 +20,13 @@ abstract class User extends ModelMVC {
   String? phone;
   String? name;
   String? email;
-  late PushNotification _pushNoti;
+  late app_noti.Notification _noti;
 
   User({required this.phone, required this.name, required this.email}) {
-    _pushNoti = PushNotification();
+    _noti = app_noti.Notification();
   }
 
-  PushNotification get pushNoti => _pushNoti;
+  app_noti.Notification get pushNoti => _noti;
 
   static bool validPhoneFormat(String phone) {
     if ((phone.startsWith('+60') &&

@@ -155,9 +155,9 @@ class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
                         ),
                       );
                     } else {
-                      return Center(
+                      return const Center(
                         child: Column(
-                          children: const [
+                          children: [
                             SizedBox(height: 30),
                             Text(
                               'No appointment(s) on this day',

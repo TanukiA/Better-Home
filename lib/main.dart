@@ -10,17 +10,20 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:service/models/service_request_form_provider.dart';
 
-Future<void> backgroundHandler(RemoteMessage message) async {
-  print(" --- background message received ---");
-  print(message.notification!.title);
-  print(message.notification!.body);
+PushNotification pushNoti = PushNotification();
+
+Future<void> _backgroundHandler(RemoteMessage message) async {
+  final notification = message.notification;
+  if (notification != null) {
+    pushNoti.displayNotification(notification);
+  }
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await PushNotification().init();
-  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  pushNoti.init();
+  FirebaseMessaging.onBackgroundMessage(_backgroundHandler);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));

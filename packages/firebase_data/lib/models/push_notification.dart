@@ -1,4 +1,3 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_data/models/database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class PushNotification extends ModelMVC {
   final FirebaseMessaging _firebaseMsg = FirebaseMessaging.instance;
-  final FirebaseFunctions _functions = FirebaseFunctions.instance;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   String? deviceToken;
@@ -21,39 +19,35 @@ class PushNotification extends ModelMVC {
     );
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    await _firebaseMsg.requestPermission();
+    _firebaseMsg.requestPermission();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("Push notification received by device");
+      print("onMessage: Push notification received by device");
       final notification = message.notification;
-      final data = message.data;
-      print("The message data: $data");
+
       if (notification != null) {
         final title = notification.title ?? '';
         final body = notification.body ?? '';
         print("onMessage - Title: $title, Body: $body");
 
-        displayNotification(data);
+        displayNotification(notification);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("Push notification received by device");
+      print("onMessageOpenedApp: Push notification tapped");
       final notification = message.notification;
-      final data = message.data;
-      print("The message data: $data");
       if (notification != null) {
         final title = notification.title ?? '';
         final body = notification.body ?? '';
         print("onMessageOpenedApp - Title: $title, Body: $body");
 
-        displayNotification(data);
+        displayNotification(notification);
       }
     });
   }
 
-  void displayNotification(Map<String, dynamic> message) {
-    // Create a custom notification using the notification data and data payload
+  void displayNotification(RemoteNotification notification) {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('betterHome_channel_id', 'betterHome',
             importance: Importance.max, priority: Priority.high);
@@ -61,10 +55,7 @@ class PushNotification extends ModelMVC {
         NotificationDetails(android: androidPlatformChannelSpecifics);
 
     flutterLocalNotificationsPlugin.show(
-        0,
-        message['notification']['title'] as String,
-        message['notification']['body'] as String,
-        platformChannelSpecifics);
+        0, notification.title, notification.body, platformChannelSpecifics);
   }
 
   Future<void> obtainDeviceToken() async {
@@ -91,25 +82,77 @@ class PushNotification extends ModelMVC {
     try {
       final response = await http.post(uri);
 
-      if (response.statusCode == 200) {
-        print('Response code: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        print('Response headers: ${response.headers}');
-      }
+      print('Response code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      print('Response headers: ${response.headers}');
     } catch (e) {
       throw PlatformException(
           code: 'send-notification-failed', message: e.toString());
     }
   }
 
-  Future<void> sendServiceStatusNotification() async {
-    final sendNotification = _functions.httpsCallable('serviceStatusChanged');
+  Future<void> sendServiceConfirmedNotification(
+      String customerId, String serviceName, String technicianName) async {
+    final Uri uri = Uri.parse(
+            'https://us-central1-better-home-a2dbf.cloudfunctions.net/serviceConfirmedNotification')
+        .replace(queryParameters: {
+      'customerId': customerId,
+      'serviceName': serviceName,
+      'technicianName': technicianName,
+    });
 
     try {
-      await sendNotification.call();
-      print('Push notification sent successfully');
-    } catch (error) {
-      print('Failed to send push notification: $error');
+      final response = await http.post(uri);
+
+      print('Response code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      print('Response headers: ${response.headers}');
+    } catch (e) {
+      throw PlatformException(
+          code: 'send-notification-failed', message: e.toString());
+    }
+  }
+
+  Future<void> sendServicStatusChangedNotification(
+      String receiverId, String newStatus, String serviceName) async {
+    final Uri uri = Uri.parse(
+            'https://us-central1-better-home-a2dbf.cloudfunctions.net/serviceStatusChangedNotification')
+        .replace(queryParameters: {
+      'receiverId': receiverId,
+      'newStatus': newStatus,
+      'serviceName': serviceName,
+    });
+
+    try {
+      final response = await http.post(uri);
+
+      print('Response code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      print('Response headers: ${response.headers}');
+    } catch (e) {
+      throw PlatformException(
+          code: 'send-notification-failed', message: e.toString());
+    }
+  }
+
+  Future<void> sendServiceAssignedNotification(
+      String technicianId, String serviceName) async {
+    final Uri uri = Uri.parse(
+            'https://us-central1-better-home-a2dbf.cloudfunctions.net/serviceAssignedNotification')
+        .replace(queryParameters: {
+      'technicianId': technicianId,
+      'serviceName': serviceName,
+    });
+
+    try {
+      final response = await http.post(uri);
+
+      print('Response code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      print('Response headers: ${response.headers}');
+    } catch (e) {
+      throw PlatformException(
+          code: 'send-notification-failed', message: e.toString());
     }
   }
 }

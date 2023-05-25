@@ -23,53 +23,22 @@ exports.stripePayment = functions.https.onRequest(async (req, res)=>{
         }
       )
 })
-/*
-exports.sendMessageNotification = functions.https.onRequest(async (req, res) => {
 
-  const receiverId = req.query.receiverId;
-  const senderInfo = req.query.senderName + " sends a new message";
-  const messageText = req.query.messageText;
-
-  const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(receiverId).get();
-
-  const receiverToken = userTokenSnapshot.data().deviceToken;
-  if (!receiverToken) {
-    console.log(`Device token not found for user ${receiverId}.`);
-    return res.status(400).send('Device token not found');
-  }
-
-  const message = {
-    token: receiverToken,
-    notification: {
-      title: senderInfo,
-      body: messageText,
-    },
-    android: {
-      notification: {
-        click_action: 'FLUTTER_NOTIFICATION_CLICK',
-      },
-    },
-  };
-
-  await admin.messaging().send(message);
-   
-});
-*/
 exports.sendMessageNotification = functions.https.onRequest(async (req, res) => {
   try {
 
     const receiverId = req.query.receiverId;
-    const senderInfo = req.query.senderName + " sends a new message";
+    const senderInfo = req.query.senderName + " sends a new message:";
     const messageText = req.query.messageText;
 
     const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(receiverId).get();
 
-    if (!userTokenSnapshot.exists) {
+    const receiverToken = userTokenSnapshot.data().deviceToken;
+
+    if (!receiverToken) {
       console.log(`Device token not found for user ${receiverId}.`);
       return res.status(400).send('Device token not found');
     }
-
-    const receiverToken = userTokenSnapshot.data().deviceToken;
 
     const message = {
       token: receiverToken,
@@ -91,71 +60,118 @@ exports.sendMessageNotification = functions.https.onRequest(async (req, res) => 
   }
 });
 
-
 exports.serviceConfirmedNotification = functions.https.onRequest(async (req, res) => {
+  try{
 
-  const customerId = req.query.customerId;
-  const body = req.query.serviceName + " is confirmed by " + req.query.technicianName;
+    const customerId = req.query.customerId;
+    const body = req.query.serviceName + " is confirmed by " + req.query.technicianName;
 
-  const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(customerId).get();
+    const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(customerId).get();
 
-  const receiverToken = userTokenSnapshot.data().deviceToken;
-  if (!receiverToken) {
-    console.log(`Device token not found for user ${customerId}.`);
-    return res.status(400).send('Device token not found');
-  }
+    const receiverToken = userTokenSnapshot.data().deviceToken;
+    if (!receiverToken) {
+      console.log(`Device token not found for user ${customerId}.`);
+      return res.status(400).send('Device token not found');
+    }
 
-  const message = {
-    token: receiverToken,
-    notification: {
-      title: "Service Confirmed!",
-      body: body,
-    },
-    android: {
+    const message = {
+      token: receiverToken,
       notification: {
-        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        title: "Service Confirmed!",
+        body: body,
       },
-    },
-  };
+      android: {
+        notification: {
+          click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        },
+      },
+    };
 
-  await admin.messaging().send(message);
+    await admin.messaging().send(message);
+
+  } catch (e) {
+    console.error("An error occurred:", e);
+  }
 });
 
 exports.serviceStatusChangedNotification = functions.https.onRequest(async (req, res) => {
-  const newStatus = req.query.newStatus;
-  const customerId = req.query.customerId;
-  let title, body;
+  try{
 
-  if (newStatus === "Completed") {
-    title = "Service Completed!";
-    body = req.query.serviceName + " is completed";
-  } else if (newStatus === "In Progress") {
-    title = "Service In Progress!";
-    body = req.query.serviceName + " is in progress";
-  } else {
-    return res.status(400).send('Invalid service status');
-  }
+    const newStatus = req.query.newStatus;
+    const receiverId = req.query.receiverId;
+    let title, body;
 
-  const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(customerId).get();
+    if (newStatus === "Completed") {
+      title = "Service Completed!";
+      body = req.query.serviceName + " is completed";
+    } else if (newStatus === "In Progress") {
+      title = "Service In Progress!";
+      body = req.query.serviceName + " is in progress";
+    } else if (newStatus === "Cancelled"){ 
+      title = "Service Cancelled!";
+      body = req.query.serviceName + " is cancelled";
+    }else {
+      return res.status(400).send('Invalid service status');
+    }
 
-  const receiverToken = userTokenSnapshot.data().deviceToken;
-  if (!receiverToken) {
-    console.log(`Device token not found for user ${customerId}.`);
-    return res.status(400).send('Device token not found');
-  }
+    const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(receiverId).get();
 
-  const message = {
-    token: receiverToken,
-    notification: {
-      title: title,
-      body: body,
-    },
-    android: {
+    const receiverToken = userTokenSnapshot.data().deviceToken;
+    if (!receiverToken) {
+      console.log(`Device token not found for user ${receiverId}.`);
+      return res.status(400).send('Device token not found');
+    }
+
+    const message = {
+      token: receiverToken,
       notification: {
-        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        title: title,
+        body: body,
       },
-    },
-  };
+      android: {
+        notification: {
+          click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        },
+      },
+    };
 
-  await admin.messaging().send(message);
+    await admin.messaging().send(message);
+
+  } catch (e) {
+    console.error("An error occurred:", e);
+  }
+});
+
+exports.serviceAssignedNotification = functions.https.onRequest(async (req, res) => {
+  try{
+
+    const technicianId = req.query.technicianId;
+    const body = "A new service [" + req.query.serviceName + "] is assigned to you";
+
+    const userTokenSnapshot = await admin.firestore().collection('user_tokens').doc(technicianId).get();
+
+    const receiverToken = userTokenSnapshot.data().deviceToken;
+    if (!receiverToken) {
+      console.log(`Device token not found for user ${technicianId}.`);
+      return res.status(400).send('Device token not found');
+    }
+
+    const message = {
+      token: receiverToken,
+      notification: {
+        title: "Service Assigned!",
+        body: body,
+      },
+      android: {
+        notification: {
+          click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        },
+      },
+    };
+
+    await admin.messaging().send(message);
+
+  } catch (e) {
+    console.error("An error occurred:", e);
+  }
 });

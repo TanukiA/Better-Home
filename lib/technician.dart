@@ -98,12 +98,21 @@ class Technician extends User {
     return await firestore.readAssignedServices(id);
   }
 
-  Future<void> acceptRequest(String id, DateTime appointmentDate,
-      String appointmentTime, String technicianID) async {
+  Future<void> acceptRequest(
+      String serviceID,
+      DateTime appointmentDate,
+      String appointmentTime,
+      String technicianID,
+      String customerID,
+      String serviceName,
+      BuildContext context) async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String technicianName = await ap.getUserNameFromSP("session_data");
     Database firestore = Database();
-    await firestore.updateAcceptRequest(id);
+    await firestore.updateAcceptRequest(
+        serviceID, customerID, serviceName, technicianName);
     await firestore.addWorkSchedule(
-        id, appointmentDate, appointmentTime, technicianID);
+        serviceID, appointmentDate, appointmentTime, technicianID);
   }
 
   Future<List<Map<String, dynamic>?>> retrieveReviews(
