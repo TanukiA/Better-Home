@@ -108,9 +108,12 @@ class Technician extends User {
       BuildContext context) async {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String technicianName = await ap.getUserNameFromSP("session_data");
+
     Database firestore = Database();
-    await firestore.updateAcceptRequest(
-        serviceID, customerID, serviceName, technicianName);
+    if (context.mounted) {
+      await firestore.updateAcceptRequest(
+          serviceID, customerID, serviceName, technicianName, context);
+    }
     await firestore.addWorkSchedule(
         serviceID, appointmentDate, appointmentTime, technicianID);
   }

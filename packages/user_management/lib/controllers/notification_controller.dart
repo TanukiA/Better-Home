@@ -1,37 +1,44 @@
-import 'package:authentication/models/auth_provider.dart';
-import 'package:better_home/customer.dart';
-import 'package:better_home/technician.dart';
-import 'package:better_home/user.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:user_management/models/message.dart';
+import 'package:user_management/models/app_notification.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationController extends ControllerMVC {
-  late Message _message;
-  late User _user;
+  late final AppNotification noti;
 
-  User get user => _user;
-  Message get message => _message;
+  NotificationController() {
+    noti = AppNotification();
+  }
 
-  NotificationController(bool msg, [String userType = ""]) {
-    if (msg) {
-      _message = Message();
-    } else {
-      if (userType == "customer") {
-        _user = Customer();
-      } else if (userType == "technician") {
-        _user = Technician(
-            address: '',
-            city: '',
-            exp: '',
-            lat: 0.0,
-            lng: 0.0,
-            specs: [],
-            pickedFile: PlatformFile(name: '', size: 0));
-      } else {
-        throw Exception('Invalid userType');
-      }
-    }
+  Future<List<AppNotification>> retrieveNotification(
+      String userType, BuildContext context) async {
+    return await noti.retrieveNotification(userType, context);
+  }
+
+  DateTime formatToLocalDateTime(DateTime dateTime) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime timeZoneDateTime = tz.TZDateTime.from(dateTime, location);
+    return timeZoneDateTime;
+  }
+
+  String formatToLocalDate(DateTime dateTime) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime timeZoneDate = tz.TZDateTime.from(dateTime, location);
+    return DateFormat('dd/MM/yyyy').format(timeZoneDate);
+  }
+
+  String formatToLocalTime(DateTime dateTime) {
+    tz.initializeTimeZones();
+    tz.Location location = tz.getLocation('Asia/Kuala_Lumpur');
+    tz.TZDateTime timeZoneTime = tz.TZDateTime.from(dateTime, location);
+    return DateFormat('HH:mm').format(timeZoneTime);
+  }
+
+  void setRead(String serviceID, String userType, BuildContext context) {
+    noti.changeReadStatus(serviceID, userType, context);
   }
 }

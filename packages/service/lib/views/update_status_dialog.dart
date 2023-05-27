@@ -79,7 +79,7 @@ class _UpdateStatusDialogState extends StateMVC<UpdateStatusDialog> {
                 });
               } else {
                 await widget.controller.handleServiceStatusUpdate(
-                    widget.serviceDoc.id, _selectedStatus!);
+                    widget.serviceDoc.id, _selectedStatus!, context);
 
                 if (mounted) {
                   Navigator.of(context).pop();

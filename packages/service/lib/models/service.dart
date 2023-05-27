@@ -45,7 +45,7 @@ class Service extends ModelMVC {
     return issue['price'];
   }
 
-  void processServiceRequest(int price) async {
+  void processServiceRequest(int price, BuildContext context) async {
     paymentSuccess = false;
     await _payment.preparePayment(price);
     await _payment.makePayment();
@@ -80,13 +80,15 @@ class Service extends ModelMVC {
         'assignedDate': provider.preferredDate,
         'assignedTime': provider.preferredTimeSlot,
       };
-      saveServiceRequest(provider.imgFiles);
+      if (context.mounted) {
+        saveServiceRequest(provider.imgFiles, context);
+      }
     }
   }
 
-  void saveServiceRequest(List<XFile>? imgFiles) {
+  void saveServiceRequest(List<XFile>? imgFiles, BuildContext context) {
     Database firestore = Database();
-    firestore.storeServiceRequest(_serviceRequestData!, imgFiles);
+    firestore.storeServiceRequest(_serviceRequestData!, imgFiles, context);
     showDialog(
       context: Payment.context!,
       builder: (BuildContext context) {
@@ -205,7 +207,7 @@ class Service extends ModelMVC {
                 child: const Text("Yes"),
                 onPressed: () async {
                   await firestore.updateServiceCancelled(
-                      serviceID, technicianID);
+                      serviceID, context, technicianID);
                   if (context.mounted) {
                     Navigator.push(
                       context,
@@ -289,8 +291,9 @@ class Service extends ModelMVC {
     return servicesDoc;
   }
 
-  Future<void> saveNewStatus(String id, String newStatus) async {
+  Future<void> saveNewStatus(
+      String id, String newStatus, BuildContext context) async {
     Database firestore = Database();
-    await firestore.updateServiceStatus(id, newStatus);
+    await firestore.updateServiceStatus(id, newStatus, context);
   }
 }

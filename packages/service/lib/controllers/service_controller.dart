@@ -145,9 +145,9 @@ class ServiceController extends ControllerMVC {
     return _payment.setBuildContext(context);
   }
 
-  void submitRequest() {
+  void submitRequest(BuildContext context) {
     int priceInCent = _servicePrice * 100;
-    _service.processServiceRequest(priceInCent);
+    _service.processServiceRequest(priceInCent, context);
   }
 
   Future<List<QueryDocumentSnapshot<Object?>>> retrieveActiveServicesData(
@@ -237,7 +237,8 @@ class ServiceController extends ControllerMVC {
     return _service.retrieveWorkScheduleData(context);
   }
 
-  Future<void> handleServiceStatusUpdate(String id, String newStatus) async {
-    return _service.saveNewStatus(id, newStatus);
+  Future<void> handleServiceStatusUpdate(
+      String id, String newStatus, BuildContext context) async {
+    return _service.saveNewStatus(id, newStatus, context);
   }
 }

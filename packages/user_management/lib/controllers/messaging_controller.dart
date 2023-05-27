@@ -1,5 +1,4 @@
 import 'package:authentication/models/auth_provider.dart';
-import 'package:user_management/controllers/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +37,6 @@ class MessagingController extends ControllerMVC {
         MaterialPageRoute(
           builder: (context) => MessagingInboxScreen(
             msgCon: MessagingController(),
-            notiCon: NotificationController(true, userType),
             messages: singleUserMessages,
             messagePersonID: messagePersonID,
             messagePersonName: messagePersonName,
@@ -64,7 +62,6 @@ class MessagingController extends ControllerMVC {
         MaterialPageRoute(
           builder: (context) => MessagingInboxScreen(
             msgCon: MessagingController(),
-            notiCon: NotificationController(true, userType),
             messages: messages,
             messagePersonID: messagePersonID,
             messagePersonName: messagePersonName,

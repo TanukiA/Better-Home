@@ -81,7 +81,7 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
         title: const Text(
           "Profile",
           style: TextStyle(
-            fontSize: 22,
+            fontSize: 25,
             fontFamily: 'Roboto',
             color: Colors.white,
           ),

@@ -42,18 +42,6 @@ class Message extends ModelMVC {
         'readStatus': readStatus,
       };
 
-  factory Message.fromJson(Map<String, dynamic> json) => Message(
-        connectionID: json['connectionId'],
-        messageID: json['messageId'],
-        dateTime: DateTime.tryParse(json['dateTime']),
-        senderID: json['senderId'],
-        receiverID: json['receiverId'],
-        senderName: json['senderName'],
-        receiverName: json['receiverName'],
-        messageText: json['messageText'],
-        readStatus: json['readStatus'],
-      );
-
   Future<List<List<Message>>> retrieveAllUserMessages(
       String userType, BuildContext context) async {
     final ap = Provider.of<AuthProvider>(context, listen: false);

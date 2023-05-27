@@ -6,7 +6,9 @@ import 'package:service/controllers/customer_controller.dart';
 import 'package:service/controllers/technician_controller.dart';
 import 'package:service/views/customer_service_screen.dart';
 import 'package:service/views/technician_service_screen.dart';
+import 'package:user_management/controllers/notification_controller.dart';
 import 'package:user_management/controllers/user_controller.dart';
+import 'package:user_management/views/notification_screen.dart';
 import 'package:user_management/views/profile_screen.dart';
 import 'package:user_management/views/messaging_list_screen.dart';
 import 'package:user_management/controllers/messaging_controller.dart';
@@ -100,8 +102,22 @@ class MyBottomNavigationBar extends StatelessWidget {
           ),
           label: '',
         ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.notifications, color: Colors.black, size: 30),
+        BottomNavigationBarItem(
+          icon: GestureDetector(
+            child:
+                const Icon(Icons.notifications, color: Colors.black, size: 30),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NotificationScreen(
+                    controller: NotificationController(),
+                    userType: userType,
+                  ),
+                ),
+              );
+            },
+          ),
           label: '',
         ),
         BottomNavigationBarItem(

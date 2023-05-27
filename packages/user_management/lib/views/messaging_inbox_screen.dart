@@ -15,7 +15,6 @@ class MessagingInboxScreen extends StatefulWidget {
   const MessagingInboxScreen({
     Key? key,
     required this.msgCon,
-    required this.notiCon,
     required this.messages,
     required this.messagePersonName,
     required this.messagePersonID,
@@ -24,7 +23,6 @@ class MessagingInboxScreen extends StatefulWidget {
     required this.fromWhere,
   }) : super(key: key);
   final MessagingController msgCon;
-  final NotificationController notiCon;
   final List<Message> messages;
   final String messagePersonID;
   final String messagePersonName;

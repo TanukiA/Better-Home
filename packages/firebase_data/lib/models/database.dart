@@ -9,11 +9,13 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'dart:core';
 import 'package:photo_view/photo_view.dart';
+import 'package:user_management/models/app_notification.dart';
 
 class Database extends ChangeNotifier {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final PushNotification pushNoti = PushNotification();
+  final AppNotification noti = AppNotification();
   static List<String> unavailableTechnicianIDs = [];
 
   Future<bool> checkAccountExistence(
@@ -246,8 +248,8 @@ class Database extends ChangeNotifier {
     return techniciansData;
   }
 
-  Future<void> storeServiceRequest(
-      Map<String, dynamic> data, List<XFile>? imgFiles) async {
+  Future<void> storeServiceRequest(Map<String, dynamic> data,
+      List<XFile>? imgFiles, BuildContext context) async {
     try {
       final CollectionReference servicesRef =
           _firebaseFirestore.collection('services');
@@ -260,11 +262,18 @@ class Database extends ChangeNotifier {
         await serviceDocRef.update({'images': downloadUrls});
       }
 
+      final serviceID = serviceDocRef.id;
       final technicianId = data['technicianID'];
       final serviceName = data['serviceName'];
+
       // Send notification to technician to inform service request assigned
       pushNoti.sendServiceAssignedNotification(technicianId, serviceName);
-      // STORE NOTIFICATION FOR FIRESTORE
+
+      final notiMessage = "A new service [$serviceName] is assigned to you";
+      if (context.mounted) {
+        noti.addNewNotification(
+            "technician", serviceID, notiMessage, technicianId);
+      }
     } catch (e) {
       throw PlatformException(
           code: 'add-service-request-failed', message: e.toString());
@@ -384,7 +393,7 @@ class Database extends ChangeNotifier {
     return {'starQty': starQty, 'reviewText': reviewText};
   }
 
-  Future<void> updateServiceCancelled(String serviceID,
+  Future<void> updateServiceCancelled(String serviceID, BuildContext context,
       [String technicianID = ""]) async {
     final serviceDoc =
         await _firebaseFirestore.collection('services').doc(serviceID).get();
@@ -405,10 +414,13 @@ class Database extends ChangeNotifier {
       await workScheduleDoc.delete();
     }
 
-    updateCancelledStatus(serviceID, sendNoti);
+    if (context.mounted) {
+      updateCancelledStatus(serviceID, sendNoti, context);
+    }
   }
 
-  Future<void> updateCancelledStatus(String id, bool sendNoti) async {
+  Future<void> updateCancelledStatus(
+      String id, bool sendNoti, BuildContext context) async {
     try {
       final servicesCollection = _firebaseFirestore.collection('services');
       final serviceDoc = servicesCollection.doc(id);
@@ -417,6 +429,7 @@ class Database extends ChangeNotifier {
       if (sendNoti) {
         DocumentSnapshot<Map<String, dynamic>> serviceSnapshot =
             await serviceDoc.get();
+        final serviceID = serviceDoc.id;
         final technicianID =
             (serviceSnapshot.data() as Map<String, dynamic>)["technicianID"];
         final serviceName =
@@ -425,7 +438,12 @@ class Database extends ChangeNotifier {
         // Send notification to customer to inform service confirmed
         pushNoti.sendServicStatusChangedNotification(
             technicianID, "Cancelled", serviceName);
-        // STORE NOTIFICATION FOR FIRESTORE
+
+        final notiMessage = "$serviceName is cancelled";
+        if (context.mounted) {
+          noti.addNewNotification(
+              "technician", serviceID, notiMessage, technicianID);
+        }
       }
     } catch (e) {
       throw PlatformException(
@@ -476,17 +494,22 @@ class Database extends ChangeNotifier {
   }
 
   Future<void> updateAcceptRequest(String serviceId, String customerId,
-      String serviceName, String technicianName) async {
+      String serviceName, String technicianName, BuildContext context) async {
     try {
       // Update service status to "Confirmed"
       final servicesCollection = _firebaseFirestore.collection('services');
       final serviceDoc = servicesCollection.doc(serviceId);
+      final serviceID = serviceDoc.id;
       await serviceDoc.update({'serviceStatus': 'Confirmed'});
 
       // Send notification to customer to inform service confirmed
       pushNoti.sendServiceConfirmedNotification(
           customerId, serviceName, technicianName);
-      // STORE NOTIFICATION FOR FIRESTORE
+
+      final notiMessage = "$serviceName is confirmed by $technicianName";
+      if (context.mounted) {
+        noti.addNewNotification("customer", serviceID, notiMessage, customerId);
+      }
 
       // Change assignedDate and assignedTime to confirmedDate and confrimedTime
       DocumentSnapshot doc =
@@ -588,23 +611,34 @@ class Database extends ChangeNotifier {
   }
 
   // Update service status to "Completed" or "In Progress" by technician
-  Future<void> updateServiceStatus(String id, String newStatus) async {
+  Future<void> updateServiceStatus(
+      String id, String newStatus, BuildContext context) async {
     try {
       final servicesCollection = _firebaseFirestore.collection('services');
       final serviceDoc = servicesCollection.doc(id);
       DocumentSnapshot<Map<String, dynamic>> serviceSnapshot =
           await serviceDoc.get();
+      await serviceDoc.update({'serviceStatus': newStatus});
 
       final customerID =
           (serviceSnapshot.data() as Map<String, dynamic>)["customerID"];
       final serviceName =
           (serviceSnapshot.data() as Map<String, dynamic>)["serviceName"];
+      final serviceID = serviceDoc.id;
       // Send notification to customer to inform service confirmed
       pushNoti.sendServicStatusChangedNotification(
           customerID, newStatus, serviceName);
-      // STORE NOTIFICATION FOR FIRESTORE
 
-      await serviceDoc.update({'serviceStatus': newStatus});
+      String notiMessage = "";
+      if (newStatus == "Completed") {
+        notiMessage = "$serviceName is completed";
+      } else if (newStatus == "In Progress") {
+        notiMessage = "$serviceName is in progress";
+      }
+
+      if (context.mounted) {
+        noti.addNewNotification("customer", serviceID, notiMessage, customerID);
+      }
     } catch (e) {
       throw PlatformException(
           code: 'update-status-failed', message: e.toString());
@@ -695,5 +729,79 @@ class Database extends ChangeNotifier {
     }
 
     return ratingsData;
+  }
+
+  static Future<void> storeNotification(AppNotification notification,
+      String collectionName, String receiverID) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      final docRef = firestore
+          .collection(collectionName)
+          .doc(receiverID)
+          .collection('notifications');
+
+      await docRef.add(notification.toJson());
+    } catch (e) {
+      throw PlatformException(
+          code: 'add-notification--failed', message: e.toString());
+    }
+  }
+
+  static Future<List<AppNotification>> readNotification(
+      String collectionName, String userID) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      final customerDocRef = firestore.collection(collectionName).doc(userID);
+      final collectionRef = customerDocRef.collection('notifications');
+
+      final collectionSnapshot = await collectionRef.get();
+
+      if (collectionSnapshot.size == 0) {
+        return [];
+      }
+
+      final notifications = collectionSnapshot.docs.map((doc) {
+        final data = doc.data();
+        DateTime dateTime = DateTime.parse(data['dateTime']);
+        return AppNotification(
+          serviceID: data['serviceID'],
+          dateTime: dateTime,
+          notiMessage: data['notiMessage'],
+          readStatus: data['readStatus'],
+        );
+      }).toList();
+
+      notifications.sort((a, b) => a.dateTime!.compareTo(b.dateTime!));
+
+      return notifications;
+    } catch (e) {
+      throw PlatformException(
+          code: 'read-notification-failed', message: e.toString());
+    }
+  }
+
+  Future<void> updateReadStatus(
+      String serviceID, String currentID, String userType) async {
+    try {
+      final collectionName =
+          userType == 'customer' ? 'customers' : 'technicians';
+      final userCollection = _firebaseFirestore.collection(collectionName);
+
+      final userDoc = await userCollection.doc(currentID).get();
+      final notificationsCollection =
+          userDoc.reference.collection('notifications');
+
+      final querySnapshot = await notificationsCollection
+          .where('serviceID', isEqualTo: serviceID)
+          .get();
+      final notificationDocs = querySnapshot.docs;
+
+      for (final notificationDoc in notificationDocs) {
+        await notificationDoc.reference.update({'readStatus': true});
+      }
+    } catch (e) {
+      throw PlatformException(
+          code: 'update-read-status-failed', message: e.toString());
+    }
   }
 }

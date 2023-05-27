@@ -2,6 +2,8 @@ import 'package:better_home/bottom_nav_bar.dart';
 import 'package:user_management/controllers/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:user_management/models/app_notification.dart';
+import 'package:user_management/views/notification_container.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen(
@@ -17,27 +19,19 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends StateMVC<NotificationScreen> {
   int _currentIndex = 0;
-  late List<List<Message>> allMessages;
-  List<Message> messageUserList = [];
+  List<AppNotification> notifications = [];
   bool isLoading = true;
 
   @override
   initState() {
-    setMessagingList();
+    setNotifications();
     super.initState();
   }
 
-  void setMessagingList() async {
-    allMessages = await widget.controller
-        .retrieveAllUserMessages(widget.userType, context);
+  void setNotifications() async {
+    notifications =
+        await widget.controller.retrieveNotification(widget.userType, context);
 
-    if (allMessages.isNotEmpty) {
-      for (int i = 0; i < allMessages.length; i++) {
-        List<Message> messages = allMessages[i];
-        Message latestMessage = messages.last;
-        messageUserList.add(latestMessage);
-      }
-    }
     setState(() {
       isLoading = false;
     });
@@ -55,7 +49,7 @@ class _NotificationScreenState extends StateMVC<NotificationScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Messaging',
+          'Notification',
           style: TextStyle(
             fontSize: 25,
             fontFamily: 'Roboto',
@@ -75,7 +69,7 @@ class _NotificationScreenState extends StateMVC<NotificationScreen> {
               child: CircularProgressIndicator(
               color: Color.fromARGB(255, 51, 119, 54),
             ))
-          : allMessages.isEmpty
+          : notifications.isEmpty
               ? Container(
                   alignment: Alignment.center,
                   child: const Text(
@@ -91,14 +85,14 @@ class _NotificationScreenState extends StateMVC<NotificationScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ListView.builder(
-                        itemCount: messageUserList.length,
+                        itemCount: notifications.length,
                         shrinkWrap: true,
                         padding: const EdgeInsets.only(top: 16),
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           final DateTime messageDateTime = widget.controller
                               .formatToLocalDateTime(
-                                  messageUserList[index].dateTime!);
+                                  notifications[index].dateTime!);
                           final DateTime now = DateTime.now();
                           final currentDate =
                               now.toUtc().add(const Duration(hours: 8));
@@ -116,14 +110,13 @@ class _NotificationScreenState extends StateMVC<NotificationScreen> {
                                 .formatToLocalDate(messageDateTime);
                           }
 
-                          return MessageUsersContainer(
-                            name: messageUserList[index].senderName!,
-                            messageText: messageUserList[index].messageText!,
-                            time: time,
-                            isMessageRead: messageUserList[index].readStatus!,
-                            messages: allMessages[index],
+                          return NotificationContainer(
+                            isMessageRead: notifications[index].readStatus!,
                             controller: widget.controller,
                             userType: widget.userType,
+                            dateTime: time,
+                            notiMessage: notifications[index].notiMessage!,
+                            serviceID: notifications[index].serviceID!,
                           );
                         },
                       ),
