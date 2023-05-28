@@ -4,10 +4,38 @@
         "Leaky pipes",
         "Damaged / cracked pipes",
         "Dripping taps",
-        "Toilet repair"
+        "Noisy taps"
       ],
       "priceRange": "RM 100 - 140",
       "img": "assets/leakage_repair_img.jpeg"
+    },
+    "Plumbing - Drainage Service": {
+      "explanations": [
+        "Clogged drains",
+        "Blocked sewer lines",
+        "Slow draining sinks",
+        "Drain cleaning / maintenance"
+      ],
+      "priceRange": "RM 50 - 80",
+      "img": "assets/drainage_img.jpg"
+    },
+    "Plumbing - Water Heater Repair / Install": {
+      "explanations": [
+        "New installation",
+        "Replacing existing water heater",
+        "Thermostat repair and replacement"
+      ],
+      "priceRange": "RM 110 - 300",
+      "img": "assets/water_heater_repair.jpg"
+    },
+    "Plumbing - Toilet Repair / Install": {
+      "explanations": [
+        "New installation",
+        "Replacing existing toilet",
+        "Toilet repair"
+      ],
+      "priceRange": "RM 300 - 700",
+      "img": "assets/toilet_repair.jpg"
     },
     "Aircon Servicing - Aircon Repair / Install": {
       "explanations": [

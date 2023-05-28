@@ -191,7 +191,6 @@ class AuthProvider extends ChangeNotifier {
     final userDataJson = sp.getString(dataName);
     notifyListeners();
     final userData = jsonDecode(userDataJson!);
-    print("NAME: ${userData['name']}");
 
     return userData['name'];
   }

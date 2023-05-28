@@ -743,7 +743,7 @@ class Database extends ChangeNotifier {
       await docRef.add(notification.toJson());
     } catch (e) {
       throw PlatformException(
-          code: 'add-notification--failed', message: e.toString());
+          code: 'add-notification-failed', message: e.toString());
     }
   }
 
@@ -803,5 +803,16 @@ class Database extends ChangeNotifier {
       throw PlatformException(
           code: 'update-read-status-failed', message: e.toString());
     }
+  }
+
+  Future<QueryDocumentSnapshot> readSingleService(String serviceID) async {
+    QuerySnapshot querySnapshot = await _firebaseFirestore
+        .collection('services')
+        .where(FieldPath.documentId, isEqualTo: serviceID)
+        .limit(1)
+        .get();
+
+    QueryDocumentSnapshot documentSnapshot = querySnapshot.docs[0];
+    return documentSnapshot;
   }
 }

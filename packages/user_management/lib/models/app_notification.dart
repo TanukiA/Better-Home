@@ -1,4 +1,5 @@
 import 'package:authentication/models/auth_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_data/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -9,6 +10,7 @@ class AppNotification extends ModelMVC {
   DateTime? dateTime;
   String? notiMessage;
   bool? readStatus;
+  String? serviceStatus;
 
   AppNotification({
     this.serviceID,
@@ -54,5 +56,13 @@ class AppNotification extends ModelMVC {
     String currentID = await ap.getUserIDFromSP("session_data");
     Database firestore = Database();
     firestore.updateReadStatus(serviceID, currentID, userType);
+  }
+
+  Future<QueryDocumentSnapshot> retrieveServiceData(String serviceID) async {
+    Database firestore = Database();
+    final serviceDoc = await firestore.readSingleService(serviceID);
+    final data = serviceDoc.data() as Map<String, dynamic>;
+    serviceStatus = data['serviceStatus'];
+    return serviceDoc;
   }
 }

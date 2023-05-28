@@ -42,8 +42,8 @@ class _NotificationContainerState extends StateMVC<NotificationContainer> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // open the relevant screen of notification
-
+        widget.controller
+            .openRelevantScreen(widget.serviceID, widget.userType, context);
         // set notification's read status to true
         widget.controller.setRead(widget.serviceID, widget.userType, context);
         read = true;

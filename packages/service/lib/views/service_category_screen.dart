@@ -1,4 +1,3 @@
-import 'package:better_home/customer.dart';
 import 'package:flutter/material.dart';
 import 'package:better_home/bottom_nav_bar.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';

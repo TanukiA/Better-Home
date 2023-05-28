@@ -7,19 +7,20 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:service/views/service_review_dialog.dart';
 
-class PastServiceDetailScreen extends StatefulWidget {
-  const PastServiceDetailScreen(
+class CustomerPastServiceDetailScreen extends StatefulWidget {
+  const CustomerPastServiceDetailScreen(
       {Key? key, required this.serviceDoc, required this.controller})
       : super(key: key);
   final QueryDocumentSnapshot serviceDoc;
   final ServiceController controller;
 
   @override
-  StateMVC<PastServiceDetailScreen> createState() =>
-      _PastServiceDetailScreenState();
+  StateMVC<CustomerPastServiceDetailScreen> createState() =>
+      _CustomerPastServiceDetailScreenState();
 }
 
-class _PastServiceDetailScreenState extends StateMVC<PastServiceDetailScreen> {
+class _CustomerPastServiceDetailScreenState
+    extends StateMVC<CustomerPastServiceDetailScreen> {
   int _currentIndex = 0;
   String technicianName = "";
   double starQty = 0.0;

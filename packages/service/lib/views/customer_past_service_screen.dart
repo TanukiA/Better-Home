@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
-import 'package:service/views/past_service_detail_screen.dart';
+import 'package:service/views/customer_past_service_detail_screen.dart';
 
 class CustomerPastServiceScreen extends StatefulWidget {
   const CustomerPastServiceScreen({Key? key, required this.controller})
@@ -101,7 +101,8 @@ class _CustomerPastServiceScreenState
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => PastServiceDetailScreen(
+                              builder: (context) =>
+                                  CustomerPastServiceDetailScreen(
                                 serviceDoc: serviceDoc,
                                 controller: widget.controller,
                               ),
