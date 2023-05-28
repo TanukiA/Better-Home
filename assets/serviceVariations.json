@@ -22,6 +22,61 @@
           ]
        },
        {
+         "title":"Plumbing - Drainage Service",
+         "issues":[
+            {
+               "name": "Clogged drains",
+               "price": 70
+            },
+            {
+               "name": "Blocked sewer lines",
+               "price": 50
+            },
+            {
+               "name": "Slow draining sinks",
+               "price": 50
+            },
+            {
+               "name": "Drain cleaning / maintenance",
+               "price": 80
+            }
+         ]
+      },
+      {
+         "title":"Plumbing - Water Heater Repair / Install",
+         "issues":[
+            {
+               "name": "Install",
+               "price": 300
+            },
+            {
+               "name": "Repair existing water heater",
+               "price": 110
+            },
+            {
+               "name": "Thermostat replacement",
+               "price": 200
+            }
+         ]
+      },
+      {
+         "title":"Plumbing - Toilet Repair / Install",
+         "issues":[
+            {
+               "name": "Install",
+               "price": 700
+            },
+            {
+               "name": "Repair existing toilet",
+               "price": 300
+            },
+            {
+               "name": "Replacement",
+               "price": 600
+            }
+         ]
+      },
+      {
           "title":"Aircon Servicing - Aircon Repair / Install",
           "issues":[
              {
@@ -45,8 +100,25 @@
                 "price": 110
              }
           ]
-       },
-       {
+      },
+      {
+         "title":"Aircon Servicing - Aircon Cleaning & Inspection",
+         "issues":[
+            {
+               "name": "Thorough cleaning",
+               "price": 50
+            },
+            {
+               "name": "Inspection",
+               "price": 70
+            },
+            {
+               "name": "Cleaning + Inspection",
+               "price": 100
+            }
+         ]
+      },
+      {
           "title":"Roof Servicing - Leakage Repair",
           "issues":[
              {
@@ -62,7 +134,156 @@
                 "price": 200
              }
           ]
-       }
+      },
+      {
+         "title":"Roof Servicing - Shingle/Tile Replacement",
+         "issues":[
+            {
+               "name": "Hip roof",
+               "price": 200
+            },
+            {
+               "name": "Gable roof",
+               "price": 270
+            },
+            {
+               "name": "Flat roof",
+               "price": 300
+            }
+         ]
+     },
+     {
+         "title":"Electrical & Wiring - Light Fixture/Ceiling Fan Install",
+         "issues":[
+            {
+               "name": "Light fixture install",
+               "price": 250
+            },
+            {
+               "name": "Light fixture replacement",
+               "price": 100
+            },
+            {
+               "name": "Ceiling fan install",
+               "price": 150
+            },
+            {
+               "name": "Ceiling fan install",
+               "price": 280
+            }
+         ]
+      },
+      {
+         "title":"Electrical & Wiring - Extend Wiring/Plug Points",
+         "issues":[
+            {
+               "name": "Wiring extension",
+               "price": 280
+            },
+            {
+               "name": "Plug point install",
+               "price": 250
+            }
+         ]
+      },
+      {
+         "title":"Electrical & Wiring - Electrical Safety Inspection",
+         "issues":[
+            {
+               "name": "Basic inspection",
+               "price": 200
+            },
+            {
+               "name": "Advanced inspection",
+               "price": 300
+            }
+         ]
+      },
+      {
+         "title":"Window & Door - Window Repair / Replacement",
+         "issues":[
+            {
+               "name": "Repair window frames",
+               "price": 200
+            },
+            {
+               "name": "Upgrade or customize",
+               "price": 300
+            },
+            {
+               "name": "Replace damaged parts",
+               "price": 500
+            }
+         ]
+      },
+      {
+         "title":"Window & Door - Door Repair / Replacement",
+         "issues":[
+            {
+               "name": "Repair door knob",
+               "price": 200
+            },
+            {
+               "name": "Upgrade or customize",
+               "price": 300
+            },
+            {
+               "name": "Replace damaged parts",
+               "price": 500
+            }
+         ]
+      },
+      {
+         "title":"Painting - Interior Painting",
+         "issues":[
+            {
+               "name": "Basic design",
+               "price": 400
+            },
+            {
+               "name": "Customized design",
+               "price": 700
+            }
+         ]
+      },
+      {
+         "title":"Painting - Exterior Painting",
+         "issues":[
+            {
+               "name": "Brick surface",
+               "price": 600
+            },
+            {
+               "name": "Wood surface",
+               "price": 550
+            },
+            {
+               "name": "Stucco surface",
+               "price": 650
+            },
+            {
+               "name": "Metal surface",
+               "price": 900
+            }
+         ]
+      },
+      {
+         "title":"Painting - Wallpaper",
+         "issues":[
+            {
+               "name": "Wallpaper removal only",
+               "price": 300
+            },
+            {
+               "name": "Wallpaper install only",
+               "price": 400
+            },
+            {
+               "name": "Wallpaper removal + install",
+               "price": 600
+            }
+         ]
+      }
     ]
  }
  

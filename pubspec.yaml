@@ -64,3 +64,14 @@ flutter:
     - assets/serviceVariations.json
     - assets/accept_tasks_img.svg
     - assets/drainage_img.jpg
+    - assets/water_heater_repair.jpg
+    - assets/toilet_repair.jpg
+    - assets/roof_replace.jpg
+    - assets/light_install.jpg
+    - assets/extend_wiring.jpg
+    - assets/safety_inspection.jpg
+    - assets/window_repair.jpg
+    - assets/door_repair.jpg
+    - assets/internal_painting.png
+    - assets/external_painting.jpg
+    - assets/wallpaper.jpg

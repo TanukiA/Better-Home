@@ -32,7 +32,7 @@
       "explanations": [
         "New installation",
         "Replacing existing toilet",
-        "Toilet repair"
+        "Toilet replacement"
       ],
       "priceRange": "RM 300 - 700",
       "img": "assets/toilet_repair.jpg"
@@ -47,13 +47,117 @@
       "priceRange": "RM 80 - 110",
       "img": "assets/aircon_img.jpg"
     },
+    "Aircon Servicing - Aircon Cleaning & Inspection": {
+      "explanations": [
+        "Thorough cleaning of aircon unit",
+        "Inspection of air filters and coils",
+        "Removal of dust and debris",
+        "Evaluation of overall performance"
+      ],
+      "priceRange": "RM 50 - 100",
+      "img": "assets/aircon_img.jpg"
+    },
     "Roof Servicing - Leakage Repair": {
       "explanations": [
         "Inspect roofing",
         "Long-term solution to leakage",
-        "Cover all types of roof"
+        "Ensuring proper alignment and sealing",
+        "Covering various types of roofing materials"
       ],
       "priceRange": "RM 130 - 200",
       "img": "assets/roof_repair_img.jpg"
+    },
+    "Roof Servicing - Shingle/Tile Replacement": {
+      "explanations": [
+        "Assessment and identification of damaged shingles/tiles",
+        "Safe removal of old and broken shingles/tiles",
+        "Installation of new shingles/tiles"
+      ],
+      "priceRange": "RM 200 - 300",
+      "img": "assets/roof_replace.jpg"
+    },
+    "Electrical & Wiring - Light Fixture/Ceiling Fan Install": {
+      "explanations": [
+        "Installation of various light fixtures",
+        "Installation of various ceiling fans",
+        "Mounting and secure attachment to the ceiling",
+        "Ensuring compliance with electrical safety standards"
+      ],
+      "priceRange": "RM 100 - 280",
+      "img": "assets/light_install.jpg"
+    },
+    "Electrical & Wiring - Extend Wiring/Plug Points": {
+      "explanations": [
+        "Extension of electrical wiring to desired locations",
+        "Installation of additional plug points/outlets",
+        "Proper wiring and connection to the electrical system",
+        "Ensuring compliance with electrical safety standards"
+      ],
+      "priceRange": "RM 250 - 280",
+      "img": "assets/extend_wiring.jpg"
+    },
+    "Electrical & Wiring - Electrical Safety Inspection": {
+      "explanations": [
+        "Thorough inspection of electrical components",
+        "Identification of potential safety hazards or issues",
+        "Testing of electrical circuits, switches, and outlets",
+        "Verification of compliance with electrical safety standards",
+        "Recommendations for necessary repairs or upgrades"
+      ],
+      "priceRange": "RM 200 - 300",
+      "img": "assets/safety_inspection.jpg"
+    },
+    "Window & Door - Window Repair / Replacement": {
+      "explanations": [
+        "Assessment of window condition and repair requirements",
+        "Repair of damaged or broken window frames",
+        "Replacement of cracked or shattered glass panes",
+        "Sealing and weatherproofing to enhance energy efficiency",
+        "Customization options for window style"
+      ],
+      "priceRange": "RM 200 - 500",
+      "img": "assets/window_repair.jpg"
+    },
+    "Window & Door - Door Repair / Replacement": {
+      "explanations": [
+        "Assessment of door condition and repair requirements",
+        "Repair of damaged or malfunctioning door components",
+        "Replacement of worn-out hinges, handles, or locks",
+        "Adjustment and alignment of door for proper operation",
+        "Customization options for door style"
+      ],
+      "priceRange": "RM 250 - 600",
+      "img": "assets/door_repair.jpg"
+    },
+    "Painting - Interior Painting": {
+      "explanations": [
+        "Preparation of surfaces by cleaning and removing imperfections",
+        "Application of high-quality paint in the desired color and finish",
+        "Even and smooth paint coverage for a professional finish",
+        "Cleanup and removal of painting materials and debris"
+      ],
+      "priceRange": "RM 400 - 700",
+      "img": "assets/internal_painting.png"
+    },
+    "Painting - Exterior Painting": {
+      "explanations": [
+        "Preparation of exterior surfaces by cleaning, power washing, and removing loose paint",
+        "Priming of surfaces to ensure proper paint adhesion and durability",
+        "Application of high-quality exterior paint in the desired color and finish",
+        "Even and uniform paint coverage for a fresh and appealing exterior look",
+        "Cleanup and removal of painting materials and debris"
+      ],
+      "priceRange": "RM 550 - 900",
+      "img": "assets/external_painting.jpg"
+    },
+    "Painting - Wallpaper": {
+      "explanations": [
+        "Old wallpaper removal",
+        "Ensuring proper alignment and pattern matching of wallpaper",
+        "Trimming and cutting wallpaper for a precise fit",
+        "Smoothing out air bubbles and ensuring a seamless finish"
+      ],
+      "priceRange": "RM 300 - 600",
+      "img": "assets/wallpaper.jpg"
     }
   }

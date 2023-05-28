@@ -36,19 +36,14 @@ class CustomerController extends ControllerMVC {
       services = ["Leakage Repair", "Shingle/Tile Replacement"];
     } else if (serviceCategory == "Electrical & Wiring") {
       services = [
-        "Ceiling Fan Install",
-        "Light Fixture Install",
+        "Light Fixture/Ceiling Fan Install",
         "Extend Wiring/Plug Points",
         "Electrical Safety Inspection"
       ];
     } else if (serviceCategory == "Window & Door") {
-      services = ["Window Repair / Replacement", "Foor Repair / Replacement"];
+      services = ["Window Repair / Replacement", "Door Repair / Replacement"];
     } else if (serviceCategory == "Painting") {
-      services = [
-        "Interior Painting",
-        "Exterior Painting",
-        "Wallpaper Removal"
-      ];
+      services = ["Interior Painting", "Exterior Painting", "Wallpaper"];
     }
 
     Navigator.push(
