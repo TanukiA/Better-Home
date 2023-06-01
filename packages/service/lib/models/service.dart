@@ -98,6 +98,10 @@ class Service extends ModelMVC {
               "Your service request has been submitted. Kindly wait for confirmation."),
           actions: [
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+              ),
               child: const Text("OK"),
               onPressed: () {
                 final provider = Provider.of<ServiceRequestFormProvider>(
@@ -198,12 +202,20 @@ class Service extends ModelMVC {
             content: const Text("You cannot undo after cancelling service."),
             actions: [
               TextButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                ),
                 child: const Text("No"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
                 child: const Text("Yes"),
                 onPressed: () async {
                   await firestore.updateServiceCancelled(

@@ -21,6 +21,7 @@ class Technician extends User {
   String? address;
   double? lat;
   double? lng;
+  DateTime? dateTimeRegistered;
   PlatformFile? pickedFile;
   Map<String, dynamic>? technicianData;
 
@@ -34,6 +35,7 @@ class Technician extends User {
       required String this.address,
       required double this.lat,
       required double this.lng,
+      required DateTime this.dateTimeRegistered,
       required PlatformFile this.pickedFile})
       : _rating = Rating(),
         super(phone: phone, name: name, email: email);
@@ -52,6 +54,7 @@ class Technician extends User {
       'address': address,
       'location': geoPoint,
       'approvalStatus': false,
+      'dateTimeRegistered': DateTime.now(),
     };
   }
 
@@ -72,6 +75,10 @@ class Technician extends User {
               "You have signed up successfully. Kindly wait for approval."),
           actions: [
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+              ),
               child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();

@@ -66,6 +66,10 @@ class _ServiceReviewDialogState extends StateMVC<ServiceReviewDialog> {
         ),
         actions: [
           TextButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
             child: const Text("Cancel"),
             onPressed: () {
               Navigator.of(context).pop();
@@ -87,6 +91,10 @@ class _ServiceReviewDialogState extends StateMVC<ServiceReviewDialog> {
                 );
               }
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromRGBO(46, 125, 45, 1),
+              foregroundColor: Colors.white,
+            ),
             child: const Text("Submit"),
           ),
         ],

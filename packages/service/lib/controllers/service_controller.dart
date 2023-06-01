@@ -80,12 +80,20 @@ class ServiceController extends ControllerMVC {
           content: const Text("Your progress will be discarded."),
           actions: [
             TextButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+              ),
               child: const Text("No"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               child: const Text("Yes"),
               onPressed: () {
                 Navigator.of(context).pop();

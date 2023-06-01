@@ -117,7 +117,7 @@ class _ServiceDescriptionScreenState
                           ),
                           const SizedBox(height: 10),
                           SizedBox(
-                            height: 110,
+                            height: 160,
                             child: ListView.builder(
                               itemCount: explanations.length,
                               itemBuilder: (BuildContext context, int index) {

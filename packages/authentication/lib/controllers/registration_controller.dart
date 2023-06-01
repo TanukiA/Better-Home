@@ -25,7 +25,8 @@ class RegistrationController extends ControllerMVC {
           lat: 0.0,
           lng: 0.0,
           specs: [],
-          pickedFile: PlatformFile(name: '', size: 0));
+          pickedFile: PlatformFile(name: '', size: 0),
+          dateTimeRegistered: DateTime(2023));
     } else if (userType == 'customer') {
       _user = Customer();
     } else {

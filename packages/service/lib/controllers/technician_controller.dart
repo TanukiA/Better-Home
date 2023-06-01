@@ -25,7 +25,8 @@ class TechnicianController extends ControllerMVC {
         lat: 0.0,
         lng: 0.0,
         specs: [],
-        pickedFile: PlatformFile(name: '', size: 0));
+        pickedFile: PlatformFile(name: '', size: 0),
+        dateTimeRegistered: DateTime(2023));
     _service = Service();
   }
 
@@ -71,6 +72,10 @@ class TechnicianController extends ControllerMVC {
                 "You can check your service in 'Work Schedules' tab in Services."),
             actions: [
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                ),
                 child: const Text("OK"),
                 onPressed: () {
                   Navigator.of(context).pop();

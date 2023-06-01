@@ -17,6 +17,10 @@ void showDialogBox(BuildContext context, String title, String content) {
         content: Text(content),
         actions: [
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
             child: const Text("OK"),
             onPressed: () {
               Navigator.of(context).pop();

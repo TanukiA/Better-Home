@@ -84,25 +84,26 @@ abstract class User extends ModelMVC {
                 lat: 0.0,
                 lng: 0.0,
                 specs: [],
-                pickedFile: PlatformFile(name: '', size: 0));
+                pickedFile: PlatformFile(name: '', size: 0),
+                dateTimeRegistered: DateTime(2023));
             technician.login(context, phoneNumber);
           } else if (userType == "technician" && purpose == "register") {
             final fp =
                 Provider.of<RegistrationFormProvider>(context, listen: false);
             Technician technician = Technician(
-              phone: fp.phone!.trim(),
-              name: fp.name!.trim(),
-              email: fp.email!.trim(),
-              specs: fp.specs!,
-              exp: fp.exp!.trim(),
-              city: fp.city!,
-              address: fp.address!.trim(),
-              lat: fp.lat!,
-              lng: fp.lng!,
-              pickedFile: fp.pickedFile != null
-                  ? fp.pickedFile!
-                  : PlatformFile(name: '', size: 0),
-            );
+                phone: fp.phone!.trim(),
+                name: fp.name!.trim(),
+                email: fp.email!.trim(),
+                specs: fp.specs!,
+                exp: fp.exp!.trim(),
+                city: fp.city!,
+                address: fp.address!.trim(),
+                lat: fp.lat!,
+                lng: fp.lng!,
+                pickedFile: fp.pickedFile != null
+                    ? fp.pickedFile!
+                    : PlatformFile(name: '', size: 0),
+                dateTimeRegistered: DateTime(2023));
             fp.clearFormInputs();
             technician.mapRegisterData();
             technician.saveTechnicianData();
@@ -172,6 +173,10 @@ abstract class User extends ModelMVC {
                     "Your phone number has been updated successfully."),
                 actions: [
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                    ),
                     child: const Text("OK"),
                     onPressed: () {
                       Navigator.of(context).pop();
