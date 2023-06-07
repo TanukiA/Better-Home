@@ -174,6 +174,7 @@ class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
                     children: [
                       TextFieldContainer(
                         child: TextFormField(
+                          key: const Key('name_text_field'),
                           controller: _nameController,
                           keyboardType: TextInputType.text,
                           decoration: const InputDecoration(
@@ -185,6 +186,7 @@ class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
                       const SizedBox(height: 10),
                       TextFieldContainer(
                         child: TextFormField(
+                          key: const Key('email_text_field'),
                           controller: _emailController,
                           keyboardType: TextInputType.text,
                           decoration: const InputDecoration(
@@ -211,6 +213,7 @@ class _CustomerSignupScreenState extends StateMVC<CustomerSignupScreen> {
                       const SizedBox(height: 10),
                       TextFieldContainer(
                         child: TextFormField(
+                          key: const Key('phone_text_field'),
                           controller: _phoneController,
                           inputFormatters: [
                             MalaysiaPhoneNumberFormatter(context)

@@ -64,7 +64,7 @@ void main() {
 
       final phoneTextField = find.byType(TextFormField);
 
-      await tester.enterText(phoneTextField, '0198488832');
+      await tester.enterText(phoneTextField, '+60192620596');
       await tester.pumpAndSettle();
 
       final loginBtn = find.widgetWithText(ElevatedButton, 'Login').first;
@@ -94,7 +94,7 @@ void main() {
 
       final phoneTextField = find.byType(TextFormField);
 
-      await tester.enterText(phoneTextField, '0123451234');
+      await tester.enterText(phoneTextField, '+60123451234');
       await tester.pumpAndSettle();
 
       final loginBtn = find.widgetWithText(ElevatedButton, 'Login').first;
@@ -107,7 +107,7 @@ void main() {
       verify(() => mockController.showUnapprovedError(any())).called(1);
     });
 
-    test('Send OTP for registered phone number', () async {
+    test('Send OTP to registered phone number', () async {
       // Arrange
       const mockPhoneNumber = '+60123456789';
       const mockSmsCode = '123456';
@@ -175,5 +175,31 @@ void main() {
 
       expect(result, true);
     });
+  });
+
+  test('User logout succeed', () async {
+    when(() => mockAuthProvider.userSignOut()).thenAnswer((_) async {
+      await mockFirebaseAuth.signOut();
+      return Future.value();
+    });
+
+    when(() => mockFirebaseAuth.signOut()).thenAnswer((_) => Future.value());
+
+    await mockAuthProvider.userSignOut();
+
+    verify(() => mockFirebaseAuth.signOut()).called(1);
+  });
+
+  test('User logout failed', () async {
+    when(() => mockAuthProvider.userSignOut()).thenAnswer((_) async {
+      throw Exception('Sign out failed');
+    });
+
+    expect(
+      () async => await mockAuthProvider.userSignOut(),
+      throwsA(isA<Exception>()),
+    );
+
+    verifyNever(() => mockFirebaseAuth.signOut());
   });
 }

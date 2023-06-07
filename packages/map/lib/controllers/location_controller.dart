@@ -26,8 +26,8 @@ class LocationController extends ControllerMVC {
   Future<void> handleSearchButton(
       BuildContext context,
       GlobalKey<ScaffoldState> homeScaffoldKey,
-      DisplayPredictionCallback displayPredictionCallback) {
-    return _map.handleSearchButton(
+      DisplayPredictionCallback displayPredictionCallback) async {
+    return await _map.handleSearchButton(
         context, homeScaffoldKey, displayPredictionCallback);
   }
 

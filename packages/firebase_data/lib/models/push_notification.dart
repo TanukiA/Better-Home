@@ -22,26 +22,16 @@ class PushNotification extends ModelMVC {
     _firebaseMsg.requestPermission();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("onMessage: Push notification received by device");
       final notification = message.notification;
 
       if (notification != null) {
-        final title = notification.title ?? '';
-        final body = notification.body ?? '';
-        print("onMessage - Title: $title, Body: $body");
-
         displayNotification(notification);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("onMessageOpenedApp: Push notification tapped");
       final notification = message.notification;
       if (notification != null) {
-        final title = notification.title ?? '';
-        final body = notification.body ?? '';
-        print("onMessageOpenedApp - Title: $title, Body: $body");
-
         displayNotification(notification);
       }
     });
