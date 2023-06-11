@@ -70,11 +70,7 @@ class PushNotification extends ModelMVC {
     });
 
     try {
-      final response = await http.post(uri);
-
-      print('Response code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      print('Response headers: ${response.headers}');
+      await http.post(uri);
     } catch (e) {
       throw PlatformException(
           code: 'send-notification-failed', message: e.toString());
@@ -92,11 +88,7 @@ class PushNotification extends ModelMVC {
     });
 
     try {
-      final response = await http.post(uri);
-
-      print('Response code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      print('Response headers: ${response.headers}');
+      await http.post(uri);
     } catch (e) {
       throw PlatformException(
           code: 'send-notification-failed', message: e.toString());
@@ -114,11 +106,7 @@ class PushNotification extends ModelMVC {
     });
 
     try {
-      final response = await http.post(uri);
-
-      print('Response code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      print('Response headers: ${response.headers}');
+      await http.post(uri);
     } catch (e) {
       throw PlatformException(
           code: 'send-notification-failed', message: e.toString());
@@ -135,11 +123,7 @@ class PushNotification extends ModelMVC {
     });
 
     try {
-      final response = await http.post(uri);
-
-      print('Response code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      print('Response headers: ${response.headers}');
+      await http.post(uri);
     } catch (e) {
       throw PlatformException(
           code: 'send-notification-failed', message: e.toString());
