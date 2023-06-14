@@ -270,10 +270,9 @@ class Database extends ChangeNotifier {
       pushNoti.sendServiceAssignedNotification(technicianId, serviceName);
 
       final notiMessage = "A new service [$serviceName] is assigned to you";
-      if (context.mounted) {
-        noti.addNewNotification(
-            "technician", serviceID, notiMessage, technicianId);
-      }
+
+      noti.addNewNotification(
+          "technician", serviceID, notiMessage, technicianId);
     } catch (e) {
       throw PlatformException(
           code: 'add-service-request-failed', message: e.toString());
@@ -440,10 +439,9 @@ class Database extends ChangeNotifier {
             technicianID, "Cancelled", serviceName);
 
         final notiMessage = "$serviceName is cancelled";
-        if (context.mounted) {
-          noti.addNewNotification(
-              "technician", serviceID, notiMessage, technicianID);
-        }
+
+        noti.addNewNotification(
+            "technician", serviceID, notiMessage, technicianID);
       }
     } catch (e) {
       throw PlatformException(
@@ -451,7 +449,7 @@ class Database extends ChangeNotifier {
     }
   }
 
-  Future<void> storeServiceReview(double starQty, String reviewText, String id,
+  Future<void> storeServiceReview(double starQty, String? reviewText, String id,
       String customerID, String technicianID) async {
     try {
       // store review
@@ -494,12 +492,12 @@ class Database extends ChangeNotifier {
   }
 
   Future<void> updateAcceptRequest(String serviceId, String customerId,
-      String serviceName, String technicianName, BuildContext context) async {
+      String serviceName, String technicianName) async {
     try {
       // Update service status to "Confirmed"
       final servicesCollection = _firebaseFirestore.collection('services');
       final serviceDoc = servicesCollection.doc(serviceId);
-      final serviceID = serviceDoc.id;
+
       await serviceDoc.update({'serviceStatus': 'Confirmed'});
 
       // Send notification to customer to inform service confirmed
@@ -507,9 +505,7 @@ class Database extends ChangeNotifier {
           customerId, serviceName, technicianName);
 
       final notiMessage = "$serviceName is confirmed by $technicianName";
-      if (context.mounted) {
-        noti.addNewNotification("customer", serviceID, notiMessage, customerId);
-      }
+      noti.addNewNotification("customer", serviceId, notiMessage, customerId);
 
       // Change assignedDate and assignedTime to confirmedDate and confrimedTime
       DocumentSnapshot doc =
@@ -549,8 +545,8 @@ class Database extends ChangeNotifier {
     }
   }
 
-  Future<void> filterTechnicianByAvailability(String serviceCategory,
-      String city, DateTime date, String timeSlot, String technicianID) async {
+  Future<void> appendUnavailableTechnician(String serviceCategory, String city,
+      DateTime date, String timeSlot, String technicianID) async {
     unavailableTechnicianIDs.clear();
     unavailableTechnicianIDs.add(technicianID);
     final techniciansQuerySnapshot = await _firebaseFirestore
@@ -636,9 +632,7 @@ class Database extends ChangeNotifier {
         notiMessage = "$serviceName is in progress";
       }
 
-      if (context.mounted) {
-        noti.addNewNotification("customer", serviceID, notiMessage, customerID);
-      }
+      noti.addNewNotification("customer", serviceID, notiMessage, customerID);
     } catch (e) {
       throw PlatformException(
           code: 'update-status-failed', message: e.toString());

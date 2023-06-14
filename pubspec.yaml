@@ -42,8 +42,8 @@ dependencies:
   firebase_analytics: ^10.4.1
   flutter_local_notifications: ^14.1.0
   shared_preferences: ^2.0.18
-  flutter_google_places: ^0.3.0
   google_maps_webservice: ^0.0.19
+  firebase_database_mocks: ^0.6.0
 
 dev_dependencies:
   flutter_test:

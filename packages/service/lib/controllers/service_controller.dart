@@ -226,7 +226,7 @@ class ServiceController extends ControllerMVC {
     }
   }
 
-  Future<void> submitReview(double starQty, String reviewText,
+  Future<void> submitReview(double starQty, String? reviewText,
       QueryDocumentSnapshot serviceDoc) async {
     String customerID =
         (serviceDoc.data() as Map<String, dynamic>)["customerID"];

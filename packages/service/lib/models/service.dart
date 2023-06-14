@@ -238,7 +238,7 @@ class Service extends ModelMVC {
     }
   }
 
-  Future<void> saveNewReview(double starQty, String reviewText, String id,
+  Future<void> saveNewReview(double starQty, String? reviewText, String id,
       String customerID, String technicianID) async {
     Database firestore = Database();
     await firestore.storeServiceReview(
@@ -261,7 +261,7 @@ class Service extends ModelMVC {
       String timeSlot) async {
     print("Done 2");
     Database firestore = Database();
-    await firestore.filterTechnicianByAvailability(
+    await firestore.appendUnavailableTechnician(
         serviceCategory, city, date, timeSlot, technicianID);
     print("Done 3");
     String? nearestTechnicianID;

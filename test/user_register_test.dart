@@ -52,7 +52,7 @@ void main() {
   });
 
   group('User Registration', () {
-    testWidgets('Validate positive phone number input',
+    testWidgets('Validate phone number input (positive input)',
         (WidgetTester tester) async {
       when(() => mockRegistrationController.validPhoneFormat(any()))
           .thenReturn(true);
@@ -90,7 +90,8 @@ void main() {
           any(), any(), any(), any())).called(1);
     });
 
-    testWidgets('Validate negative phone number input',
+    testWidgets(
+        'Validate phone number input (negative input - registered number)',
         (WidgetTester tester) async {
       when(() => mockRegistrationController.validPhoneFormat(any()))
           .thenReturn(true);
