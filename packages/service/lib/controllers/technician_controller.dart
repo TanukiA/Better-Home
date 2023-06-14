@@ -139,7 +139,7 @@ class TechnicianController extends ControllerMVC {
           preferredTime);
       print("Done 5");
     }
-    // If not found, look for technician using alternative appointment
+    // If not found for preferred appointment, look for technician using alternative appointment
     if (technicianFromPreferred == null || technicianFromPreferred == "") {
       print("Done 6");
       if (context.mounted) {
@@ -162,18 +162,19 @@ class TechnicianController extends ControllerMVC {
       }
     }
     print("Done 8");
-    if (technicianFromPreferred != null) {
+    if (technicianFromPreferred != null && technicianFromPreferred != "") {
       // Assign new technician to replace current one
       // Update assignedDate and assignedTime using preferredAppointment
       print("Done 9");
-      firestore.updateTechnicianReassigned(
-          serviceDoc.id, technicianID, newPreferredDate, preferredTime);
-    } else if (technicianFromAlternative != null) {
+      firestore.updateTechnicianReassigned(serviceDoc.id,
+          technicianFromPreferred, newPreferredDate, preferredTime);
+    } else if (technicianFromAlternative != null &&
+        technicianFromAlternative != "") {
       print("Done 10");
       // Assign new technician to replace current one
       // Update assignedDate and assignedTime using alternativeAppointment
-      firestore.updateTechnicianReassigned(
-          serviceDoc.id, technicianID, newAlternativeDate, alternativeTime);
+      firestore.updateTechnicianReassigned(serviceDoc.id,
+          technicianFromAlternative, newAlternativeDate, alternativeTime);
     }
 
     print("Done 11");

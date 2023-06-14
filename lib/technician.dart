@@ -117,10 +117,10 @@ class Technician extends User {
     String technicianName = await ap.getUserNameFromSP("session_data");
 
     Database firestore = Database();
-    if (context.mounted) {
-      await firestore.updateAcceptRequest(
-          serviceID, customerID, serviceName, technicianName, context);
-    }
+
+    await firestore.updateAcceptRequest(
+        serviceID, customerID, serviceName, technicianName);
+
     await firestore.addWorkSchedule(
         serviceID, appointmentDate, appointmentTime, technicianID);
   }
