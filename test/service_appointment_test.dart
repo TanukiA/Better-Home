@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:better_home/customer.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:map/models/distance_calculator.dart';
@@ -12,8 +10,6 @@ import 'package:service/models/payment.dart';
 import 'package:service/models/service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:service/models/service_request_form_provider.dart';
-
-class MockRootBundle extends Mock implements AssetBundle {}
 
 class MockDatabase extends Mock implements Database {}
 
@@ -27,8 +23,6 @@ class MockServiceRequestFormProvider extends Mock
     implements ServiceRequestFormProvider {}
 
 void main() {
-  late MockCustomer mockCustomer;
-  late MockRootBundle mockRootBundle;
   late MockDatabase mockDatabase;
   late MockCustomerController mockCustomerController;
   late MockServiceController mockServiceController;
@@ -37,8 +31,6 @@ void main() {
   late DistanceCalculator distanceCalculator;
 
   setUpAll(() {
-    mockCustomer = MockCustomer();
-    mockRootBundle = MockRootBundle();
     mockDatabase = MockDatabase();
     mockCustomerController = MockCustomerController(mockDatabase);
     mockServiceController = MockServiceController();
@@ -47,67 +39,7 @@ void main() {
     distanceCalculator = DistanceCalculator();
   });
 
-  group('Service Apointment', () {
-    test('Load service description', () async {
-      const serviceTitle = 'Plumbing - Leakage Repair';
-      const jsonString = '''
-    {
-      "Plumbing - Leakage Repair": {
-        "explanations": [
-          "Leaky pipes",
-          "Damaged / cracked pipes",
-          "Dripping taps",
-          "Noisy taps"
-        ],
-        "priceRange": "RM 100 - 140",
-        "img": "assets/leakage_repair_img.jpeg"
-      },
-      "Plumbing - Drainage Service": {
-        "explanations": [
-          "Clogged drains",
-          "Blocked sewer lines",
-          "Slow draining sinks",
-          "Drain cleaning / maintenance"
-        ],
-        "priceRange": "RM 50 - 80",
-        "img": "assets/drainage_img.jpg"
-      },
-      "Plumbing - Water Heater Repair / Install": {
-        "explanations": [
-          "New installation",
-          "Replacing existing water heater",
-          "Thermostat repair and replacement"
-        ],
-        "priceRange": "RM 110 - 300",
-        "img": "assets/water_heater_repair.jpg"
-      }
-    }
-  ''';
-
-      when(() => mockRootBundle.loadString(any()))
-          .thenAnswer((_) async => jsonString);
-
-      when(() => mockCustomer.loadServiceDescription(serviceTitle))
-          .thenAnswer((_) async {
-        final data = jsonDecode(jsonString) as Map<String, dynamic>;
-        return data[serviceTitle] as Map<String, dynamic>;
-      });
-
-      final serviceDescription =
-          await mockCustomer.loadServiceDescription(serviceTitle);
-
-      expect(serviceDescription, {
-        "explanations": [
-          "Leaky pipes",
-          "Damaged / cracked pipes",
-          "Dripping taps",
-          "Noisy taps"
-        ],
-        "priceRange": "RM 100 - 140",
-        "img": "assets/leakage_repair_img.jpeg"
-      });
-    });
-
+  group('Service Appointment', () {
     test('Check technician availability for the selected appointment date',
         () async {
       const serviceCategory = 'Electrical & Wiring';
@@ -159,57 +91,6 @@ void main() {
           .thenReturn('Replace pendant light in living room.');
       when(() => mockProvider.propertyType).thenReturn('Flat/Apartment');
 
-      when(() =>
-              mockServiceController.validateServiceRequestInput(mockProvider))
-          .thenAnswer((_) {
-        if (mockProvider.city == null || mockProvider.city!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.address == null || mockProvider.address!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.lat == null) {
-          return false;
-        }
-        if (mockProvider.lng == null) {
-          return false;
-        }
-        if (mockProvider.preferredDate == null) {
-          return false;
-        }
-        if (mockProvider.preferredTimeSlot == null ||
-            mockProvider.preferredTimeSlot!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.alternativeDate == null) {
-          return false;
-        }
-        if (mockProvider.alternativeTimeSlot == null ||
-            mockProvider.alternativeTimeSlot!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.variation == null || mockProvider.variation!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.description == null ||
-            mockProvider.description!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.propertyType == null ||
-            mockProvider.propertyType!.isEmpty) {
-          return false;
-        }
-
-        if (!mockServiceController.validDateAndTime(
-            mockProvider.preferredDate,
-            mockProvider.preferredTimeSlot,
-            mockProvider.alternativeDate,
-            mockProvider.alternativeTimeSlot)) {
-          return false;
-        }
-        return true;
-      });
-
       final result =
           mockServiceController.validateServiceRequestInput(mockProvider);
 
@@ -238,57 +119,6 @@ void main() {
           .thenReturn('Replace pendant light in living room.');
       when(() => mockProvider.propertyType).thenReturn('Flat/Apartment');
 
-      when(() =>
-              mockServiceController.validateServiceRequestInput(mockProvider))
-          .thenAnswer((_) {
-        if (mockProvider.city == null || mockProvider.city!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.address == null || mockProvider.address!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.lat == null) {
-          return false;
-        }
-        if (mockProvider.lng == null) {
-          return false;
-        }
-        if (mockProvider.preferredDate == null) {
-          return false;
-        }
-        if (mockProvider.preferredTimeSlot == null ||
-            mockProvider.preferredTimeSlot!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.alternativeDate == null) {
-          return false;
-        }
-        if (mockProvider.alternativeTimeSlot == null ||
-            mockProvider.alternativeTimeSlot!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.variation == null || mockProvider.variation!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.description == null ||
-            mockProvider.description!.isEmpty) {
-          return false;
-        }
-        if (mockProvider.propertyType == null ||
-            mockProvider.propertyType!.isEmpty) {
-          return false;
-        }
-
-        if (!mockServiceController.validDateAndTime(
-            mockProvider.preferredDate,
-            mockProvider.preferredTimeSlot,
-            mockProvider.alternativeDate,
-            mockProvider.alternativeTimeSlot)) {
-          return false;
-        }
-        return true;
-      });
-
       final result =
           mockServiceController.validateServiceRequestInput(mockProvider);
 
@@ -296,6 +126,7 @@ void main() {
     });
 
     test('Stripe payment succeed', () async {
+      MockService.updatePaymentSuccess(false);
       when(() => mockStripe.presentPaymentSheet())
           .thenAnswer((_) => Future.value());
 
@@ -317,6 +148,7 @@ void main() {
     });
 
     test('Stripe payment failed', () async {
+      MockService.updatePaymentSuccess(false);
       when(() => mockStripe.presentPaymentSheet()).thenAnswer((_) {
         throw Exception('Payment failed');
       });
@@ -422,6 +254,51 @@ class MockServiceController extends Mock implements ServiceController {
       return false;
     }
 
+    return true;
+  }
+
+  @override
+  bool validateServiceRequestInput(ServiceRequestFormProvider provider) {
+    if (provider.city == null || provider.city!.isEmpty) {
+      return false;
+    }
+    if (provider.address == null || provider.address!.isEmpty) {
+      return false;
+    }
+    if (provider.lat == null) {
+      return false;
+    }
+    if (provider.lng == null) {
+      return false;
+    }
+    if (provider.preferredDate == null) {
+      return false;
+    }
+    if (provider.preferredTimeSlot == null ||
+        provider.preferredTimeSlot!.isEmpty) {
+      return false;
+    }
+    if (provider.alternativeDate == null) {
+      return false;
+    }
+    if (provider.alternativeTimeSlot == null ||
+        provider.alternativeTimeSlot!.isEmpty) {
+      return false;
+    }
+    if (provider.variation == null || provider.variation!.isEmpty) {
+      return false;
+    }
+    if (provider.description == null || provider.description!.isEmpty) {
+      return false;
+    }
+    if (provider.propertyType == null || provider.propertyType!.isEmpty) {
+      return false;
+    }
+
+    if (!validDateAndTime(provider.preferredDate, provider.preferredTimeSlot,
+        provider.alternativeDate, provider.alternativeTimeSlot)) {
+      return false;
+    }
     return true;
   }
 }

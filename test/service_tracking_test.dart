@@ -10,6 +10,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:service/controllers/technician_controller.dart';
 import 'package:service/models/service.dart';
 import 'package:service/models/technician_assigner.dart';
+import 'package:authentication/models/auth_provider.dart';
+import 'package:intl/intl.dart';
 
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
@@ -24,6 +26,18 @@ class MockQuerySnapshot extends Mock
 class MockQueryDocumentSnapshot extends Mock
     implements QueryDocumentSnapshot<Map<String, dynamic>> {}
 
+class MockQueryDocumentSnapshotForSort extends Mock
+    implements QueryDocumentSnapshot<Map<String, dynamic>> {
+  late Map<String, dynamic> _data;
+
+  void setData(Map<String, dynamic> data) {
+    _data = data;
+  }
+
+  @override
+  Map<String, dynamic> data() => _data;
+}
+
 class MockDocumentSnapshot extends Mock
     implements DocumentSnapshot<Map<String, dynamic>> {}
 
@@ -34,7 +48,7 @@ class MockDocumentReference extends Mock
 
 class MockDistanceCalculator extends Mock implements DistanceCalculator {}
 
-class MockService extends Mock implements Service {}
+class MockAuthProvider extends Mock implements AuthProvider {}
 
 main() {
   late MockFirebaseFirestore mockFirestore;
@@ -49,6 +63,8 @@ main() {
   late MockTechnicianAssigner mockTechnicianAssigner;
   late MockService mockService;
   late MockTechnicianController mockTechnicianController;
+  late MockAuthProvider mockAuthProvider;
+  late MockDocumentSnapshot mockDocumentSnapshot;
 
   setUpAll(() {
     mockBuildContext = MockBuildContext();
@@ -64,7 +80,8 @@ main() {
     mockDistanceCalculator = MockDistanceCalculator();
     mockTechnicianAssigner =
         MockTechnicianAssigner(mockBuildContext, mockDatabase);
-    mockService = MockService();
+    mockAuthProvider = MockAuthProvider();
+    mockService = MockService(mockDatabase, mockAuthProvider);
     mockTechnicianController =
         MockTechnicianController(mockService, mockDatabase);
   });
@@ -218,7 +235,8 @@ main() {
     test(
         'Allow cancellation for service in “Confirmed” status with at least 12 hours before appointment time',
         () {
-      mockQueryDocumentSnapshot = MockQueryDocumentSnapshot();
+      final mockQueryDocumentSnapshot = MockQueryDocumentSnapshot();
+      // Confirmed date value must be changed according to current date
       final confirmedDate = Timestamp.fromDate(DateTime(2023, 8, 10));
       const confirmedTime = '10:00AM - 12:00PM';
 
@@ -544,6 +562,128 @@ main() {
           DateTime(2023, 6, 15),
           "5:00PM - 7:00PM")).called(1);
     });
+
+    test('Sort service appointments by confirmed time slot', () async {
+      final mockSnapshot1 = MockQueryDocumentSnapshotForSort();
+      final mockSnapshot2 = MockQueryDocumentSnapshotForSort();
+      final mockSnapshot3 = MockQueryDocumentSnapshotForSort();
+      mockSnapshot1.setData({
+        'confirmedTime': '10:00AM - 12:00PM',
+        'serviceName': 'Aircon Servicing - Aircon Cleaning & Inspection'
+      });
+      mockSnapshot2.setData({
+        'confirmedTime': '3:00PM - 5:00PM',
+        'serviceName': 'Aircon Servicing - Aircon Repair / Install'
+      });
+      mockSnapshot3.setData({
+        'confirmedTime': '5:00PM - 7:00PM',
+        'serviceName': 'Aircon Servicing - Aircon Cleaning & Inspection'
+      });
+
+      final unsortedList = [mockSnapshot3, mockSnapshot2, mockSnapshot1];
+      final expectedSortedList = [mockSnapshot1, mockSnapshot2, mockSnapshot3];
+
+      when(() => mockAuthProvider.getUserIDFromSP(any()))
+          .thenAnswer((_) async => 'ABC123');
+
+      when(() => mockDatabase.readWorkData(any())).thenAnswer((_) async {
+        List<QueryDocumentSnapshot<Object?>> querySnapshots = unsortedList;
+        return querySnapshots;
+      });
+
+      final result =
+          await mockService.retrieveWorkScheduleData(mockBuildContext);
+
+      verify(() => mockAuthProvider.getUserIDFromSP('session_data')).called(1);
+      verify(() => mockDatabase.readWorkData('ABC123')).called(1);
+
+      expect(result, expectedSortedList);
+    });
+
+    test('Retrieve past services (matching service found)', () async {
+      final mockDocuments = List<MockQueryDocumentSnapshot>.generate(
+        4,
+        (index) => MockQueryDocumentSnapshot(),
+      );
+
+      mockCollectionReference = MockCollectionReference();
+
+      // Set up the expected behavior of Firestore API calls
+      when(() => mockFirestore.collection('services'))
+          .thenReturn(mockCollectionReference);
+      when(() => mockCollectionReference.where('technicianID',
+          isEqualTo: 'ABC123')).thenReturn(mockQuery);
+      when(() =>
+              mockQuery.where('serviceStatus', whereIn: any(named: 'whereIn')))
+          .thenReturn(mockQuery);
+      when(() => mockQuery.orderBy('dateTimeSubmitted', descending: true))
+          .thenReturn(mockQuery);
+      when(() => mockQuery.get()).thenAnswer((_) async => mockQuerySnapshot);
+      when(() => mockQuerySnapshot.docs).thenReturn(mockDocuments);
+
+      final result =
+          await mockDatabase.readPastServices('ABC123', 'technicianID');
+
+      expect(result, mockDocuments);
+    });
+
+    test('Retrieve past services (no matching service found)', () async {
+      final mockDocuments = List<MockQueryDocumentSnapshot>.generate(
+        0,
+        (index) => MockQueryDocumentSnapshot(),
+      );
+
+      mockCollectionReference = MockCollectionReference();
+
+      // Set up the expected behavior of Firestore API calls
+      when(() => mockFirestore.collection('services'))
+          .thenReturn(mockCollectionReference);
+      when(() => mockCollectionReference.where('technicianID',
+          isEqualTo: 'DEF456')).thenReturn(mockQuery);
+      when(() =>
+              mockQuery.where('serviceStatus', whereIn: any(named: 'whereIn')))
+          .thenReturn(mockQuery);
+      when(() => mockQuery.orderBy('dateTimeSubmitted', descending: true))
+          .thenReturn(mockQuery);
+      when(() => mockQuery.get()).thenAnswer((_) async => mockQuerySnapshot);
+      when(() => mockQuerySnapshot.docs).thenReturn(mockDocuments);
+
+      final result =
+          await mockDatabase.readPastServices('DEF456', 'technicianID');
+
+      expect(result, isEmpty);
+    });
+
+    test('Change service status', () async {
+      const serviceID = '12345';
+      const newStatus = 'Completed';
+      final serviceSnapshotData = {
+        'serviceName': 'Roof Servicing - Shingle/Tile Replacement',
+        'serviceStatus': 'In Progress',
+      };
+      mockDocumentReference = MockDocumentReference();
+      mockCollectionReference = MockCollectionReference();
+      mockDocumentSnapshot = MockDocumentSnapshot();
+
+      when(() => mockFirestore.collection('services'))
+          .thenReturn(mockCollectionReference);
+      when(() => mockCollectionReference.doc(serviceID))
+          .thenReturn(mockDocumentReference);
+      when(() => mockDocumentReference.get())
+          .thenAnswer((_) async => mockDocumentSnapshot);
+      when(() => mockDocumentSnapshot.data()).thenReturn(serviceSnapshotData);
+      when(() => mockDocumentReference.update(any()))
+          .thenAnswer((_) async => Future<void>);
+
+      await mockDatabase.updateServiceStatus(
+          serviceID, newStatus, mockBuildContext);
+
+      verify(() => mockFirestore.collection('services')).called(1);
+      verify(() => mockCollectionReference.doc(serviceID)).called(1);
+      verify(() => mockDocumentReference.get()).called(1);
+      verify(() => mockDocumentReference.update({'serviceStatus': newStatus}))
+          .called(1);
+    });
   });
 }
 
@@ -679,6 +819,21 @@ class MockDatabase extends Mock implements Database {
           code: 'accept-request-failed', message: e.toString());
     }
   }
+
+  @override
+  Future<void> updateServiceStatus(
+      String id, String newStatus, BuildContext context) async {
+    try {
+      final servicesCollection = _firebaseFirestore.collection('services');
+      final serviceDoc = servicesCollection.doc(id);
+      DocumentSnapshot<Map<String, dynamic>> serviceSnapshot =
+          await serviceDoc.get();
+      await serviceDoc.update({'serviceStatus': newStatus});
+    } catch (e) {
+      throw PlatformException(
+          code: 'update-status-failed', message: e.toString());
+    }
+  }
 }
 
 class MockTechnicianAssigner extends Mock implements TechnicianAssigner {
@@ -811,5 +966,39 @@ class MockTechnicianController extends Mock implements TechnicianController {
       _mockDatabase.updateTechnicianReassigned(serviceDoc.id,
           technicianFromAlternative, newAlternativeDate, alternativeTime);
     }
+  }
+}
+
+class MockService extends Mock implements Service {
+  late MockDatabase _mockDatabase;
+  late MockAuthProvider _mockAuthProvider;
+  List<QueryDocumentSnapshot> _servicesDoc = [];
+
+  MockService(MockDatabase mockDatabase, MockAuthProvider mockAuthProvider) {
+    _mockDatabase = mockDatabase;
+    _mockAuthProvider = mockAuthProvider;
+  }
+
+  @override
+  Future<List<QueryDocumentSnapshot<Object?>>> retrieveWorkScheduleData(
+      BuildContext context) async {
+    String id = await _mockAuthProvider.getUserIDFromSP("session_data");
+    _servicesDoc = await _mockDatabase.readWorkData(id);
+
+    _servicesDoc.sort((a, b) {
+      final String timeA = (a.data() as Map<String, dynamic>)['confirmedTime'];
+      final String timeB = (b.data() as Map<String, dynamic>)['confirmedTime'];
+
+      final DateTime dateTimeA =
+          DateFormat('h:mma').parse(timeA.split('-')[0].trim());
+      final DateTime dateTimeB =
+          DateFormat('h:mma').parse(timeB.split('-')[0].trim());
+
+      final String comparableTimeA = DateFormat('HH:mm').format(dateTimeA);
+      final String comparableTimeB = DateFormat('HH:mm').format(dateTimeB);
+
+      return comparableTimeA.compareTo(comparableTimeB);
+    });
+    return _servicesDoc;
   }
 }

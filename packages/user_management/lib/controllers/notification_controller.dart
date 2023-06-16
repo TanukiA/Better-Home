@@ -12,7 +12,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationController extends ControllerMVC {
-  late final AppNotification noti;
+  late AppNotification noti;
 
   NotificationController() {
     noti = AppNotification();

@@ -51,6 +51,7 @@ class _EditPhoneScreenState extends StateMVC<EditPhoneScreen> {
 
   @override
   void dispose() {
+    _phoneController.dispose();
     super.dispose();
   }
 

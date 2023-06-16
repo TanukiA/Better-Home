@@ -44,6 +44,8 @@ dependencies:
   shared_preferences: ^2.0.18
   google_maps_webservice: ^0.0.19
   firebase_database_mocks: ^0.6.0
+  table_calendar: ^3.0.8
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

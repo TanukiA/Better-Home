@@ -59,7 +59,7 @@ class PushNotification extends ModelMVC {
     firestore.storeDeviceToken(userID, deviceToken!);
   }
 
-  void sendMessageNotification(
+  Future<void> sendMessageNotification(
       String receiverId, String senderName, String messageText) async {
     final Uri uri = Uri.parse(
             'https://us-central1-better-home-a2dbf.cloudfunctions.net/sendMessageNotification')
