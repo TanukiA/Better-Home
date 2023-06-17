@@ -271,7 +271,7 @@ class Database extends ChangeNotifier {
 
       final notiMessage = "A new service [$serviceName] is assigned to you";
 
-      noti.addNewNotification(
+      await noti.addNewNotification(
           "technician", serviceID, notiMessage, technicianId);
     } catch (e) {
       throw PlatformException(
@@ -440,7 +440,7 @@ class Database extends ChangeNotifier {
 
         final notiMessage = "$serviceName is cancelled";
 
-        noti.addNewNotification(
+        await noti.addNewNotification(
             "technician", serviceID, notiMessage, technicianID);
       }
     } catch (e) {
@@ -505,7 +505,8 @@ class Database extends ChangeNotifier {
           customerId, serviceName, technicianName);
 
       final notiMessage = "$serviceName is confirmed by $technicianName";
-      noti.addNewNotification("customer", serviceId, notiMessage, customerId);
+      await noti.addNewNotification(
+          "customer", serviceId, notiMessage, customerId);
 
       // Change assignedDate and assignedTime to confirmedDate and confrimedTime
       DocumentSnapshot doc =
@@ -632,7 +633,8 @@ class Database extends ChangeNotifier {
         notiMessage = "$serviceName is in progress";
       }
 
-      noti.addNewNotification("customer", serviceID, notiMessage, customerID);
+      await noti.addNewNotification(
+          "customer", serviceID, notiMessage, customerID);
     } catch (e) {
       throw PlatformException(
           code: 'update-status-failed', message: e.toString());

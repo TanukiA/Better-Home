@@ -37,7 +37,7 @@ class AppNotification extends ModelMVC {
       readStatus: false,
     );
 
-    Database.storeNotification(notification, collectionName, receiverID);
+    await Database.storeNotification(notification, collectionName, receiverID);
   }
 
   Future<List<AppNotification>> retrieveNotification(

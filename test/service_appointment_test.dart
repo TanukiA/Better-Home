@@ -1,4 +1,8 @@
+// ignore_for_file: subtype_of_sealed_class
+
 import 'package:better_home/customer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:map/models/distance_calculator.dart';
@@ -10,8 +14,7 @@ import 'package:service/models/payment.dart';
 import 'package:service/models/service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:service/models/service_request_form_provider.dart';
-
-class MockDatabase extends Mock implements Database {}
+import 'package:image_picker/image_picker.dart';
 
 class MockCustomer extends Mock implements Customer {}
 
@@ -22,6 +25,16 @@ class MockPayment extends Mock implements Payment {}
 class MockServiceRequestFormProvider extends Mock
     implements ServiceRequestFormProvider {}
 
+class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
+
+class MockCollectionReference extends Mock
+    implements CollectionReference<Map<String, dynamic>> {}
+
+class MockDocumentReference extends Mock
+    implements DocumentReference<Map<String, dynamic>> {}
+
+class MockBuildContext extends Fake implements BuildContext {}
+
 void main() {
   late MockDatabase mockDatabase;
   late MockCustomerController mockCustomerController;
@@ -29,14 +42,24 @@ void main() {
   late MockPayment mockPayment;
   late MockStripe mockStripe;
   late DistanceCalculator distanceCalculator;
+  late MockFirebaseFirestore mockFirestore;
+  late MockCollectionReference mockCollectionRef;
+  late MockDocumentReference mockDocumentRef;
+  late MockBuildContext mockBuildContext;
 
   setUpAll(() {
-    mockDatabase = MockDatabase();
-    mockCustomerController = MockCustomerController(mockDatabase);
     mockServiceController = MockServiceController();
     mockStripe = MockStripe();
     mockPayment = MockPayment();
     distanceCalculator = DistanceCalculator();
+    mockFirestore = MockFirebaseFirestore();
+    mockCollectionRef = MockCollectionReference();
+    mockDocumentRef = MockDocumentReference();
+    mockDatabase = MockDatabase(mockFirestore);
+    mockCustomerController = MockCustomerController(mockDatabase);
+    mockBuildContext = MockBuildContext();
+
+    registerFallbackValue(MockBuildContext());
   });
 
   group('Service Appointment', () {
@@ -188,6 +211,55 @@ void main() {
 
       expect(nearestLocation, technicianLocations[1]);
     });
+
+    test('Submit service request data', () async {
+      final data = {
+        'dateTimeSubmitted': DateTime.now(),
+        'serviceStatus': 'Assigning',
+        'customerID': 'ABC123',
+        'technicianID': 'DEF456',
+        'address': 'Example Address',
+        'location': const GeoPoint(2.330100714481708, 102.24918716249788),
+        'city': 'Melaka',
+        'paidAmount': 120.0,
+        'serviceName':
+            'Electrical & Wiring - Light Fixture/Ceiling Fan Install',
+        'serviceVariation': 'Light fixture replacement',
+        'propertyType': 'Flat/Apartment',
+        'description': 'Replace pendant light in living room.',
+        'preferredDate': DateTime(2023, 8, 28, 10, 30),
+        'preferredTime': '3:00PM - 5:00PM',
+        'alternativeDate': DateTime(2023, 8, 25, 10, 30),
+        'alternativeTime': '3:00PM - 5:00PM',
+        'assignedDate': DateTime(2023, 8, 28, 10, 30),
+        'assignedTime': '3:00PM - 5:00PM',
+      };
+      final imgFiles = [
+        XFile('path/to/image1.png'),
+        XFile('path/to/image2.png')
+      ];
+
+      when(() => mockFirestore.collection('services'))
+          .thenReturn(mockCollectionRef);
+      when(() => mockCollectionRef.add(data))
+          .thenAnswer((_) async => mockDocumentRef);
+      when(() => mockDocumentRef.id).thenReturn('serviceId');
+      when(() => mockDatabase.uploadServiceImages(mockDocumentRef, imgFiles))
+          .thenAnswer((_) async => ['image1-url', 'image2-url']);
+      when(() => mockDocumentRef.update({
+            'images': ['image1-url', 'image2-url']
+          })).thenAnswer((_) async => Future<void>);
+
+      await mockDatabase.storeServiceRequest(data, imgFiles, mockBuildContext);
+
+      verify(() => mockFirestore.collection('services')).called(1);
+      verify(() => mockCollectionRef.add(data)).called(1);
+      verify(() => mockDatabase.uploadServiceImages(mockDocumentRef, imgFiles))
+          .called(1);
+      verify(() => mockDocumentRef.update({
+            'images': ['image1-url', 'image2-url']
+          })).called(1);
+    });
   });
 }
 
@@ -300,5 +372,31 @@ class MockServiceController extends Mock implements ServiceController {
       return false;
     }
     return true;
+  }
+}
+
+class MockDatabase extends Mock implements Database {
+  final MockFirebaseFirestore _firebaseFirestore;
+
+  MockDatabase(this._firebaseFirestore);
+
+  @override
+  Future<void> storeServiceRequest(Map<String, dynamic> data,
+      List<XFile>? imgFiles, BuildContext context) async {
+    try {
+      final CollectionReference servicesRef =
+          _firebaseFirestore.collection('services');
+      final DocumentReference serviceDocRef = await servicesRef.add(data);
+
+      final List<String>? downloadUrls = imgFiles != null
+          ? await uploadServiceImages(serviceDocRef, imgFiles)
+          : null;
+      if (downloadUrls != null) {
+        await serviceDocRef.update({'images': downloadUrls});
+      }
+    } catch (e) {
+      throw PlatformException(
+          code: 'add-service-request-failed', message: e.toString());
+    }
   }
 }

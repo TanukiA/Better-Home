@@ -1,10 +1,22 @@
+// ignore_for_file: subtype_of_sealed_class
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_data/models/push_notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:service/controllers/service_controller.dart';
+import 'package:service/views/active_service_detail_screen.dart';
+import 'package:service/views/customer_past_service_detail_screen.dart';
+import 'package:service/views/technician_past_service_detail_screen.dart';
+import 'package:service/views/work_schedules_detail_screen.dart';
+import 'package:user_management/controllers/messaging_controller.dart';
+import 'package:user_management/controllers/notification_controller.dart';
+import 'package:user_management/models/app_notification.dart';
 
 class MockHttpClient extends Mock implements http.Client {}
 
@@ -13,11 +25,32 @@ class MockFlutterLocalNotificationsPlugin extends Mock
 
 class MockNotification extends Mock implements RemoteNotification {}
 
+class MockBuildContext extends Mock implements BuildContext {}
+
+class MockRoute extends Mock implements MaterialPageRoute {}
+
+class MockQueryDocumentSnapshot extends Mock
+    implements QueryDocumentSnapshot<Map<String, dynamic>> {}
+
+class MockNavigator extends Mock implements Navigator {
+  Future<T?> customPush<T extends Object?>(MaterialPageRoute<T> route) {
+    return Future.value(null);
+  }
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.debug}) {
+    return '';
+  }
+}
+
 void main() {
   late MockHttpClient httpClient;
   late MockPushNotification mockPushNotification;
   late MockNotification mockNotification;
   late MockFlutterLocalNotificationsPlugin mockLocalNotificationsPlugin;
+  late MockBuildContext mockContext;
+  late MockQueryDocumentSnapshot mockQueryDocumentSnapshot;
+  late MockRoute mockRoute;
 
   setUpAll(() {
     httpClient = MockHttpClient();
@@ -25,6 +58,12 @@ void main() {
     mockLocalNotificationsPlugin = MockFlutterLocalNotificationsPlugin();
     mockPushNotification =
         MockPushNotification(httpClient, mockLocalNotificationsPlugin);
+    mockContext = MockBuildContext();
+    mockQueryDocumentSnapshot = MockQueryDocumentSnapshot();
+    mockRoute = MockRoute();
+
+    registerFallbackValue(MockBuildContext());
+    registerFallbackValue(MockRoute());
   });
   group('Notifications', () {
     test('Send push notification', () async {
@@ -71,6 +110,62 @@ void main() {
             any(),
           )).called(1);
     });
+
+    test('Create app notification', () async {
+      const userType = 'customer';
+      const serviceID = '12345';
+      const notiMessage = 'Plumbing - Toilet Repair / Install is completed';
+      const receiverID = 'ABC123';
+
+      final mockAppNotification = MockAppNotification();
+      mockAppNotification.serviceID = serviceID;
+      mockAppNotification.dateTime = DateTime.now();
+      mockAppNotification.notiMessage = notiMessage;
+      mockAppNotification.readStatus = false;
+
+      await mockAppNotification.addNewNotification(
+        userType,
+        serviceID,
+        notiMessage,
+        receiverID,
+      );
+
+      expect(mockAppNotification.serviceID, equals(serviceID));
+      expect(mockAppNotification.dateTime, isA<DateTime>());
+      expect(mockAppNotification.notiMessage, equals(notiMessage));
+      expect(mockAppNotification.readStatus, isFalse);
+    });
+
+    test('Navigate to the screen relevant to app notification', () async {
+      const userType = 'technician';
+      const serviceID = '12345';
+      final serviceData = mockQueryDocumentSnapshot;
+
+      final mockNavigator = MockNavigator();
+      when(() => mockNavigator.customPush(mockRoute))
+          .thenAnswer((_) async => Future<void>);
+      final mockAppNotification = MockAppNotification();
+      final notificationController =
+          MockNotificationController(mockAppNotification, mockNavigator);
+
+      //when(() => mockAppNotification.serviceStatus).thenReturn('Completed');
+      when(() => mockContext.mounted).thenReturn(true);
+      when(() => mockAppNotification.retrieveServiceData(serviceID))
+          .thenAnswer((_) async => serviceData);
+
+      await notificationController.openRelevantScreen(
+          serviceID, userType, mockContext);
+
+      verify(() => mockAppNotification.retrieveServiceData(serviceID))
+          .called(1);
+
+      verify(() => mockNavigator.customPush(mockRoute)).called(1);
+      final capturedRoute = verify(() => mockNavigator.customPush(mockRoute))
+          .captured
+          .single as MaterialPageRoute;
+      expect(capturedRoute.builder(mockContext),
+          isA<TechnicianPastServiceDetailScreen>());
+    });
   });
 }
 
@@ -109,5 +204,122 @@ class MockPushNotification extends Mock implements PushNotification {
 
     _mockNotificationsPlugin.show(
         0, notification.title, notification.body, platformChannelSpecifics);
+  }
+}
+
+class MockAppNotification extends Mock implements AppNotification {
+  @override
+  String? serviceID;
+  @override
+  DateTime? dateTime;
+  @override
+  String? notiMessage;
+  @override
+  bool? readStatus;
+  @override
+  String? serviceStatus;
+
+  MockAppNotification({
+    this.serviceID,
+    this.dateTime,
+    this.notiMessage,
+    this.readStatus,
+  });
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'serviceID': serviceID,
+        'dateTime': dateTime?.toIso8601String(),
+        'notiMessage': notiMessage,
+        'readStatus': readStatus,
+      };
+
+  @override
+  Future<void> addNewNotification(String userType, String serviceID,
+      String notiMessage, String receiverID) async {
+    final collectionName = userType == 'customer' ? 'customers' : 'technicians';
+
+    final notification = MockAppNotification(
+      serviceID: serviceID,
+      dateTime: DateTime.now(),
+      notiMessage: notiMessage,
+      readStatus: false,
+    );
+  }
+}
+
+class MockNotificationController extends Mock
+    implements NotificationController {
+  @override
+  final MockAppNotification noti;
+  final MockNavigator mockNavigator;
+
+  MockNotificationController(this.noti, this.mockNavigator);
+
+  @override
+  Future<void> openRelevantScreen(
+      String serviceID, String userType, BuildContext context) async {
+    final serviceData = await noti.retrieveServiceData(serviceID);
+    if (userType == "customer") {
+      if (noti.serviceStatus == "Assigning" ||
+          noti.serviceStatus == "Confirmed" ||
+          noti.serviceStatus == "In Progress") {
+        if (context.mounted) {
+          mockNavigator.customPush(
+            MaterialPageRoute(
+              builder: (context) => ActiveServiceDetailScreen(
+                serviceDoc: serviceData,
+                msgCon: MessagingController(),
+                serviceCon: ServiceController(),
+              ),
+            ),
+          );
+        }
+      } else if (noti.serviceStatus == "Completed" ||
+          noti.serviceStatus == "Rated" ||
+          noti.serviceStatus == "Cancelled" ||
+          noti.serviceStatus == "Refunded") {
+        if (context.mounted) {
+          mockNavigator.customPush(
+            MaterialPageRoute(
+              builder: (context) => CustomerPastServiceDetailScreen(
+                serviceDoc: serviceData,
+                controller: ServiceController(),
+              ),
+            ),
+          );
+        }
+      }
+    } else {
+      if (noti.serviceStatus == "Assigning" ||
+          noti.serviceStatus == "Confirmed" ||
+          noti.serviceStatus == "In Progress") {
+        if (context.mounted) {
+          mockNavigator.customPush(
+            MaterialPageRoute(
+              builder: (context) => WorkSchedulesDetailScreen(
+                serviceDoc: serviceData,
+                msgCon: MessagingController(),
+                serviceCon: ServiceController(),
+              ),
+            ),
+          );
+        }
+      } else if (noti.serviceStatus == "Completed" ||
+          noti.serviceStatus == "Rated" ||
+          noti.serviceStatus == "Cancelled" ||
+          noti.serviceStatus == "Refunded") {
+        if (context.mounted) {
+          mockNavigator.customPush(
+            MaterialPageRoute(
+              builder: (context) => TechnicianPastServiceDetailScreen(
+                serviceDoc: serviceData,
+                controller: ServiceController(),
+              ),
+            ),
+          );
+        }
+      }
+    }
   }
 }
