@@ -1,12 +1,14 @@
 import 'package:authentication/controllers/login_controller.dart';
 import 'package:authentication/models/auth_provider.dart';
 import 'package:authentication/views/login_screen.dart';
+import 'package:better_home/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:better_home/user.dart' as my_user;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MockLoginController extends Mock implements LoginController {}
 
@@ -20,9 +22,9 @@ class MockAuthCredential extends Mock implements AuthCredential {}
 
 class MockPhoneAuthCredential extends Mock implements PhoneAuthCredential {}
 
-class MockAuthProvider extends Mock implements AuthProvider {}
-
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
+
+class MockSharedPreferences extends Mock implements SharedPreferences {}
 
 void main() {
   late MockLoginController mockController;
@@ -30,14 +32,21 @@ void main() {
   late MockFirebaseAuth mockFirebaseAuth;
   late MockUserCredential mockUserCredential;
   late MockPhoneAuthCredential mockPhoneAuthCredential;
+  late MockSharedPreferences mockSharedPreferences;
+  late MockBuildContext context;
+
   final mockNavigatorObserver = MockNavigatorObserver();
 
-  setUpAll(() {
+  setUp(() {
     mockController = MockLoginController();
-    mockAuthProvider = MockAuthProvider();
     mockFirebaseAuth = MockFirebaseAuth();
+    mockSharedPreferences = MockSharedPreferences();
     mockUserCredential = MockUserCredential();
+
     mockPhoneAuthCredential = MockPhoneAuthCredential();
+    mockAuthProvider = MockAuthProvider(
+        mockFirebaseAuth, mockSharedPreferences, mockPhoneAuthCredential);
+    context = MockBuildContext();
     registerFallbackValue(MockBuildContext());
     registerFallbackValue(MockAuthCredential());
   });
@@ -142,8 +151,6 @@ void main() {
       when(() => mockFirebaseAuth.signInWithCredential(mockPhoneAuthCredential))
           .thenAnswer((_) async => mockUserCredential);
 
-      // Act
-      final context = MockBuildContext();
       mockAuthProvider.signInWithPhone(
         context,
         mockPhoneNumber,
@@ -154,7 +161,6 @@ void main() {
           .authStateChanges()
           .firstWhere((user) => user != null);
 
-      // Assert
       verify(() => mockFirebaseAuth.signInWithCredential(any())).called(1);
     });
 
@@ -175,31 +181,139 @@ void main() {
 
       expect(result, true);
     });
-  });
 
-  test('User logout succeed', () async {
-    when(() => mockAuthProvider.userSignOut()).thenAnswer((_) async {
-      await mockFirebaseAuth.signOut();
-      return Future.value();
+    test('OTP verification succeeds with correct OTP', () async {
+      const verificationId = '11111';
+      const userOTP = '123456';
+
+      final mockUser = MockUser();
+      final mockResult = MockUserCredential();
+
+      when(() => mockFirebaseAuth.signInWithCredential(mockPhoneAuthCredential))
+          .thenAnswer((_) async => mockResult);
+      when(() => mockResult.user).thenReturn(mockUser);
+
+      bool onSuccessCalled = false;
+      void onSuccess() {
+        onSuccessCalled = true;
+      }
+
+      await mockAuthProvider.verifyOTP(
+        context: context,
+        verificationId: verificationId,
+        userOTP: userOTP,
+        onSuccess: onSuccess,
+      );
+
+      verify(() =>
+              mockFirebaseAuth.signInWithCredential(mockPhoneAuthCredential))
+          .called(1);
+      expect(onSuccessCalled, true);
     });
 
-    when(() => mockFirebaseAuth.signOut()).thenAnswer((_) => Future.value());
+    test('OTP verification fails with incorrect OTP', () async {
+      const verificationId = '11111';
+      const userOTP = '654321';
 
-    await mockAuthProvider.userSignOut();
+      when(() => mockFirebaseAuth.signInWithCredential(mockPhoneAuthCredential))
+          .thenThrow(FirebaseAuthException(code: 'invalid-otp'));
 
-    verify(() => mockFirebaseAuth.signOut()).called(1);
+      bool onSuccessCalled = false;
+      void onSuccess() {
+        onSuccessCalled = true;
+      }
+
+      await mockAuthProvider.verifyOTP(
+        context: context,
+        verificationId: verificationId,
+        userOTP: userOTP,
+        onSuccess: onSuccess,
+      );
+
+      verify(() =>
+              mockFirebaseAuth.signInWithCredential(mockPhoneAuthCredential))
+          .called(1);
+      expect(onSuccessCalled, false);
+    });
+
+    test('User logout succeed', () async {
+      when(() => mockFirebaseAuth.signOut()).thenAnswer((_) async {
+        return Future.value();
+      });
+      when(() => mockSharedPreferences.clear()).thenAnswer((_) async {
+        return true;
+      });
+
+      await mockAuthProvider.userSignOut();
+
+      verify(() => mockFirebaseAuth.signOut()).called(1);
+      verify(() => mockSharedPreferences.clear()).called(1);
+    });
+
+    test('User logout failed', () async {
+      when(() => mockFirebaseAuth.signOut())
+          .thenThrow(Exception('Sign out failed'));
+
+      expect(
+        () async => await mockAuthProvider.userSignOut(),
+        throwsA(isA<Exception>()),
+      );
+
+      verify(() => mockFirebaseAuth.signOut()).called(1);
+      verifyNever(() => mockSharedPreferences.clear());
+    });
   });
+}
 
-  test('User logout failed', () async {
-    when(() => mockAuthProvider.userSignOut()).thenAnswer((_) async {
+class MockAuthProvider extends Mock implements AuthProvider {
+  final MockFirebaseAuth _firebaseAuth;
+  final MockSharedPreferences sp;
+  final MockPhoneAuthCredential _phoneAuthCredential;
+  bool _isCustomerSignedIn = false;
+  bool _isTechnicianSignedIn = false;
+  bool _isLoading = false;
+
+  MockAuthProvider(this._firebaseAuth, this.sp, this._phoneAuthCredential);
+
+  @override
+  Future userSignOut() async {
+    try {
+      await _firebaseAuth.signOut();
+    } catch (e) {
       throw Exception('Sign out failed');
-    });
+    }
 
-    expect(
-      () async => await mockAuthProvider.userSignOut(),
-      throwsA(isA<Exception>()),
-    );
+    _isCustomerSignedIn = false;
+    _isTechnicianSignedIn = false;
 
-    verifyNever(() => mockFirebaseAuth.signOut());
-  });
+    notifyListeners();
+    sp.clear();
+  }
+
+  @override
+  Future<void> verifyOTP({
+    required BuildContext context,
+    required String verificationId,
+    required String userOTP,
+    required Function onSuccess,
+  }) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      UserCredential result =
+          await _firebaseAuth.signInWithCredential(_phoneAuthCredential);
+      User? user = result.user;
+
+      if (user != null) {
+        _isLoading = false;
+
+        notifyListeners();
+        onSuccess();
+      }
+    } on FirebaseAuthException catch (e) {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

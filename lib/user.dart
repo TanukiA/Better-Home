@@ -54,10 +54,15 @@ abstract class User extends ModelMVC {
     return regex.hasMatch(email);
   }
 
-  void verifyOTP(BuildContext context, String userOTP, String verificationId,
-      String userType, String purpose, String phoneNumber) {
+  Future<void> verifyOTP(
+      BuildContext context,
+      String userOTP,
+      String verificationId,
+      String userType,
+      String purpose,
+      String phoneNumber) async {
     final ap = Provider.of<AuthProvider>(context, listen: false);
-    ap.verifyOTP(
+    await ap.verifyOTP(
         context: context,
         verificationId: verificationId,
         userOTP: userOTP,

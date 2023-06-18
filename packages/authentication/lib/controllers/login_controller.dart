@@ -41,8 +41,13 @@ class LoginController extends ControllerMVC {
     return _user.sendPhoneNumber(context, phoneInput, userType, purpose);
   }
 
-  void verifyOTP(BuildContext context, String userOTP, String verificationId,
-      String userType, String purpose, String phoneNumber) {
+  Future<void> verifyOTP(
+      BuildContext context,
+      String userOTP,
+      String verificationId,
+      String userType,
+      String purpose,
+      String phoneNumber) {
     return _user.verifyOTP(
         context, userOTP, verificationId, userType, purpose, phoneNumber);
   }

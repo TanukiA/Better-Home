@@ -92,7 +92,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  void verifyOTP({
+  Future<void> verifyOTP({
     required BuildContext context,
     required String verificationId,
     required String userOTP,
