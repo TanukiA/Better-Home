@@ -433,7 +433,7 @@ main() {
     test('Find new technician to assign rejected service request', () async {
       const serviceCategory = 'Painting';
       const city = 'Melaka';
-      const serviceLocation = GeoPoint(40.7128, -74.0060);
+      const serviceLocation = GeoPoint(40.7128, 74.0060);
       const nearestTechnicianID = 'ABC123';
 
       when(() => mockDatabase.getLocationOfAvailableTechnician(
@@ -441,7 +441,7 @@ main() {
         (_) async => [
           {
             'id': nearestTechnicianID,
-            'location': const GeoPoint(40.7127, -74.0061),
+            'location': const GeoPoint(40.7127, 74.0061),
           },
         ],
       );
@@ -449,7 +449,7 @@ main() {
       when(() =>
               mockDistanceCalculator.getNearestTechnicianLocation(any(), any()))
           .thenReturn(
-        const GeoPoint(40.7127, -74.0061),
+        const GeoPoint(40.7127, 74.0061),
       );
 
       final result = await mockTechnicianAssigner.pickReassignTechnician(
@@ -475,7 +475,7 @@ main() {
         "alternativeTime": "5:00PM - 7:00PM",
         "serviceName": "Roof Servicing - Shingle/Tile Replacement",
         "city": "Pahang",
-        "location": const GeoPoint(40.7128, -74.0060),
+        "location": const GeoPoint(40.7128, 74.0060),
       });
 
       when(() => mockService.processTechnicianReassign(
@@ -523,7 +523,7 @@ main() {
         "alternativeTime": "5:00PM - 7:00PM",
         "serviceName": "Roof Servicing - Shingle/Tile Replacement",
         "city": "Pahang",
-        "location": const GeoPoint(40.7128, -74.0060),
+        "location": const GeoPoint(40.7128, 74.0060),
       });
 
       when(() => mockService.processTechnicianReassign(

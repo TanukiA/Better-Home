@@ -37,8 +37,7 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
         await widget.controller.retrieveProfileData(widget.userType, context);
     profileData = profileDoc.data() as Map<String, dynamic>;
     if (widget.userType == "technician") {
-      List<dynamic> specialization = profileData["specialization"];
-      specializationStr = specialization.join(", ");
+      specializationStr = profileData["specialization"].join(", ");
     }
 
     if (mounted) {

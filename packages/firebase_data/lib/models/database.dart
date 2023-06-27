@@ -121,55 +121,11 @@ class Database extends ChangeNotifier {
         .collection('technicians')
         .where('specialization', arrayContains: serviceCategory)
         .where('city', isEqualTo: city)
+        .where('approvalStatus', isEqualTo: true)
         .get();
     return querySnapshot.size;
   }
 
-/*
-  // Check technician's availability for one given time slot, return true/false represents available/not available
-  Future<bool> checkTechnicianAvailability(String serviceCategory, String city,
-      DateTime date, String timeSlot, int matchedQty) async {
-    unavailableTechnicianIDs.clear();
-    final techniciansQuerySnapshot = await _firebaseFirestore
-        .collection("technicians")
-        .where("specialization", arrayContains: serviceCategory)
-        .where("city", isEqualTo: city)
-        .get();
-    int countOverlap = 0;
-
-    for (final technicianDoc in techniciansQuerySnapshot.docs) {
-      final workSchedulesCollection =
-          technicianDoc.reference.collection("work_schedules");
-      final workSchedulesQuerySnapshot = await workSchedulesCollection.get();
-
-      if (workSchedulesQuerySnapshot.docs.isEmpty) {
-        continue;
-      }
-
-      for (final workScheduleDoc in workSchedulesQuerySnapshot.docs) {
-        final temp = workScheduleDoc.get("appointmentDate").toDate().toLocal();
-        final workDate = DateTime(temp.year, temp.month, temp.day);
-        print("workDate: $workDate");
-        print("date: $date");
-
-        // Increment number of unavailable technician, store the document ID to be used later for filtering out
-        if (date == workDate &&
-            workScheduleDoc.get("appointmentTime") == timeSlot) {
-          print("same date and time (overlap)");
-          countOverlap++;
-          unavailableTechnicianIDs.add(technicianDoc.id);
-          break;
-        }
-      }
-    }
-    if (countOverlap < matchedQty) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-*/
-
   Future<bool> checkTechnicianAvailability(String serviceCategory, String city,
       DateTime date, String timeSlot, int matchedQty) async {
     unavailableTechnicianIDs.clear();
@@ -178,6 +134,7 @@ class Database extends ChangeNotifier {
         .collection("technicians")
         .where("specialization", arrayContains: serviceCategory)
         .where("city", isEqualTo: city)
+        .where('approvalStatus', isEqualTo: true)
         .get();
 
     int countOverlap = 0;
@@ -217,6 +174,7 @@ class Database extends ChangeNotifier {
       await techniciansCollection
           .where("specialization", arrayContains: serviceCategory)
           .where("city", isEqualTo: city)
+          .where('approvalStatus', isEqualTo: true)
           .where(FieldPath.documentId, whereNotIn: unavailableTechnicianIDs)
           .get()
           .then((QuerySnapshot querySnapshot) {
@@ -232,6 +190,7 @@ class Database extends ChangeNotifier {
       await techniciansCollection
           .where("specialization", arrayContains: serviceCategory)
           .where("city", isEqualTo: city)
+          .where('approvalStatus', isEqualTo: true)
           .get()
           .then((QuerySnapshot querySnapshot) {
         for (var doc in querySnapshot.docs) {

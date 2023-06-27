@@ -53,7 +53,7 @@ void main() {
       const email = 'johndoe@gmail.com';
       const city = 'Kuala Lumpur / Selangor';
       const address = '28 Jalan 3/2B, Taman Bukit Anggerik';
-      const location = GeoPoint(40.712776, -74.005974);
+      const location = GeoPoint(40.712776, 74.005974);
       const userType = 'technician';
 
       when(() => mockFirebaseFirestore.collection(any()))
@@ -90,7 +90,7 @@ void main() {
       const email = 'johndoe@gmail.com';
       const city = 'Kuala Lumpur / Selangor';
       const address = '28 Jalan 3/2B, Taman Bukit Anggerik';
-      const location = GeoPoint(40.712776, -74.005974);
+      const location = null;
       const userType = 'technician';
 
       when(() => mockFirebaseFirestore.collection(any()))
@@ -99,15 +99,6 @@ void main() {
           .thenReturn(mockDocumentReference);
       when(() => mockDocumentReference.update(any())).thenThrow(Exception());
 
-      verify(() => mockFirebaseFirestore.collection('technicians')).called(1);
-      verify(() => mockCollectionReference.doc(id)).called(1);
-      verify(() => mockDocumentReference.update({
-            'name': name,
-            'email': email,
-            'city': city,
-            'address': address,
-            'location': location,
-          })).called(1);
       expect(
         () async => await mockDatabase.updateUserProfile(
           id,
@@ -124,6 +115,15 @@ void main() {
           'update-profile-failed',
         )),
       );
+      verify(() => mockFirebaseFirestore.collection('technicians')).called(1);
+      verify(() => mockCollectionReference.doc(id)).called(1);
+      verify(() => mockDocumentReference.update({
+            'name': name,
+            'email': email,
+            'city': city,
+            'address': address,
+            'location': location,
+          })).called(1);
     });
 
     test('Retrieve technician’s review (matching review found)', () async {

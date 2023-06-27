@@ -20,12 +20,15 @@ void main() {
   late MockFirebaseDatabase mockFirebaseDatabase;
   late MockDataSnapshot mockCollectionSnapshot;
   late MockDatabaseReference mockDatabaseRef;
+  late MockDatabaseEvent mockDatabaseEvent;
 
   setUpAll(() {
     mockFirebaseDatabase = MockFirebaseDatabase();
     mockDatabaseRef = MockDatabaseReference();
     mockCollectionSnapshot = MockDataSnapshot();
-    mockMessageDB = MockMessageDB(mockFirebaseDatabase, mockCollectionSnapshot);
+    mockDatabaseEvent = MockDatabaseEvent();
+    mockMessageDB = MockMessageDB(
+        mockFirebaseDatabase, mockCollectionSnapshot, mockDatabaseEvent);
   });
 
   group('Messaging', () {
@@ -88,33 +91,49 @@ void main() {
       expect(messages.length, equals(0));
     });
 
-    test('Send message to a user who has not messaged previously', () async {
-      const customerID = 'test_customer_id';
-      const technicianID = 'test_technician_id';
-      const senderID = 'test_sender_id';
-      const receiverID = 'test_receiver_id';
-      const senderName = 'Test Sender';
-      const receiverName = 'Test Receiver';
-      const messageText = 'Test message';
-      /*
-      when(() => mockFirebaseDatabase.ref().child('messages'))
-          .thenReturn(mockDatabaseRef);*/
-      when(() => mockDatabaseRef.child('connection_id'))
-          .thenReturn(mockDatabaseRef);
-      when(() => mockFirebaseDatabase.ref()).thenReturn(mockDatabaseRef);
-      when(() => mockDatabaseRef.once())
-          .thenAnswer((_) async => MockDatabaseEvent());
+    test('Send message to a user who has never messaged previously', () async {
+      const customerID = 'ABC123';
+      const technicianID = 'DEF456';
+      const senderID = 'ABC123';
+      const receiverID = 'DEF456';
+      const senderName = 'Lim Ying Fei';
+      const receiverName = 'Anthony Fong An Tian';
+      const messageText = 'Hi. I wish to discuss about my aircon issue';
 
-      when(() => mockDatabaseRef.child('connection_id'))
-          .thenReturn(mockDatabaseRef);
-      when(() => mockDatabaseRef.push()).thenReturn(mockDatabaseRef);
-      when(() => mockDatabaseRef.push().key).thenReturn('connection_id');
-      when(() => mockDatabaseRef.child('connection_id').set(any()))
+      final mockMessagesRef = MockDatabaseReference();
+      final mockConnectionRef = MockDatabaseReference();
+      final mockMessageRef = MockDatabaseReference();
+      final mockChildRef = MockDatabaseReference();
+      final mockPushedRef = MockDatabaseReference();
+
+      when(() => mockFirebaseDatabase.ref()).thenReturn(mockDatabaseRef);
+      when(() => mockDatabaseRef.child('messages')).thenReturn(mockMessagesRef);
+
+      when(() => mockMessagesRef.once()).thenAnswer((_) async {
+        when(() => mockDatabaseEvent.snapshot)
+            .thenReturn(mockCollectionSnapshot);
+        when(() => mockCollectionSnapshot.value).thenReturn({
+          'key1': {
+            'technicianID': technicianID,
+            'customerID': customerID,
+          },
+          'key2': {
+            'technicianID': 'otherTechnicianID',
+            'customerID': 'otherCustomerID',
+          },
+        });
+        return mockDatabaseEvent;
+      });
+
+      when(() => mockMessagesRef.child(any())).thenReturn(mockConnectionRef);
+      when(() => mockConnectionRef.push()).thenReturn(mockChildRef);
+      when(() => mockChildRef.key).thenReturn(null);
+      when(() => mockMessagesRef.push()).thenReturn(mockPushedRef);
+      when(() => mockPushedRef.key).thenReturn('new_connection_id');
+      when(() => mockConnectionRef.child('new_connection_id'))
+          .thenReturn(mockMessageRef);
+      when(() => mockMessageRef.set(any()))
           .thenAnswer((_) async => Future<void>.value());
-      when(() => mockDatabaseRef
-          .child('connection_id')
-          .child('message_id')
-          .set(any())).thenAnswer((_) async => Future<void>.value());
 
       await mockMessageDB.storeNewMessage(
         customerID,
@@ -127,11 +146,87 @@ void main() {
       );
 
       verify(() => mockDatabaseRef.once()).called(1);
-      verify(() => mockDatabaseRef.push()).called(1);
-      verify(() => mockDatabaseRef
-          .child('connection_id')
-          .child('message_id')
-          .set(any())).called(1);
+      verify(() => mockDatabaseRef.push().key).called(1);
+      verify(() => mockMessagesRef.push()).called(1);
+      verify(() => mockConnectionRef.set(any())).called(1);
+      verify(
+        () => mockMessageRef.set({
+          'senderID': senderID,
+          'receiverID': receiverID,
+          'senderName': senderName,
+          'receiverName': receiverName,
+          'messageText': messageText,
+          'readStatus': false,
+        }),
+      ).called(1);
+    });
+
+    test('Send message to a user who has messaged previously', () async {
+      const customerID = 'ABC123';
+      const technicianID = 'DEF456';
+      const senderID = 'ABC123';
+      const receiverID = 'DEF456';
+      const senderName = 'Lim Ying Fei';
+      const receiverName = 'Anthony Fong An Tian';
+      const messageText = 'Hi. I wish to discuss about my aircon issue';
+      const connectionID = '12345';
+
+      final mockMessagesRef = MockDatabaseReference();
+      final mockConnectionRef = MockDatabaseReference();
+      final mockMessageRef = MockDatabaseReference();
+      final mockChildRef = MockDatabaseReference();
+
+      when(() => mockFirebaseDatabase.ref()).thenReturn(mockDatabaseRef);
+      when(() => mockDatabaseRef.child('messages')).thenReturn(mockMessagesRef);
+
+      when(() => mockMessagesRef.once()).thenAnswer((_) async {
+        when(() => mockDatabaseEvent.snapshot)
+            .thenReturn(mockCollectionSnapshot);
+        when(() => mockCollectionSnapshot.value).thenReturn({
+          'key1': {
+            'technicianID': technicianID,
+            'customerID': customerID,
+          },
+          'key2': {
+            'technicianID': 'otherTechnicianID',
+            'customerID': 'otherCustomerID',
+          },
+        });
+        return mockDatabaseEvent;
+      });
+
+      when(() => mockMessagesRef.child(connectionID))
+          .thenReturn(mockConnectionRef);
+      when(() => mockConnectionRef.push()).thenReturn(mockChildRef);
+      when(() => mockChildRef.key).thenReturn('message_id');
+      when(() => mockConnectionRef.child(connectionID))
+          .thenReturn(mockMessageRef);
+      when(() => mockMessageRef.set(any()))
+          .thenAnswer((_) async => Future<void>.value());
+
+      await mockMessageDB.storeNewMessage(
+        customerID,
+        technicianID,
+        senderID,
+        receiverID,
+        senderName,
+        receiverName,
+        messageText,
+      );
+
+      verify(() => mockDatabaseRef.once()).called(1);
+      verify(() => mockDatabaseRef.push().key).called(1);
+      verify(() => mockConnectionRef.set(any())).called(1);
+      verify(
+        () => mockMessageRef.set({
+          'senderID': senderID,
+          'receiverID': receiverID,
+          'senderName': senderName,
+          'receiverName': receiverName,
+          'messageText': messageText,
+          'readStatus': false,
+        }),
+      ).called(1);
     });
   });
 }
@@ -139,9 +234,9 @@ void main() {
 class MockMessageDB extends Mock implements MessageDB {
   final MockFirebaseDatabase _realtimeDB;
   final MockDataSnapshot _dataSnapshot;
-  //final MockDatabaseReference _mockDatabaseRef;
+  final MockDatabaseEvent mockDatabaseEvent;
 
-  MockMessageDB(this._realtimeDB, this._dataSnapshot);
+  MockMessageDB(this._realtimeDB, this._dataSnapshot, this.mockDatabaseEvent);
 
   @override
   Future<List<MockMessage>> getMessagesFromConnection(
@@ -192,7 +287,7 @@ class MockMessageDB extends Mock implements MessageDB {
     DatabaseReference messagesRef = _realtimeDB.ref().child('messages');
     String? connectionID;
 
-    await messagesRef.once().then((DatabaseEvent snapshot) async {
+    await messagesRef.once().then((mockDatabaseEvent) async {
       Map<dynamic, dynamic>? values =
           _dataSnapshot.value as Map<dynamic, dynamic>?;
       if (values != null) {
@@ -217,7 +312,7 @@ class MockMessageDB extends Mock implements MessageDB {
     String? messageID = messagesRef.child(connectionID!).push().key;
 
     try {
-      await messagesRef.child(connectionID!).child(messageID!).set(Message(
+      await messagesRef.child(connectionID!).child(messageID!).set(MockMessage(
             dateTime: DateTime.now(),
             senderID: senderID,
             receiverID: receiverID,
@@ -266,7 +361,7 @@ class MockMessage extends Mock implements Message {
     this.messageText,
     this.readStatus,
   });
-
+  /*
   @override
   Map<String, dynamic> toJson() => {
         'connectionId': connectionID,
@@ -279,4 +374,5 @@ class MockMessage extends Mock implements Message {
         'messageText': messageText,
         'readStatus': readStatus,
       };
+      */
 }
