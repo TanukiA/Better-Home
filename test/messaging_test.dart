@@ -361,18 +361,4 @@ class MockMessage extends Mock implements Message {
     this.messageText,
     this.readStatus,
   });
-  /*
-  @override
-  Map<String, dynamic> toJson() => {
-        'connectionId': connectionID,
-        'messageId': messageID,
-        'dateTime': dateTime?.toIso8601String(),
-        'senderId': senderID,
-        'receiverId': receiverID,
-        'senderName': senderName,
-        'receiverName': receiverName,
-        'messageText': messageText,
-        'readStatus': readStatus,
-      };
-      */
 }

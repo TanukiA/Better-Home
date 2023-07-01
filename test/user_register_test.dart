@@ -183,32 +183,32 @@ void main() {
             any(),
           )).called(1);
     });
-  });
 
-  test('Search location in Google Maps (Negative case)', () async {
-    final emptyPrediction = MockPrediction();
+    test('Search location in Google Maps (Negative case)', () async {
+      final emptyPrediction = MockPrediction();
 
-    when(() => mockLocationController.handleSearchButton(
-          mockBuildContext,
-          scaffoldKey,
-          any(),
-        )).thenAnswer((invocation) {
-      final displayPredictionCallback =
-          invocation.positionalArguments[2] as DisplayPredictionCallback;
+      when(() => mockLocationController.handleSearchButton(
+            mockBuildContext,
+            scaffoldKey,
+            any(),
+          )).thenAnswer((invocation) {
+        final displayPredictionCallback =
+            invocation.positionalArguments[2] as DisplayPredictionCallback;
 
-      // Simulate that empty Prediction is passed
-      displayPredictionCallback(emptyPrediction, null);
+        // Simulate that empty Prediction is passed
+        displayPredictionCallback(emptyPrediction, null);
 
-      return Future<void>.value();
+        return Future<void>.value();
+      });
+
+      await mockLocationController.handleSearchButton(
+        mockBuildContext,
+        scaffoldKey,
+        (prediction, state) async {
+          expect(prediction, emptyPrediction);
+          expect(state, null);
+        },
+      );
     });
-
-    await mockLocationController.handleSearchButton(
-      mockBuildContext,
-      scaffoldKey,
-      (prediction, state) async {
-        expect(prediction, emptyPrediction);
-        expect(state, null);
-      },
-    );
   });
 }
