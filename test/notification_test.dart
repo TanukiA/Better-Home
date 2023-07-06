@@ -234,9 +234,7 @@ class MockNotificationController extends Mock
       String serviceID, String userType, BuildContext context) async {
     final serviceData = await noti.retrieveServiceData(serviceID);
     if (userType == "customer") {
-      if (serviceStatus == "Assigning" ||
-          serviceStatus == "Confirmed" ||
-          serviceStatus == "In Progress") {
+      if (serviceStatus == "Confirmed" || serviceStatus == "In Progress") {
       } else if (serviceStatus == "Completed" ||
           serviceStatus == "Rated" ||
           serviceStatus == "Cancelled" ||
@@ -250,7 +248,7 @@ class MockNotificationController extends Mock
           serviceStatus == "Cancelled" ||
           serviceStatus == "Refunded") {
         correctCall;
-      }
+      } else {}
     }
   }
 }

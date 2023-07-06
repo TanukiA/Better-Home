@@ -1,7 +1,10 @@
+import 'package:authentication/controllers/login_controller.dart';
+import 'package:authentication/views/technician_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:service/controllers/service_controller.dart';
+import 'package:service/controllers/technician_controller.dart';
 import 'package:service/views/active_service_detail_screen.dart';
 import 'package:service/views/customer_past_service_detail_screen.dart';
 import 'package:service/views/technician_past_service_detail_screen.dart';
@@ -80,8 +83,7 @@ class NotificationController extends ControllerMVC {
         }
       }
     } else {
-      if (noti.serviceStatus == "Assigning" ||
-          noti.serviceStatus == "Confirmed" ||
+      if (noti.serviceStatus == "Confirmed" ||
           noti.serviceStatus == "In Progress") {
         if (context.mounted) {
           Navigator.push(
@@ -106,6 +108,18 @@ class NotificationController extends ControllerMVC {
               builder: (context) => TechnicianPastServiceDetailScreen(
                 serviceDoc: serviceData,
                 controller: ServiceController(),
+              ),
+            ),
+          );
+        }
+      } else {
+        if (context.mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TechnicianHomeScreen(
+                loginCon: LoginController("technician"),
+                techCon: TechnicianController(),
               ),
             ),
           );
