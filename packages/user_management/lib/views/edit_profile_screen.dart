@@ -261,6 +261,9 @@ class _EditProfileScreenState extends StateMVC<EditProfileScreen> {
                       enabled: false,
                       controller: _addressController,
                       keyboardType: TextInputType.text,
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
                       decoration: const InputDecoration(
                         hintText: 'Pick your address here',
                         hintStyle: TextStyle(

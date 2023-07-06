@@ -34,7 +34,8 @@ class MessageDB extends ChangeNotifier {
       }
     });
 
-    // Generate a new connectionID if it doesn't exist yet
+    // if connection doesn't exist yet
+    // Generate a new unique connectionID and set new child with it
     if (connectionID == null) {
       connectionID = messagesRef.push().key;
       await messagesRef.child(connectionID!).set({

@@ -189,6 +189,9 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                   enabled: false,
                   controller: _addressController,
                   keyboardType: TextInputType.text,
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
                   decoration: const InputDecoration(
                     hintText: 'Pick service address',
                     hintStyle: TextStyle(
@@ -240,6 +243,9 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                       child: TextFormField(
                         enabled: false,
                         controller: _preferredDateController,
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
                         decoration: const InputDecoration(
                           hintText: 'Not selected yet',
                           hintStyle: TextStyle(
@@ -404,6 +410,9 @@ class _ServiceRequestScreen1State extends StateMVC<ServiceRequestScreen1> {
                       child: TextFormField(
                         enabled: false,
                         controller: _alternativeDateController,
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
                         decoration: const InputDecoration(
                           hintText: 'Not selected yet',
                           hintStyle: TextStyle(

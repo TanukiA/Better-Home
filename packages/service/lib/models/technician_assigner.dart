@@ -30,7 +30,7 @@ class TechnicianAssigner extends ModelMVC {
     _techniciansMap = await firestore.getLocationOfAvailableTechnician(
         provider.serviceCategory!, provider.city!);
     convertServiceLocationToGeoPoint(provider.lat!, provider.lng!);
-    print("Technicians to be chosen from: $_techniciansMap");
+
     final technicianLocations = retrieveTechnicianLocations();
     // if there is more than one technician's location, pick the nearest technician
     // is there is one technician's location  only, directly assign him
@@ -42,7 +42,6 @@ class TechnicianAssigner extends ModelMVC {
     }
 
     _nearestTechnicianID = getNearestTechnicianID();
-    print("Nearest technician ID: $_nearestTechnicianID");
   }
 
   List<GeoPoint> retrieveTechnicianLocations() {
