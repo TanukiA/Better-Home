@@ -30,6 +30,7 @@ class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
 
   void getServicesData() async {
     servicesDoc = await widget.controller.retrieveWorkScheduleData(context);
+
     setState(() {
       isLoading = false;
     });
@@ -155,19 +156,7 @@ class _WorkScheduleScreenState extends StateMVC<WorkScheduleScreen> {
                         ),
                       );
                     } else {
-                      return const Center(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 30),
-                            Text(
-                              'No appointment(s) on this day',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+                      return Container();
                     }
                   },
                 ),

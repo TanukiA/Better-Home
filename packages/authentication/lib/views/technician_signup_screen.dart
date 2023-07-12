@@ -245,7 +245,7 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
                                   'Invalid email address',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
-                                    color: Colors.red,
+                                    color: Color.fromARGB(255, 143, 16, 7),
                                     fontSize: 14,
                                   ),
                                 ),
@@ -277,7 +277,7 @@ class _TechnicianSignupScreenState extends StateMVC<TechnicianSignupScreen> {
                                   'Invalid phone number',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
-                                    color: Colors.red,
+                                    color: Color.fromARGB(255, 143, 16, 7),
                                     fontSize: 14,
                                   ),
                                 ),

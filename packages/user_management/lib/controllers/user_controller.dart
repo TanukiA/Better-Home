@@ -43,8 +43,7 @@ class UserController extends ControllerMVC {
     return _user.retrieveProfileData(userType, context);
   }
 
-  void handleEditIcon(
-      String userType, Map<String, dynamic> profileData, BuildContext context) {
+  void handleEditIcon(String userType, BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(

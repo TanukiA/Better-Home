@@ -128,8 +128,8 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  widget.controller.handleEditIcon(
-                                      widget.userType, profileData, context);
+                                  widget.controller
+                                      .handleEditIcon(widget.userType, context);
                                 },
                                 child: const Icon(
                                   Icons.edit,
