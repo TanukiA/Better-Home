@@ -164,8 +164,6 @@ class Database extends ChangeNotifier {
 
   Future<List<Map<String, dynamic>>> getLocationOfAvailableTechnician(
       String serviceCategory, String city) async {
-    print("Overlapped Technician IDs: $unavailableTechnicianIDs");
-
     List<Map<String, dynamic>> techniciansData = [];
     CollectionReference techniciansCollection =
         _firebaseFirestore.collection('technicians');
@@ -202,8 +200,7 @@ class Database extends ChangeNotifier {
         }
       });
     }
-    print("City: $city");
-    print("Specialization: $serviceCategory");
+
     return techniciansData;
   }
 
@@ -527,13 +524,10 @@ class Database extends ChangeNotifier {
       for (final workScheduleDoc in workSchedulesQuerySnapshot.docs) {
         final temp = workScheduleDoc.get("appointmentDate").toDate().toLocal();
         final workDate = DateTime(temp.year, temp.month, temp.day);
-        print("workDate: $workDate");
-        print("date: $date");
 
         // Increment number of unavailable technician, store the document ID to be used later for filtering out
         if (date == workDate &&
             workScheduleDoc.get("appointmentTime") == timeSlot) {
-          print("same date and time (overlap)");
           unavailableTechnicianIDs.add(technicianDoc.id);
           break;
         }

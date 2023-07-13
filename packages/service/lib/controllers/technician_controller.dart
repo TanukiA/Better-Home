@@ -126,7 +126,7 @@ class TechnicianController extends ControllerMVC {
 
     String? technicianFromPreferred;
     String? technicianFromAlternative;
-    print("Done 1");
+
     // Look for technician using preferred appointment
     if (context.mounted) {
       technicianFromPreferred = await _service.processTechnicianReassign(
@@ -137,11 +137,9 @@ class TechnicianController extends ControllerMVC {
           technicianID,
           newPreferredDate,
           preferredTime);
-      print("Done 5");
     }
     // If not found for preferred appointment, look for technician using alternative appointment
     if (technicianFromPreferred == null || technicianFromPreferred == "") {
-      print("Done 6");
       if (context.mounted) {
         technicianFromAlternative = await _service.processTechnicianReassign(
             context,
@@ -158,26 +156,22 @@ class TechnicianController extends ControllerMVC {
         if (context.mounted) {
           firestore.updateCancelledStatus(serviceDoc.id, false, context);
         }
-        print("Done 7");
       }
     }
-    print("Done 8");
+
     if (technicianFromPreferred != null && technicianFromPreferred != "") {
       // Assign new technician to replace current one
       // Update assignedDate and assignedTime using preferredAppointment
-      print("Done 9");
+
       firestore.updateTechnicianReassigned(serviceDoc.id,
           technicianFromPreferred, newPreferredDate, preferredTime);
     } else if (technicianFromAlternative != null &&
         technicianFromAlternative != "") {
-      print("Done 10");
       // Assign new technician to replace current one
       // Update assignedDate and assignedTime using alternativeAppointment
       firestore.updateTechnicianReassigned(serviceDoc.id,
           technicianFromAlternative, newAlternativeDate, alternativeTime);
     }
-
-    print("Done 11");
   }
 
   Future<List<Map<String, dynamic>?>> retrieveReviews(

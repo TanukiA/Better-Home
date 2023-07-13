@@ -259,11 +259,10 @@ class Service extends ModelMVC {
       String technicianID,
       DateTime date,
       String timeSlot) async {
-    print("Done 2");
     Database firestore = Database();
     await firestore.appendUnavailableTechnician(
         serviceCategory, city, date, timeSlot, technicianID);
-    print("Done 3");
+
     String? nearestTechnicianID;
 
     if (context.mounted) {
@@ -271,8 +270,6 @@ class Service extends ModelMVC {
     }
     nearestTechnicianID = await _techAssigner.pickReassignTechnician(
         serviceCategory, city, location);
-    print("Done 4");
-    print("NearestTechnicianID: $nearestTechnicianID");
 
     return nearestTechnicianID;
   }
