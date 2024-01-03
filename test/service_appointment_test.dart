@@ -221,7 +221,7 @@ void main() {
         'address': 'Example Address',
         'location': const GeoPoint(2.330100714481708, 102.24918716249788),
         'city': 'Melaka',
-        'paidAmount': 120.0,
+        'payment': 120.0,
         'serviceName':
             'Electrical & Wiring - Light Fixture/Ceiling Fan Install',
         'serviceVariation': 'Light fixture replacement',

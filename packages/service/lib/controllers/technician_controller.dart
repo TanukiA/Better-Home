@@ -172,6 +172,19 @@ class TechnicianController extends ControllerMVC {
       firestore.updateTechnicianReassigned(serviceDoc.id,
           technicianFromAlternative, newAlternativeDate, alternativeTime);
     }
+
+    if (context.mounted) {
+      Navigator.of(context).pop();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TechnicianHomeScreen(
+            loginCon: LoginController("technician"),
+            techCon: TechnicianController(),
+          ),
+        ),
+      );
+    }
   }
 
   Future<List<Map<String, dynamic>?>> retrieveReviews(

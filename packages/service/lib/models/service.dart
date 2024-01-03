@@ -68,7 +68,7 @@ class Service extends ModelMVC {
         'address': provider.address,
         'location': _techAssigner.serviceLocation,
         'city': provider.city,
-        'paidAmount': servicePrice,
+        'payment': servicePrice,
         'serviceName': '${provider.serviceCategory} - ${provider.serviceType}',
         'serviceVariation': provider.variation,
         'propertyType': provider.propertyType,

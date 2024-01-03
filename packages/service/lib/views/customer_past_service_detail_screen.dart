@@ -296,7 +296,7 @@ class _CustomerPastServiceDetailScreenState
                         ),
                         const SizedBox(height: 25.0),
                         Text(
-                          'TOTAL: RM ${(widget.serviceDoc.data() as Map<String, dynamic>)["paidAmount"].toInt()}',
+                          'TOTAL: RM ${(widget.serviceDoc.data() as Map<String, dynamic>)["payment"].toInt()}',
                           style: const TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
