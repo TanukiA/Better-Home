@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBSn1Cv_zs3ZWtal9VMhnbVaO4q-9LTkB4',
-    appId: '1:124125926085:android:23b407305b7669ad6f96ac',
+    appId: '1:124125926085:android:292990c5bcc9a7056f96ac',
     messagingSenderId: '124125926085',
     projectId: 'better-home-a2dbf',
     storageBucket: 'better-home-a2dbf.appspot.com',

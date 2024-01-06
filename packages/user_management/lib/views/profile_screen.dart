@@ -114,7 +114,7 @@ class _ProfileScreenState extends StateMVC<ProfileScreen> {
                   ],
                   Container(
                     width: double.infinity,
-                    height: containerHeight,
+                    height: containerHeight * 1.15,
                     padding: const EdgeInsets.all(20.0),
                     decoration: const BoxDecoration(
                       color: Colors.white,

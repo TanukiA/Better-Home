@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:124125926085:android:23b407305b7669ad6f96ac",
+        "mobilesdk_app_id": "1:124125926085:android:292990c5bcc9a7056f96ac",
         "android_client_info": {
-          "package_name": "com.example.better_home"
+          "package_name": "com.adelinefong.better_home"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "124125926085-ge846mcn4n62h6sehc7lgemnbhe225fv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.better_home",
+            "package_name": "com.adelinefong.better_home",
             "certificate_hash": "21dcb4cece78f28a34ecd34c223d9a49a5dbaf62"
           }
         },
