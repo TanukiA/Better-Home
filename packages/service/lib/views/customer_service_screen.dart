@@ -34,13 +34,31 @@ class _CustomerServiceScreenState extends StateMVC<CustomerServiceScreen> {
         backgroundColor: const Color(0xFFE8E5D4),
         appBar: AppBar(
           bottom: TabBar(
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.black,
             tabs: const [
-              Tab(text: 'Active Services'),
-              Tab(text: 'Past Services'),
+              Tab(
+                child: Text(
+                  'Active Services',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  'Past Services',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
             ],
             indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(50), // Creates border
-                color: const Color.fromARGB(255, 46, 83, 49)),
+              borderRadius: BorderRadius.circular(50), // Creates border
+              color: const Color.fromARGB(255, 46, 83, 49),
+            ),
+            indicatorPadding: const EdgeInsets.symmetric(horizontal: -16.0),
           ),
           centerTitle: true,
           title: const Text(

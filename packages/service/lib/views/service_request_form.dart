@@ -83,6 +83,8 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
         borderRadius: BorderRadius.circular(30),
       ),
       elevation: 3,
+      backgroundColor: Colors.teal,
+      foregroundColor: Colors.white,
     );
 
     return GestureDetector(
@@ -114,9 +116,7 @@ class _ServiceRequestFormState extends StateMVC<ServiceRequestForm> {
         ),
         body: Theme(
           data: ThemeData(
-            colorScheme: ColorScheme.fromSwatch(
-              primarySwatch: Colors.teal,
-            ),
+            primarySwatch: Colors.teal,
           ),
           child: Stepper(
             type: StepperType.horizontal,

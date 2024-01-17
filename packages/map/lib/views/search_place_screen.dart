@@ -96,17 +96,21 @@ class _SearchPlaceScreenState extends StateMVC<SearchPlaceScreen> {
                   top: 20,
                   left: 30,
                   child: SizedBox(
-                    width: 127,
-                    height: 45,
+                    width: 128,
+                    height: 53,
                     child: ElevatedButton(
                       onPressed: () => widget.controller.handleSearchButton(
                           context, homeScaffoldKey, displayPrediction),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(46, 125, 45, 1),
+                        padding: const EdgeInsets.all(16.0),
                       ),
                       child: const Text(
                         "Search Place",
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
