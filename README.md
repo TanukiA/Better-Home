@@ -1,6 +1,6 @@
 # better_home
 
-This is a Flutter mobile app, namely BetterHome, developed for the Final Year Project titled "Home Repair and Maintenance Service App". Users of this mobile app includes customers who request services, and technicians who provides services.
+This is a Flutter mobile app, namely BetterHome, developed for my Final Year Project titled "Home Repair and Maintenance Service App". Users of this mobile app includes customers who request home services, and technicians who provides home services on demand.
 
 BetterHome mobile app:
 - provides automatic assignment feature which enables customers to make accurate and reliable appointments with suitable technicians. Upon submission of a service request form, the most suitable technician is assigned automatically based on availability, specialization, and location distance.
